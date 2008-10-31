@@ -24,9 +24,7 @@ setup(name='silva.core.smi',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
-      ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+          'silva.core.views',
+          'silva.core.smi',
+          ],
       )
