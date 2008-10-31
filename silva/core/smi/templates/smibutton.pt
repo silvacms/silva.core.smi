@@ -1,10 +1,12 @@
 <tal:button i18n:domain="silva">
   <a accesskey="#"
-     tal:condition="viewlet/available"
      tal:attributes="title viewlet/help;
                      href string:${context/@@absolute_url}/edit/${viewlet/tab};
-                     class python:viewlet.selected and 'selected';
+                     class python:viewlet.selected and 'selected' or None;
                      accesskey viewlet/accesskey;">
-    <span tal:replace="viewlet/label" /><tal:selected tal:condition="not:viewlet/selected">...</tal:selected>
+    <span tal:replace="viewlet/label"
+          tal:condition="viewlet/selected" />
+    <spam tal:replace="viewlet/formatedLabel"
+          tal:condition="not:viewlet/selected" />
   </a>
 </tal:button>
