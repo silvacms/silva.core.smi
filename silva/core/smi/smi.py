@@ -3,6 +3,7 @@
 # $Id$
 
 from zope.cachedescriptors.property import CachedProperty
+from zope.i18n import translate
 
 from silva.core.views import views as silvaviews
 from silva.core import conf as silvaconf
