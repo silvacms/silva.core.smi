@@ -29,6 +29,11 @@ class IPreviewTab(ISMITab):
     """
 
 
+class IEditTab(ISMITab):
+    """Edit tab.
+    """
+
+
 class ISMIButtonManager(IViewletManager):
     """Where SMI button apprears.
     """

@@ -49,6 +49,16 @@ class PreviewTab(SMITab):
     tab_name = 'tab_preview'
 
 
+class EditTab(SMITab):
+    """Edit
+    """
+
+    silvaconf.implements(interfaces.IEditTab)
+    silvaconf.name('tab_edit_extra')
+
+    tab_name = 'tab_edit'
+
+
 class SMIMiddleGroundManager(silvaviews.ViewletManager):
     """Middleground macro.
     """
