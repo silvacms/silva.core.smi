@@ -15,7 +15,7 @@ silvaconf.view(smi.PropertiesTab)
 
 class AddablesButton(smi.SMIButton):
 
-    silvaconf.context(interfaces.IPublication)
+    silvaconf.context(interfaces.IContainer)
     silvaconf.order(50)
 
     tab = 'tab_addables'
@@ -44,7 +44,8 @@ class SubscriptionButton(smi.SMIButton):
     accesskey = "u"
 
     def available(self):
-        return ISubscribable(self.context, None) is not None
+        return (ISubscribable(self.context, None) is not None and
+                self.context.service_subscriptions.subscriptionsEnabled())
 
 
 class PublishNowButton(smi.SMIButton):

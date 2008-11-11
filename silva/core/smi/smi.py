@@ -64,17 +64,19 @@ class SMIMiddleGroundManager(silvaviews.ViewletManager):
     """Middleground macro.
     """
 
-    silvaconf.view(SMITab)
+    silvaconf.view(silvaviews.SMIView)
 
     @CachedProperty
     def buttons(self):
         return (viewlet for viewlet in self.viewlets if \
-                    not interfaces.ISMISpecialButton.providedBy(viewlet))
+                    not interfaces.ISMISpecialButton.providedBy(viewlet) \
+                    and viewlet.available())
 
     @CachedProperty
     def executors(self):
         return (viewlet for viewlet in self.viewlets if \
-                    interfaces.ISMIExecutorButton.providedBy(viewlet))
+                    interfaces.ISMIExecutorButton.providedBy(viewlet) \
+                    and viewlet.available())
 
 
 class SMIButton(silvaviews.Viewlet):
