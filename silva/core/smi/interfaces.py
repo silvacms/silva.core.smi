@@ -5,14 +5,7 @@
 
 from zope.interface import Attribute, Interface
 
-from silva.core.views.interfaces import ISMIView, IViewlet, IViewletManager
-
-class ISMITab(ISMIView):
-    """A management tab in Silva management interface.
-    """
-
-    tab_name = Attribute("Name of the current tab.")
-
+from silva.core.views.interfaces import ISMITab, IViewlet, IViewletManager
 
 class IAccessTab(ISMITab):
     """Access tab.

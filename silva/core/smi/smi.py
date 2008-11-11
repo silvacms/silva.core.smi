@@ -16,17 +16,26 @@ class SMITab(silvaviews.SMIView):
     """A SMI Tab.
     """
 
-    silvaconf.template('smitab')
     silvaconf.baseclass()
 
+
+# For the moment tabs are not registered. Dummy tabs are used instead
+# to register components to, they will become the real tab when we
+# will switch from Silva views to that system completly.
 
 class AccessTab(SMITab):
     """Access
     """
 
     silvaconf.implements(interfaces.IAccessTab)
-    silvaconf.name('tab_access_extra')
+    silvaconf.name('tab_access')
+    silvaconf.baseclass()
 
+
+class DummyAccessTab(AccessTab):
+
+    silvaconf.template('smitab')
+    silvaconf.name('tab_access_extra')
     tab_name = 'tab_access'
 
 
@@ -35,8 +44,14 @@ class PropertiesTab(SMITab):
     """
 
     silvaconf.implements(interfaces.IPropertiesTab)
-    silvaconf.name('tab_properties_extra')
+    silvaconf.name('tab_metadata')
+    silvaconf.baseclass()
 
+
+class DummyPropertiesTab(PropertiesTab):
+
+    silvaconf.template('smitab')
+    silvaconf.name('tab_metadata_extra')
     tab_name = 'tab_metadata'
 
 
@@ -45,8 +60,14 @@ class PreviewTab(SMITab):
     """
 
     silvaconf.implements(interfaces.IPreviewTab)
-    silvaconf.name('tab_preview_extra')
+    silvaconf.name('tab_preview')
+    silvaconf.baseclass()
 
+
+class DummyPreviewTab(PreviewTab):
+
+    silvaconf.template('smitab')
+    silvaconf.name('tab_preview_extra')
     tab_name = 'tab_preview'
 
 
@@ -55,8 +76,14 @@ class EditTab(SMITab):
     """
 
     silvaconf.implements(interfaces.IEditTab)
-    silvaconf.name('tab_edit_extra')
+    silvaconf.name('tab_edit')
+    silvaconf.baseclass()
 
+
+class DummyEditTab(EditTab):
+
+    silvaconf.template('smitab')
+    silvaconf.name('tab_edit_extra')
     tab_name = 'tab_edit'
 
 

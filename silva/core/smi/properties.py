@@ -34,6 +34,17 @@ class SettingsButton(smi.SMIButton):
     accesskey = 'e'
 
 
+class LocalSiteButton(smi.SMIButton):
+
+    silvaconf.context(interfaces.IPublication)
+    silvaconf.require('zope2.ViewManagementScreens')
+    silvaconf.order(70)
+
+    tab = 'tab_localsite'
+    label = _(u"local site")
+    help = _(u"local site")
+
+
 class SubscriptionButton(smi.SMIButton):
 
     silvaconf.order(110)
