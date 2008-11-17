@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2002-2008 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
+
 from setuptools import setup, find_packages
 import os
 
-version = '2.2'
+version = '2.2a1'
 
 setup(name='silva.core.smi',
       version=version,
@@ -10,6 +15,8 @@ setup(name='silva.core.smi',
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
+        "Framework :: Zope2",
+        "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
@@ -23,8 +30,9 @@ setup(name='silva.core.smi',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'setuptools',
-          'silva.core.views',
-          'silva.core.smi',
-          ],
+        'setuptools',
+        'silva.core.conf',
+        'silva.core.views',
+        'Products.Silva',
+        ],
       )

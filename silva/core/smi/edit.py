@@ -17,6 +17,7 @@ class PublishNowButton(properties.PublishNowButton):
 
     silvaconf.context(interfaces.IVersionedContent)
 
+
 class KupuEditorButton(smi.SMIButton):
     silvaconf.context(IDocument)
     silvaconf.order(10)
@@ -26,13 +27,14 @@ class KupuEditorButton(smi.SMIButton):
     help = _(u"edit with the kupu editor: alt-(")
     accesskey = '('
 
+
 class FormsEditorButton(smi.SMIButton):
     silvaconf.context(IDocument)
-    silvaconf.order(10)
+    silvaconf.order(20)
 
     tab = 'tab_edit?editor=forms_editor'
     label = _(u"forms editor...")
     help = _(u"edit with the forms editor: alt-)")
     accesskey = ')'
 
-    
+
