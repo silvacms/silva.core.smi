@@ -33,7 +33,7 @@ class FormsEditorButton(smi.SMIButton):
     silvaconf.order(20)
 
     tab = 'tab_edit?editor=forms_editor'
-    label = _(u"forms editor...")
+    label = _(u"forms editor")
     help = _(u"edit with the forms editor: alt-)")
     accesskey = ')'
 
