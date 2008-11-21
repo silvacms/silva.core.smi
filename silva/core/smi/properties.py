@@ -2,8 +2,7 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.smi.interfaces import ISMIExecutorButton
-from silva.core.smi import smi
+from silva.core.smi import smi, edit
 from silva.core import conf as silvaconf
 
 from Products.Silva.i18n import translate as _
@@ -59,19 +58,8 @@ class SubscriptionButton(smi.SMIButton):
                 self.context.service_subscriptions.subscriptionsEnabled())
 
 
-class PublishNowButton(smi.SMIButton):
+class PublishNowButton(edit.PublishNowButton):
+    pass
 
-    silvaconf.context(interfaces.IVersionedContent)
-    silvaconf.implements(ISMIExecutorButton)
-    silvaconf.order(20)
 
-    label = _(u"publish now")
-    help = _(u"publish this document: alt-p")
-    accesskey = 'p'
 
-    @property
-    def tab(self):
-        return 'quick_publish?return_to=%s' % self.view.tab_name
-
-    def available(self):
-        return bool(self.context.get_unapproved_version())

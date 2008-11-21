@@ -2,7 +2,7 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.smi import properties
+from silva.core.smi.interfaces import ISMIExecutorButton
 from silva.core.smi import smi
 from silva.core import conf as silvaconf
 
@@ -13,12 +13,31 @@ from Products.SilvaDocument.interfaces import IDocument
 silvaconf.templatedir('templates')
 silvaconf.view(smi.EditTab)
 
-class PublishNowButton(properties.PublishNowButton):
+
+class VersionedEditButton(smi.SMIButton):
 
     silvaconf.context(interfaces.IVersionedContent)
+    silvaconf.baseclass()
+
+    def available(self):
+        return bool(self.context.get_unapproved_version())
 
 
-class KupuEditorButton(smi.SMIButton):
+class PublishNowButton(VersionedEditButton):
+
+    silvaconf.implements(ISMIExecutorButton)
+    silvaconf.order(20)
+
+    label = _(u"publish now")
+    help = _(u"publish this document: alt-p")
+    accesskey = 'p'
+
+    @property
+    def tab(self):
+        return 'quick_publish?return_to=%s' % self.view.tab_name
+
+
+class KupuEditorButton(VersionedEditButton):
     silvaconf.context(IDocument)
     silvaconf.order(10)
 
@@ -28,7 +47,7 @@ class KupuEditorButton(smi.SMIButton):
     accesskey = '('
 
 
-class FormsEditorButton(smi.SMIButton):
+class FormsEditorButton(VersionedEditButton):
     silvaconf.context(IDocument)
     silvaconf.order(20)
 
@@ -36,5 +55,4 @@ class FormsEditorButton(smi.SMIButton):
     label = _(u"forms editor")
     help = _(u"edit with the forms editor: alt-)")
     accesskey = ')'
-
 

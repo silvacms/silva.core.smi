@@ -2,8 +2,7 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.smi import properties
-from silva.core.smi import smi
+from silva.core.smi import smi, edit
 from silva.core import conf as silvaconf
 
 from Products.Silva import interfaces
@@ -11,6 +10,5 @@ from Products.Silva import interfaces
 silvaconf.templatedir('templates')
 silvaconf.view(smi.PreviewTab)
 
-class PublishNowButton(properties.PublishNowButton):
-
-    silvaconf.context(interfaces.IVersionedContent)
+class PublishNowButton(edit.PublishNowButton):
+    pass
