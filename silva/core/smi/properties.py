@@ -7,7 +7,6 @@ from silva.core import conf as silvaconf
 
 from Products.Silva.i18n import translate as _
 from Products.Silva import interfaces
-from Products.Silva.adapters.interfaces import ISubscribable
 
 silvaconf.templatedir('templates')
 silvaconf.view(smi.PropertiesTab)
@@ -54,7 +53,7 @@ class SubscriptionButton(smi.SMIButton):
     accesskey = "u"
 
     def available(self):
-        return (ISubscribable(self.context, None) is not None and
+        return (interfaces.ISubscribable(self.context, None) is not None and
                 self.context.service_subscriptions.subscriptionsEnabled())
 
 
