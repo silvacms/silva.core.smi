@@ -1,10 +1,15 @@
 Changelog
 =========
 
-2.2a2 - (unreleased)
+2.2a2 - (2009-01-12)
 --------------------
 
-* ...
+* Fixed editor buttons on publised documents.
+
+* Keep lookup button selected on lookup screen.
+
+* Remove deprecation warnings.
+
 
 2.2a1 - (2008-11-18)
 --------------------
