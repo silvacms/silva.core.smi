@@ -42,6 +42,9 @@ class LocalSiteButton(smi.SMIButton):
     label = _(u"local site")
     help = _(u"local site")
 
+    def available(self):
+        return not interfaces.IRoot.providedBy(self.context)
+
 
 class SubscriptionButton(smi.SMIButton):
 

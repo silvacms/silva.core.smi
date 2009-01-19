@@ -5,6 +5,7 @@
 from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
 
+from silva.core.layout.interfaces import ISMILayer
 from silva.core.views import views as silvaviews
 from silva.core import conf as silvaconf
 
@@ -91,6 +92,7 @@ class SMIMiddleGroundManager(silvaviews.ViewletManager):
     """Middleground macro.
     """
 
+    silvaconf.layer(ISMILayer)
     silvaconf.view(silvaviews.SMIView)
 
     @CachedProperty
@@ -110,9 +112,10 @@ class SMIButton(silvaviews.Viewlet):
     """A button.
     """
 
+    silvaconf.baseclass()
+    silvaconf.layer(ISMILayer)
     silvaconf.viewletmanager(SMIMiddleGroundManager)
     silvaconf.template('smibutton')
-    silvaconf.baseclass()
 
     label = None
     tab = None
