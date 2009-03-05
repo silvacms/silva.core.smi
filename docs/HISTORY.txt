@@ -4,7 +4,10 @@ Changelog
 2.2b1 - (unreleased)
 --------------------
 
-* ..
+* the editor buttons (kupu editor, forms editor)
+  can be disabled in IDocument types that don't support
+  a particular editor (e.g. SilvaNews News Items don't
+  support the forms-based editor)
 
 2.2a2 - (2009-01-12)
 --------------------

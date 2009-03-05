@@ -45,6 +45,9 @@ class KupuEditorButton(VersionedEditButton):
     label = _(u"kupu editor")
     help = _(u"edit with the kupu editor: alt-(")
     accesskey = '('
+    
+    def available(self):
+        return self.context.kupu_editor_supported()
 
 
 class FormsEditorButton(VersionedEditButton):
@@ -56,3 +59,5 @@ class FormsEditorButton(VersionedEditButton):
     help = _(u"edit with the forms editor: alt-)")
     accesskey = ')'
 
+    def available(self):
+        return self.context.forms_editor_supported()
