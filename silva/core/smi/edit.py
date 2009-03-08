@@ -2,7 +2,7 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.smi.interfaces import ISMIExecutorButton
+from silva.core.smi.interfaces import ISMIExecutorButton, IFormsEditorSupport, IKupuEditorSupport
 from silva.core.smi import smi
 from silva.core import conf as silvaconf
 
@@ -38,26 +38,19 @@ class PublishNowButton(VersionedEditButton):
 
 
 class KupuEditorButton(VersionedEditButton):
-    silvaconf.context(IDocument)
+    silvaconf.context(IKupuEditorSupport)
     silvaconf.order(10)
 
     tab = 'tab_edit?editor=kupu'
     label = _(u"kupu editor")
     help = _(u"edit with the kupu editor: alt-(")
     accesskey = '('
-    
-    def available(self):
-        return self.context.kupu_editor_supported()
-
 
 class FormsEditorButton(VersionedEditButton):
-    silvaconf.context(IDocument)
+    silvaconf.context(IFormsEditorSupport)
     silvaconf.order(20)
 
     tab = 'tab_edit?editor=forms_editor'
     label = _(u"forms editor")
     help = _(u"edit with the forms editor: alt-)")
     accesskey = ')'
-
-    def available(self):
-        return self.context.forms_editor_supported()

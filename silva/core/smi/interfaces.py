@@ -55,3 +55,10 @@ class ISMIExecutorButton(ISMIButton, ISMISpecialButton):
     """This button execute an action.
     """
 
+class IFormsEditorSupport(Interface):
+    """A marker interface for objects that support the
+       forms-based editor"""
+    
+class IKupuEditorSupport(Interface):
+    """A marker interface for objects that support the
+       kupu wysiwyg editor"""
