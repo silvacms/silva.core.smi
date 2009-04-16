@@ -46,6 +46,10 @@ class KupuEditorButton(VersionedEditButton):
     help = _(u"edit with the kupu editor: alt-(")
     accesskey = '('
 
+    @property
+    def selected(self):
+        return self.request.get('editor',None)=='kupu'
+
 class FormsEditorButton(VersionedEditButton):
     silvaconf.context(IFormsEditorSupport)
     silvaconf.order(20)
@@ -54,3 +58,7 @@ class FormsEditorButton(VersionedEditButton):
     label = _(u"forms editor")
     help = _(u"edit with the forms editor: alt-)")
     accesskey = ')'
+    
+    @property
+    def selected(self):
+        return self.request.get('editor',None)=='forms_editor'
