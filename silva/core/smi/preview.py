@@ -5,7 +5,7 @@
 from silva.core.smi import smi, edit
 from silva.core import conf as silvaconf
 
-from Products.Silva import interfaces
+from silva.core import interfaces
 
 silvaconf.templatedir('templates')
 silvaconf.view(smi.PreviewTab)

@@ -6,7 +6,7 @@ from silva.core.smi import smi, edit
 from silva.core import conf as silvaconf
 
 from Products.Silva.i18n import translate as _
-from Products.Silva import interfaces
+from silva.core import interfaces
 
 silvaconf.templatedir('templates')
 silvaconf.view(smi.PropertiesTab)
