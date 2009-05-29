@@ -11,7 +11,6 @@ from silva.core import conf as silvaconf
 
 from silva.core.smi import interfaces
 
-silvaconf.templatedir('templates')
 
 class SMITab(silvaviews.SMIView):
     """A SMI Tab.
