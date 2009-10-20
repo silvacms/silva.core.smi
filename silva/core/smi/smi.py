@@ -11,6 +11,8 @@ from silva.core import conf as silvaconf
 
 from silva.core.smi import interfaces
 
+from five import grok
+
 
 class SMITab(silvaviews.SMIView):
     """A SMI Tab.
@@ -114,7 +116,8 @@ class SMIButton(silvaviews.Viewlet):
     silvaconf.baseclass()
     silvaconf.layer(ISMILayer)
     silvaconf.viewletmanager(SMIMiddleGroundManager)
-    silvaconf.template('smibutton')
+
+    template = grok.PageTemplate(filename='templates/smibutton.pt')
 
     label = None
     tab = None

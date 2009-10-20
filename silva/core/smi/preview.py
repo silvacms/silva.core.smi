@@ -7,8 +7,9 @@ from silva.core import conf as silvaconf
 
 from silva.core import interfaces
 
-silvaconf.templatedir('templates')
+
 silvaconf.view(smi.PreviewTab)
+
 
 class PublishNowButton(edit.PublishNowButton):
     pass

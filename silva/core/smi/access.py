@@ -8,8 +8,9 @@ from silva.core import conf as silvaconf
 from Products.Silva.i18n import translate as _
 from silva.core import interfaces
 
-silvaconf.templatedir('templates')
+
 silvaconf.view(smi.AccessTab)
+
 
 class GroupAdminButton(smi.SMIButton):
 
