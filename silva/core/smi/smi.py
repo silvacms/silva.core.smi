@@ -14,6 +14,13 @@ from silva.core.smi import interfaces
 from five import grok
 
 
+class SMILayout(silvaviews.Layout):
+    """ Layout for SMI
+    """
+    silvaconf.layer(ISMILayer)
+
+
+
 class SMITab(silvaviews.SMIView):
     """A SMI Tab.
     """
