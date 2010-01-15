@@ -5,10 +5,11 @@
 from silva.core.smi.interfaces import ISMIExecutorButton, \
     IFormsEditorSupport, IKupuEditorSupport
 from silva.core.smi import smi
-from silva.core import conf as silvaconf
 
-from Products.Silva.i18n import translate as _
+from silva.core import conf as silvaconf
 from silva.core import interfaces
+from silva.translations import translate as _
+
 from Products.SilvaDocument.interfaces import IDocument
 
 

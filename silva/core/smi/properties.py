@@ -2,11 +2,10 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.smi import smi, edit
 from silva.core import conf as silvaconf
-
-from Products.Silva.i18n import translate as _
 from silva.core import interfaces
+from silva.core.smi import smi, edit
+from silva.translations import translate as _
 
 
 silvaconf.view(smi.PropertiesTab)

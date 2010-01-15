@@ -8,7 +8,6 @@ from zope.i18n import translate
 from silva.core.layout.interfaces import ISMILayer
 from silva.core.views import views as silvaviews
 from silva.core import conf as silvaconf
-
 from silva.core.smi import interfaces
 
 from five import grok
