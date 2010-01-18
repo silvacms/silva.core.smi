@@ -30,7 +30,7 @@ setup(name='silva.core.smi',
       zip_safe=False,
       install_requires=[
         'setuptools',
-        'silva.interfaces',
+        'silva.core.interfaces',
         'silva.core.conf',
         'silva.core.views',
         'silva.core.layout',
