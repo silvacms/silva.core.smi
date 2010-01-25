@@ -3,26 +3,26 @@
 # See also LICENSE.txt
 # $Id$
 
+from five import grok
+
 from zope.publisher.interfaces import INotFound
 from zope.security.interfaces import IUnauthorized
-from zope.interface import implements
 
 from silva.core.layout.interfaces import ISMILayer
 from silva.core.views import views as silvaviews
-from silva.core import conf as silvaconf
 
 # 404 page
 
 class ErrorPage(silvaviews.Page):
-    silvaconf.context(INotFound)
-    silvaconf.name('error.html')
-    silvaconf.layer(ISMILayer)
+    grok.context(INotFound)
+    grok.name('error.html')
+    grok.layer(ISMILayer)
 
 
 # Unauthorized page
 
 class UnauthorizedPage(silvaviews.Page):
-    silvaconf.context(IUnauthorized)
-    silvaconf.name('error.html')
-    silvaconf.layer(ISMILayer)
+    grok.context(IUnauthorized)
+    grok.name('error.html')
+    grok.layer(ISMILayer)
 

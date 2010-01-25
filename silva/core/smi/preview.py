@@ -2,12 +2,12 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core import conf as silvaconf
-from silva.core import interfaces
 from silva.core.smi import smi, edit
 
+from five import grok
 
-silvaconf.view(smi.PreviewTab)
+
+grok.view(smi.PreviewTab)
 
 
 class PublishNowButton(edit.PublishNowButton):

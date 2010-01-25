@@ -5,21 +5,18 @@
 from silva.core.smi.interfaces import ISMIExecutorButton, \
     IFormsEditorSupport, IKupuEditorSupport
 from silva.core.smi import smi
-
-from silva.core import conf as silvaconf
 from silva.core import interfaces
 from silva.translations import translate as _
 
-from Products.SilvaDocument.interfaces import IDocument
+from five import grok
 
-
-silvaconf.view(smi.EditTab)
+grok.view(smi.EditTab)
 
 
 class VersionedEditButton(smi.SMIButton):
 
-    silvaconf.context(interfaces.IVersionedContent)
-    silvaconf.baseclass()
+    grok.context(interfaces.IVersionedContent)
+    grok.baseclass()
 
     def available(self):
         return bool(self.context.get_unapproved_version())
@@ -27,8 +24,8 @@ class VersionedEditButton(smi.SMIButton):
 
 class PublishNowButton(VersionedEditButton):
 
-    silvaconf.implements(ISMIExecutorButton)
-    silvaconf.order(20)
+    grok.implements(ISMIExecutorButton)
+    grok.order(20)
 
     label = _(u"publish now")
     help = _(u"publish this document: alt-p")
@@ -40,8 +37,8 @@ class PublishNowButton(VersionedEditButton):
 
 
 class KupuEditorButton(VersionedEditButton):
-    silvaconf.context(IKupuEditorSupport)
-    silvaconf.order(10)
+    grok.context(IKupuEditorSupport)
+    grok.order(10)
 
     tab = 'tab_edit?editor=kupu'
     label = _(u"kupu editor")
@@ -52,15 +49,16 @@ class KupuEditorButton(VersionedEditButton):
     def selected(self):
         return self.request.get('editor',None)=='kupu'
 
+
 class FormsEditorButton(VersionedEditButton):
-    silvaconf.context(IFormsEditorSupport)
-    silvaconf.order(20)
+    grok.context(IFormsEditorSupport)
+    grok.order(20)
 
     tab = 'tab_edit?editor=forms_editor'
     label = _(u"forms editor")
     help = _(u"edit with the forms editor: alt-)")
     accesskey = ')'
-    
+
     @property
     def selected(self):
         return self.request.get('editor',None)=='forms_editor'

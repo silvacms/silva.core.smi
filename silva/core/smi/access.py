@@ -2,18 +2,20 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core import conf as silvaconf
+from five import grok
+
 from silva.core import interfaces
 from silva.core.smi import smi
 from silva.translations import translate as _
 
-silvaconf.view(smi.AccessTab)
+
+grok.view(smi.AccessTab)
 
 
 class GroupAdminButton(smi.SMIButton):
 
-    silvaconf.context(interfaces.IContainer)
-    silvaconf.order(50)
+    grok.context(interfaces.IContainer)
+    grok.order(50)
 
     tab = 'tab_access_groups'
     label = _(u"groups admin")
@@ -26,9 +28,10 @@ class GroupAdminButton(smi.SMIButton):
         return self.context.sec_groups_enabled() and \
             hasattr(self.context, 'service_groups')
 
+
 class LookupUserButton(smi.SMIButton):
 
-    silvaconf.order(10)
+    grok.order(10)
 
     tab = 'lookup'
     help = _(u"lookup users: alt-l")

@@ -1,20 +1,20 @@
+# $Id$
 # Copyright (c) 2008-2010 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Id$
+from five import grok
 
-from silva.core import conf as silvaconf
 from silva.core import interfaces
 from silva.core.smi import smi, edit
 from silva.translations import translate as _
 
 
-silvaconf.view(smi.PropertiesTab)
+grok.view(smi.PropertiesTab)
 
 
 class AddablesButton(smi.SMIButton):
 
-    silvaconf.context(interfaces.IContainer)
-    silvaconf.order(50)
+    grok.context(interfaces.IContainer)
+    grok.order(50)
 
     tab = 'tab_addables'
     label = _(u"addables")
@@ -24,7 +24,7 @@ class AddablesButton(smi.SMIButton):
 
 class SettingsButton(smi.SMIButton):
 
-    silvaconf.order(10)
+    grok.order(10)
 
     tab = 'tab_settings'
     label = _(u"settings")
@@ -34,9 +34,9 @@ class SettingsButton(smi.SMIButton):
 
 class LocalSiteButton(smi.SMIButton):
 
-    silvaconf.context(interfaces.IPublication)
-    silvaconf.require('zope2.ViewManagementScreens')
-    silvaconf.order(70)
+    grok.context(interfaces.IPublication)
+    grok.require('zope2.ViewManagementScreens')
+    grok.order(70)
 
     tab = 'tab_localsite'
     label = _(u"local site")
@@ -48,7 +48,7 @@ class LocalSiteButton(smi.SMIButton):
 
 class SubscriptionButton(smi.SMIButton):
 
-    silvaconf.order(110)
+    grok.order(110)
 
     tab = 'tab_subscriptions'
     label = _(u"subscriptions")

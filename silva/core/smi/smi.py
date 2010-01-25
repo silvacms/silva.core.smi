@@ -2,21 +2,19 @@
 # See also LICENSE.txt
 # $Id$
 
+from five import grok
 from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
 
 from silva.core.layout.interfaces import ISMILayer
-from silva.core.views import views as silvaviews
-from silva.core import conf as silvaconf
 from silva.core.smi import interfaces
-
-from five import grok
+from silva.core.views import views as silvaviews
 
 
 class SMILayout(silvaviews.Layout):
     """ Layout for SMI
     """
-    silvaconf.layer(ISMILayer)
+    grok.layer(ISMILayer)
 
 
 
@@ -24,7 +22,7 @@ class SMITab(silvaviews.SMIView):
     """A SMI Tab.
     """
 
-    silvaconf.baseclass()
+    grok.baseclass()
 
 
 # For the moment tabs are not registered. Dummy tabs are used instead
@@ -35,15 +33,15 @@ class AccessTab(SMITab):
     """Access
     """
 
-    silvaconf.implements(interfaces.IAccessTab)
-    silvaconf.name('tab_access')
-    silvaconf.baseclass()
+    grok.implements(interfaces.IAccessTab)
+    grok.name('tab_access')
+    grok.baseclass()
 
 
 class DummyAccessTab(AccessTab):
 
-    silvaconf.template('smitab')
-    silvaconf.name('tab_access_extra')
+    grok.template('smitab')
+    grok.name('tab_access_extra')
     tab_name = 'tab_access'
 
 
@@ -51,15 +49,15 @@ class PropertiesTab(SMITab):
     """Properties
     """
 
-    silvaconf.implements(interfaces.IPropertiesTab)
-    silvaconf.name('tab_metadata')
-    silvaconf.baseclass()
+    grok.implements(interfaces.IPropertiesTab)
+    grok.name('tab_metadata')
+    grok.baseclass()
 
 
 class DummyPropertiesTab(PropertiesTab):
 
-    silvaconf.template('smitab')
-    silvaconf.name('tab_metadata_extra')
+    grok.template('smitab')
+    grok.name('tab_metadata_extra')
     tab_name = 'tab_metadata'
 
 
@@ -67,15 +65,15 @@ class PreviewTab(SMITab):
     """Preview
     """
 
-    silvaconf.implements(interfaces.IPreviewTab)
-    silvaconf.name('tab_preview')
-    silvaconf.baseclass()
+    grok.implements(interfaces.IPreviewTab)
+    grok.name('tab_preview')
+    grok.baseclass()
 
 
 class DummyPreviewTab(PreviewTab):
 
-    silvaconf.template('smitab')
-    silvaconf.name('tab_preview_extra')
+    grok.template('smitab')
+    grok.name('tab_preview_extra')
     tab_name = 'tab_preview'
 
 
@@ -83,15 +81,15 @@ class EditTab(SMITab):
     """Edit
     """
 
-    silvaconf.implements(interfaces.IEditTab)
-    silvaconf.name('tab_edit')
-    silvaconf.baseclass()
+    grok.implements(interfaces.IEditTab)
+    grok.name('tab_edit')
+    grok.baseclass()
 
 
 class DummyEditTab(EditTab):
 
-    silvaconf.template('smitab')
-    silvaconf.name('tab_edit_extra')
+    grok.template('smitab')
+    grok.name('tab_edit_extra')
     tab_name = 'tab_edit'
 
 
@@ -99,8 +97,8 @@ class SMIMiddleGroundManager(silvaviews.ViewletManager):
     """Middleground macro.
     """
 
-    silvaconf.layer(ISMILayer)
-    silvaconf.view(silvaviews.SMIView)
+    grok.layer(ISMILayer)
+    grok.view(silvaviews.SMIView)
 
     @CachedProperty
     def buttons(self):
@@ -119,9 +117,9 @@ class SMIButton(silvaviews.Viewlet):
     """A button.
     """
 
-    silvaconf.baseclass()
-    silvaconf.layer(ISMILayer)
-    silvaconf.viewletmanager(SMIMiddleGroundManager)
+    grok.baseclass()
+    grok.layer(ISMILayer)
+    grok.viewletmanager(SMIMiddleGroundManager)
 
     template = grok.PageTemplate(filename='templates/smibutton.pt')
 
