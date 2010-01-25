@@ -1,16 +1,23 @@
 Changelog
 =========
 
-2.2b1 - (unreleased)
---------------------
+2.2b1 (2010-01-25)
+------------------
 
-* the editor buttons (kupu editor, forms editor)
-  can be disabled in IDocument types that don't support
-  a particular editor (e.g. SilvaNews News Items don't
-  support the forms-based editor)
+* Various improvements on buttons.
 
-2.2a2 - (2009-01-12)
---------------------
+* Add support for error pages in SMI.
+
+* Update to use ``silva.core.interfaces`` and directly ``five.grok``.
+
+* SMI components are register on a SMILayer.
+
+* The editor buttons (kupu editor, forms editor) can be disabled in
+  IDocument types that don't support a particular editor
+  (e.g. SilvaNews News Items don't support the forms-based editor)
+
+2.2a2 (2009-01-12)
+------------------
 
 * Fixed editor buttons on publised documents.
 
@@ -19,8 +26,8 @@ Changelog
 * Remove deprecation warnings.
 
 
-2.2a1 - (2008-11-18)
---------------------
+2.2a1 (2008-11-18)
+------------------
 
 * Initial release
 
