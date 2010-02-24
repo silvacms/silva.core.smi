@@ -5,6 +5,7 @@
 
 from zope.interface import Attribute, Interface
 
+from silva.core import conf as silvaconf
 from silva.core.layout.interfaces import ICustomizableLayer
 from silva.core.views.interfaces import ISMITab, IViewlet, IViewletManager
 
@@ -12,6 +13,8 @@ from silva.core.views.interfaces import ISMITab, IViewlet, IViewletManager
 class ISMILayer(ICustomizableLayer):
     """Layer for SMI.
     """
+
+    silvaconf.resource('smi.css')
 
 
 class IAccessTab(ISMITab):
@@ -42,15 +45,14 @@ class ISMIButtonManager(IViewletManager):
 class ISMIButton(IViewlet):
     """A button which appears at the top of the management tab.
     """
-
-    def available():
-        """Is that button available ?
-        """
-
     label = Attribute("Label of the button")
     tab = Attribute("Where do that button links to")
     accesskey = Attribute("Access Key")
     help = Attribute("Description of that tab")
+
+    def available():
+        """Is that button available ?
+        """
 
 
 class ISMISpecialButton(Interface):

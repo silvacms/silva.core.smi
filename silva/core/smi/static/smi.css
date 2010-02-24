@@ -1,0 +1,10 @@
+/* SMI CSS */
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #D8EAEB;
+  background-image: url(skyrise.gif);
+  background-repeat: repeat-x;
+  font: 70% Verdana, Arial, Helvetica, sans-serif;
+}

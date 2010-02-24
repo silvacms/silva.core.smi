@@ -2,6 +2,8 @@
 <html>
   <head>
     <title>Silva SMI</title>
+    <meta name="generator" content="Silva" />
+    <tal:resource tal:replace="structure provider:resources" />
   </head>
 
   <body>
