@@ -5,7 +5,14 @@
 
 from zope.interface import Attribute, Interface
 
+from silva.core.layout.interfaces import ICustomizableLayer
 from silva.core.views.interfaces import ISMITab, IViewlet, IViewletManager
+
+
+class ISMILayer(ICustomizableLayer):
+    """Layer for SMI.
+    """
+
 
 class IAccessTab(ISMITab):
     """Access tab.
@@ -55,10 +62,14 @@ class ISMIExecutorButton(ISMIButton, ISMISpecialButton):
     """This button execute an action.
     """
 
+
 class IFormsEditorSupport(Interface):
     """A marker interface for objects that support the
-       forms-based editor"""
-    
+    forms-based editor.
+    """
+
+
 class IKupuEditorSupport(Interface):
     """A marker interface for objects that support the
-       kupu wysiwyg editor"""
+    Kupu wysiwyg editor.
+    """

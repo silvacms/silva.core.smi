@@ -3,19 +3,19 @@
 # $Id$
 
 from five import grok
+from zope.interface import Interface
 from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
 
-from silva.core.layout.interfaces import ISMILayer
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
 
 
 class SMILayout(silvaviews.Layout):
-    """ Layout for SMI
+    """ Layout for SMI.
     """
-    grok.layer(ISMILayer)
-
+    grok.context(Interface)
+    grok.layer(interfaces.ISMILayer)
 
 
 class SMITab(silvaviews.SMIView):
@@ -96,8 +96,7 @@ class DummyEditTab(EditTab):
 class SMIMiddleGroundManager(silvaviews.ViewletManager):
     """Middleground macro.
     """
-
-    grok.layer(ISMILayer)
+    grok.layer(interfaces.ISMILayer)
     grok.view(silvaviews.SMIView)
 
     @CachedProperty
@@ -116,9 +115,8 @@ class SMIMiddleGroundManager(silvaviews.ViewletManager):
 class SMIButton(silvaviews.Viewlet):
     """A button.
     """
-
     grok.baseclass()
-    grok.layer(ISMILayer)
+    grok.layer(interfaces.ISMILayer)
     grok.viewletmanager(SMIMiddleGroundManager)
 
     template = grok.PageTemplate(filename='templates/smibutton.pt')
