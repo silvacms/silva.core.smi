@@ -14,6 +14,10 @@ class ISMILayer(ICustomizableLayer):
     """Layer for SMI.
     """
 
+    silvaconf.resource('jquery-1.3.2.js')
+    silvaconf.resource('jquery-ui-1.7.2.js')
+
+    silvaconf.resource('jquery-ui-1.7.2.css')
     silvaconf.resource('smi.css')
 
 
