@@ -2,8 +2,7 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.smi.interfaces import ISMIExecutorButton, \
-    IFormsEditorSupport, IKupuEditorSupport
+from silva.core.smi.interfaces import ISMIExecutorButton
 from silva.core.smi import smi
 from silva.core import interfaces
 from silva.translations import translate as _
@@ -35,30 +34,3 @@ class PublishNowButton(VersionedEditButton):
     def tab(self):
         return 'quick_publish?return_to=%s' % self.view.tab_name
 
-
-class KupuEditorButton(VersionedEditButton):
-    grok.context(IKupuEditorSupport)
-    grok.order(10)
-
-    tab = 'tab_edit?editor=kupu'
-    label = _(u"kupu editor")
-    help = _(u"edit with the kupu editor: alt-(")
-    accesskey = '('
-
-    @property
-    def selected(self):
-        return self.request.get('editor',None)=='kupu'
-
-
-class FormsEditorButton(VersionedEditButton):
-    grok.context(IFormsEditorSupport)
-    grok.order(20)
-
-    tab = 'tab_edit?editor=forms_editor'
-    label = _(u"forms editor")
-    help = _(u"edit with the forms editor: alt-)")
-    accesskey = ')'
-
-    @property
-    def selected(self):
-        return self.request.get('editor',None)=='forms_editor'
