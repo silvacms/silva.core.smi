@@ -3,6 +3,7 @@
      tal:attributes="title viewlet/help;
                      href string:${context/@@absolute_url}/edit/${viewlet/tab};
                      class python:viewlet.selected and 'selected' or None;
+                     style viewlet/style | nothing;
                      accesskey viewlet/accesskey;">
     <span tal:replace="viewlet/label"
           tal:condition="viewlet/selected" />

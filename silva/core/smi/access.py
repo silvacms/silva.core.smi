@@ -36,6 +36,7 @@ class LookupUserButton(smi.SMIButton):
     tab = 'lookup'
     help = _(u"lookup users: alt-l")
     accesskey = 'l'
+    style = 'float:right'
 
     @property
     def selected(self):
