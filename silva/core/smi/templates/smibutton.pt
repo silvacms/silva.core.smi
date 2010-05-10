@@ -8,7 +8,7 @@
       accesskey viewlet/accesskey;">
     <span tal:replace="viewlet/label"
       tal:condition="viewlet/selected" />
-    <spam tal:replace="viewlet/formatedLabel"
+    <span tal:replace="viewlet/formatedLabel"
       tal:condition="not:viewlet/selected" />
   </a>
 </tal:button>
