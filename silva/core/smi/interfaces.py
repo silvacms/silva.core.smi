@@ -5,6 +5,7 @@
 
 from zope.interface import Attribute, Interface
 
+
 from silva.core import conf as silvaconf
 from silva.core.layout.interfaces import ICustomizableLayer
 from silva.core.views.interfaces import ISMITab, IViewlet, IViewletManager
@@ -13,7 +14,6 @@ from silva.core.views.interfaces import ISMITab, IViewlet, IViewletManager
 class ISMILayer(ICustomizableLayer):
     """Layer for SMI.
     """
-
     silvaconf.resource('jquery-1.3.2.js')
     silvaconf.resource('jquery-ui-1.7.2.js')
 

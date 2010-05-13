@@ -4,6 +4,8 @@
 
   <include package="silva.core.views" />
   <include package="silva.core.layout" />
+
+  <!-- Grok this package -->
   <grok:grok package="." />
 
 </configure>

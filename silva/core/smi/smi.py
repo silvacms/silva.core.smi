@@ -21,8 +21,22 @@ class SMILayout(silvaviews.Layout):
 class SMITab(silvaviews.SMIView):
     """A SMI Tab.
     """
-
     grok.baseclass()
+
+
+class SMIHeader(silvaviews.ContentProvider):
+    grok.name('header')
+    grok.layer(interfaces.ISMILayer)
+
+
+class SMIFooter(silvaviews.ContentProvider):
+    grok.name('footer')
+    grok.layer(interfaces.ISMILayer)
+
+
+class SMINavigation(silvaviews.ContentProvider):
+    grok.name('navigation')
+    grok.layer(interfaces.ISMILayer)
 
 
 # For the moment tabs are not registered. Dummy tabs are used instead
@@ -32,7 +46,6 @@ class SMITab(silvaviews.SMIView):
 class AccessTab(SMITab):
     """Access
     """
-
     grok.implements(interfaces.IAccessTab)
     grok.name('tab_access')
     grok.baseclass()
@@ -48,7 +61,6 @@ class DummyAccessTab(AccessTab):
 class PropertiesTab(SMITab):
     """Properties
     """
-
     grok.implements(interfaces.IPropertiesTab)
     grok.name('tab_metadata')
     grok.baseclass()
@@ -64,7 +76,6 @@ class DummyPropertiesTab(PropertiesTab):
 class PreviewTab(SMITab):
     """Preview
     """
-
     grok.implements(interfaces.IPreviewTab)
     grok.name('tab_preview')
     grok.baseclass()
@@ -80,7 +91,6 @@ class DummyPreviewTab(PreviewTab):
 class EditTab(SMITab):
     """Edit
     """
-
     grok.implements(interfaces.IEditTab)
     grok.name('tab_edit')
     grok.baseclass()

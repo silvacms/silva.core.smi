@@ -7,6 +7,9 @@
   </head>
 
   <body>
+    <tal:header tal:content="structure provider:header" />
+    <tal:navigation tal:content="structure provider:navigation" />
     <tal:content tal:content="structure view/content" />
+    <tal:footer tal:content="structure provider:footer" />
   </body>
 </html>
