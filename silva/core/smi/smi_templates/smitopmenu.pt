@@ -1,0 +1,23 @@
+<div class="tabs">
+  <span tal:replace="nothing"><!-- _______ public link _______ --></span>
+  <!-- <a class="transportlet"
+    style="float:right"
+    title="Leave Silva and view the public page: alt-;"
+    accesskey=";"
+    tal:attributes="href string:${model/absolute_url}"
+    i18n:attributes="title"
+    i18n:translate="">
+    view...
+  </a> -->
+  <span tal:replace="nothing"><!-- _______ help link _______ --></span>
+  <!-- <a class="normal"
+    title="Silva access keys: alt-?"
+    accesskey="?"
+    tal:condition="exists:here/help_url"
+    tal:attributes="href string:${here/help_url}"
+    i18n:attributes="title"
+    ></a> -->
+  <tal:menu tal:repeat="viewlet provider/viewlets">
+    <tal:menuitem tal:content="structure viewlet/render" />
+  </tal:menu>
+</div>

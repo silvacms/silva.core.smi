@@ -68,3 +68,20 @@ class ISMIExecutorButton(ISMIButton, ISMISpecialButton):
     """This button execute an action.
     """
 
+
+class ISMIMenu(IViewletManager):
+    """ Interface for menu of the SMI
+    """
+
+
+class ISMIMenuItem(IViewlet):
+    """ Interface for menu items
+    """
+
+    name = Attribute('menu item name')
+
+    def available():
+        """ returns whether the menu item should be displayed
+        """
+
+

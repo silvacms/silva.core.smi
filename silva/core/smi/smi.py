@@ -147,3 +147,5 @@ class SMIButton(silvaviews.Viewlet):
     @property
     def selected(self):
         return self.request.URL.endswith(self.tab)
+
+

@@ -1,1 +1,4 @@
-<p>header</p>
+<tal:block>
+  <tal:menu tal:content="structure provider:menu_edit" />
+</tal:block>
+
