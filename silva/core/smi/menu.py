@@ -13,6 +13,12 @@ class SMIMenu(silvaviews.ContentProvider):
     grok.baseclass()
     grok.implements(ISMIMenu)
 
+    path = u''
+
+    @property
+    def target_url(self):
+        return "%s/%s" % (self.context.absolute_url(), self.path,)
+
     def filter(self, viewlets):
         results = []
         for name, viewlet in viewlets:
@@ -43,14 +49,11 @@ class SMITopMenu(SMIMenu):
 class SMIEditMenu(SMITopMenu):
     """ Menu for the edit tab
     """
-    grok.name('menu_edit')
-    path = 'edit'
+    grok.name(u'menu_edit')
+    path = u'edit'
 
     def selected(self):
         False
-
-    def absolute_url(self):
-        return "%s/%s" % (self.context.absolute_url(), self.path,)
 
 
 class SMIMenuItem(silvaviews.Viewlet):
@@ -67,8 +70,13 @@ class SMIMenuItem(silvaviews.Viewlet):
     def available(self):
         return True
 
+    @property
     def selected(self):
         return False
+
+    @property
+    def target_url(self):
+        return u'%s/%s' % (self.viewletmanager.target_url, self.path,)
 
 
 class SMITopMenuItem(SMIMenuItem):
@@ -108,9 +116,6 @@ class SMITopMenuItem(SMIMenuItem):
         return self.selected and \
             (self.active and 'recede' or 'selected') \
             or ''
-
-    def absolute_url(self):
-        return u'%s/%s' % (self.viewletmanager.absolute_url(), self.path,)
 
     @property
     def title(self):
