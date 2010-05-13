@@ -44,9 +44,13 @@ class SMIEditMenu(SMITopMenu):
     """ Menu for the edit tab
     """
     grok.name('menu_edit')
+    path = 'edit'
 
     def selected(self):
         False
+
+    def absolute_url(self):
+        return "%s/%s" % (self.context.absolute_url(), self.path,)
 
 
 class SMIMenuItem(silvaviews.Viewlet):
@@ -58,6 +62,7 @@ class SMIMenuItem(silvaviews.Viewlet):
 
     name = u''
     permission = u''
+    path = u''
 
     def available(self):
         return True
@@ -90,20 +95,22 @@ class SMITopMenuItem(SMIMenuItem):
             return '%s/globals/up_publication.gif' % self.root_url
         return '%s/globals/up_tree.gif' % root_url
 
-    def is_selected(self):
-        return False
-
-    def is_active(self):
-        return False
-
-    def item_class_name(self):
-        return self.is_selected() and \
-            (self.is_active() and 'recede' or 'selected') \
-            or ''
+    @property
+    def selected(self):
+        return self.request.URL.endswith(self.path)
 
     @property
-    def url(self):
-        return u'%s/%s' % (self.root_url, self.name,)
+    def active(self):
+        return self.request.URL.endswith(self.path)
+
+    @property
+    def item_class_name(self):
+        return self.selected and \
+            (self.active and 'recede' or 'selected') \
+            or ''
+
+    def absolute_url(self):
+        return u'%s/%s' % (self.viewletmanager.absolute_url(), self.path,)
 
     @property
     def title(self):
@@ -125,11 +132,13 @@ class SMIEditEditMenuItem(SMIEditMenuItem):
     """ Edit tab of the edit menu
     """
     name = _(u'edit')
+    path = u'tab_edit'
 
 
 class SMIEditPreviewMenuItem(SMIEditMenuItem):
     """ Preview tab of the edit menu
     """
     name = _(u'preview')
+    path = u'tab_preview'
 
 

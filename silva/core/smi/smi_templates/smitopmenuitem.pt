@@ -15,7 +15,7 @@
     "/>
   </a>
   <a tal:content="structure viewlet/name"
-    tal:attributes="href viewlet/url;
+    tal:attributes="href viewlet/absolute_url;
       class viewlet/item_class_name;
       title viewlet/title;
       accesskey viewlet/accesskey;"
