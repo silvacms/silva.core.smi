@@ -1,4 +1,5 @@
-<tal:menuitem>
+<tal:menuitem
+    i18n:domain="silva">
   <a class="left"
     id="tree_up"
     tal:condition="viewlet/toplink_url"

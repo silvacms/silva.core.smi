@@ -1,4 +1,5 @@
-<div class="tabs">
+<div class="tabs"
+    i18n:domain="silva">
   <span tal:replace="nothing"><!-- _______ public link _______ --></span>
   <a class="transportlet"
     style="float:right"

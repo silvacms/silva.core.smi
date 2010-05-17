@@ -1,1 +1,85 @@
-<p>navigation</p> 
+<div class="navhead"
+    i18n:domain="silva">
+  <a class="up"
+    title="up one level: alt-]"
+    accesskey="]"
+    tal:condition="not: provider/is_root"
+    tal:attributes="href string:provider/up_url"
+    i18n:attributes="title">
+    <img width="9"
+      height="9"
+      border="0"
+      alt="up one level: alt-]"
+      i18n:attributes="alt"
+      tal:attributes="src string:${layout/resource_base_url}/up_level.gif" />
+  </a>
+  <a class="top"
+    title="up to containing publication: alt-["
+    accesskey="["
+    i18n:attributes="title"
+    tal:condition="not: provider/is_root"
+    tal:attributes="href provider/top_url">
+    <img width="9"
+      height="9"
+      border="0"
+      alt="up to containing publication: alt-["
+      i18n:attributes="alt"
+      tal:attributes="src provider/top_image_src" />
+  </a>
+  <a class="normal"
+    title="reload screen"
+    tal:content="provider/vein"
+    tal:attributes="href layout/view_name"
+    i18n:translate=""
+    i18n:attributes="title">
+    vein
+  </a>
+</div>
+<ul class="navcontent">
+  <tal:repeat repeat="item provider/items">
+    <li
+      tal:define="
+        item_url item/absolute_url;
+        item_vein_url python:provider.get_icon_src(item);
+        status_style python:item.get_object_status()[1];
+        is_default 
+        ">
+    <a class="right"
+      title="slide to the publish screen"
+      tal:condition="python: provider.should_link_to_tab_status(item)"
+      tal:attributes="href string:$item_url/edit/tab_status"
+      i18n:attributes="title">
+      &nbsp;
+    </a>
+    <a class="left"
+      title="slide to the contents screen"
+      tal:attributes="href string:$item_url/edit"
+      i18n:attributes="title">
+      &nbsp;
+    </a>
+    <a class="navicon"
+      tal:attributes="
+        href item_vein_url;
+        title item/meta_type;
+      ">
+      <img tal:attributes="
+        src python:provider.get_icon_src(item);
+        alt item/meta_type" />
+    </a>
+    <div class="normal"
+      tal:attributes="
+        style   string:padding-left:8px;">
+      <a tal:attributes="
+        href  item_vein_url;
+        class status_style;
+        title string:id: ${item/id};
+      ">
+        <!-- <em tal:condition="is_default" i18n:translate="">index:</em> -->
+        <span tal:replace="python: item.get_short_title_editable() == '' and item.id or item.get_short_title_editable()">
+          title
+        </span>
+      </a>
+    </div>
+    </li>
+  </tal:repeat>
+</ul>
