@@ -1550,4 +1550,20 @@ button.calendar-button {
   border:none;
 }
 
-/* style is a filter */
+.uptotop {
+  float:left;
+  clear:left;
+  width:16px
+}
+
+.jumtotop {
+  float:right;
+  clear:right;
+  text-align:right;
+  width:16px
+}
+
+.idea-container {
+  float: right;
+  margin-right: 5px;
+}

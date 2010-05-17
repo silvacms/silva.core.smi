@@ -1,4 +1,7 @@
 <tal:block>
+  <tal:pathbar tal:content="structure provider:path_bar" />
   <tal:menu tal:content="structure provider:menu_edit" />
+  <div class="flowbar">
+  </div>
 </tal:block>
 

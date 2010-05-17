@@ -4,16 +4,27 @@
     <title>Silva SMI</title>
     <meta name="generator" content="Silva" />
     <tal:resource tal:replace="structure provider:resources" />
-    <base tal:attributes="href string:${context/absolute_url}/edit" />
-    <style type="text/css">
+    <base href="#" target="_parent"
+      tal:attributes="href string:${context/absolute_url}/edit" />
+    <style media="all" type="text/css" xml:space="preserve">
       @import("./++resource++silva.core.smi/smi.css");
     </style>
+    <link href="#"
+      rel="stylesheet"
+      type="text/css"
+      tal:condition="python: not context.implements_container()"
+      tal:attributes="href string:${layout/root_url}/globals/silvaContentStyle.css"
+    />
+    <link rel="shortcut icon"
+          tal:attributes="href string:${layout/resource_base_url}/silvacon.ico" />
   </head>
 
-  <body>
+  <body onload="window.onload_registry.callHandlers()">
     <tal:header tal:content="structure provider:header" />
-    <tal:navigation tal:content="structure provider:navigation" />
-    <tal:content tal:content="structure view/content" />
+    <div class="workspace">
+      <tal:navigation tal:content="structure provider:navigation" />
+      <tal:content tal:content="structure view/content" />
+    </div>
     <tal:footer tal:content="structure provider:footer" />
   </body>
 </html>

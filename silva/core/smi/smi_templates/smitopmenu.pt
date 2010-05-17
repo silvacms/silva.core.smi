@@ -4,7 +4,7 @@
     style="float:right"
     title="Leave Silva and view the public page: alt-;"
     accesskey=";"
-    tal:attributes="href string:${context/absolute_url}"
+    tal:attributes="href context/absolute_url"
     i18n:attributes="title"
     i18n:translate="">
     view...
@@ -14,7 +14,7 @@
     title="Silva access keys: alt-?"
     accesskey="?"
     tal:condition="exists:view/help_url"
-    tal:attributes="href string:${view/help_url}"
+    tal:attributes="href view/help_url"
     i18n:attributes="title"
     ></a>
   <tal:menu tal:repeat="viewlet provider/viewlets">

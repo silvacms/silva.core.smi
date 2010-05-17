@@ -1,4 +1,5 @@
 from five import grok
+from silva.core.interfaces import IRoot, IPublication
 from silva.core.views import views as silvaviews
 from silva.core.smi.interfaces import ISMIMenu, ISMIMenuItem
 from AccessControl import getSecurityManager
@@ -87,21 +88,18 @@ class SMITopMenuItem(SMIMenuItem):
         filename='smi_templates/smitopmenuitem.pt')
 
     accesskey = u''
-    uplink_url = u''
-    uplink_title = u''
-    toplink_url = u''
+    uplink_accesskey = u''
+    toplink_accesskey = u''
 
     @property
     def root_url(self):
-        if not hasattr(self, '_root_url'):
-            self._root_url = self.context.get_root_url()
-        return self._root_url
+        return self.layout.root_url()
 
     @property
     def up_image_src(self):
-        if self.publication == self.context:
-            return '%s/globals/up_publication.gif' % self.root_url
-        return '%s/globals/up_tree.gif' % root_url
+        if IPublication.providedBy(self.context):
+            return '%s/up_publication.gif' % self.layout.resource_base_url()
+        return '%s/up_tree.gif' % self.layout.resource_base_url()
 
     @property
     def selected(self):
@@ -123,7 +121,33 @@ class SMITopMenuItem(SMIMenuItem):
 
     @property
     def up_level_url(self):
-        return '%s/globals/up_level.gif' % self.root_url
+        return '%s/up_level.gif' % self.layout.resource_base_url()
+
+    @property
+    def uplink_url(self):
+        if not IRoot.providedBy(self.context):
+            return "%s/edit/%s" % (
+                self.context.aq_parent.absolute_url(),
+                self.path)
+        return None
+
+    @property
+    def toplink_url(self):
+        if not IRoot.providedBy(self.context):
+            return "%s/edit/%s" % (
+                self.context.aq_parent.get_publication().absolute_url(),
+                self.path)
+        return None
+
+    @property
+    def toplink_title(self):
+        return _('up to top of publication: alt-${key}',
+                    mapping={'key': self.toplink_accesskey})
+
+    @property
+    def uplink_title(self):
+        return _('up a level: alt-${key}',
+                    mapping={'key': self.uplink_accesskey})
 
 
 class SMIEditMenuItem(SMITopMenuItem):

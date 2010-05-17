@@ -6,9 +6,13 @@ from five import grok
 from zope.interface import Interface
 from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
+from urllib import quote
 
+from silva.core.interfaces import IVersionedContent
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
+from AccessControl import getSecurityManager
+from Products.Silva import mangle
 
 
 class SMILayout(silvaviews.Layout):
@@ -16,6 +20,14 @@ class SMILayout(silvaviews.Layout):
     """
     grok.context(Interface)
     grok.layer(interfaces.ISMILayer)
+
+    def root_url(self):
+        if not hasattr(self, '_root_url'):
+            self._root_url = self.context.get_root_url()
+        return self._root_url
+
+    def resource_base_url(self):
+        return '%s/++resource++silva.core.smi' % self.root_url()
 
 
 class SMITab(silvaviews.SMIView):
@@ -32,6 +44,65 @@ class SMIHeader(silvaviews.ContentProvider):
 class SMIFooter(silvaviews.ContentProvider):
     grok.name('footer')
     grok.layer(interfaces.ISMILayer)
+
+    def username(self):
+        return self._get_user().name
+
+    def _get_user(self):
+        gsm = getSecurityManager()
+        return gsm.getUser()
+
+    def get_metadata(self, element_name, set_name='silvaextra'):
+        if not hasattr(self, '_service_metadata'):
+            self._service_metadata = self.context.service_metadata
+        content = self.context
+        if IVersionedContent.providedBy(self.context):
+            content = self.context.get_viewable()
+        if content:
+            return self._service_metadata.getMetadataValue(
+                content, set_name, element_name)
+        return u''
+
+    def contact_name(self):
+        return self.get_metadata('contactname')
+
+    def contact_email(self):
+        return self.get_metadata('contactemail')
+
+    def email_url(self):
+        return "mailto:%s" % quote(self.contact_email())
+
+    def logout_url(self):
+        return mangle.urlencode(
+            self.context.absolute_url() + '/service_members/logout',
+            came_from=self.context.get_publication().absolute_url())
+
+    def get_user_role(self):
+        return '/'.join(self.context.sec_get_all_roles())
+
+    def can_request_role(self):
+        return self.context.service_members.allow_authentication_requests()
+
+
+class SMIPathBar(silvaviews.ContentProvider):
+    grok.name('path_bar')
+
+    def root_url(self):
+        return self.context.get_root.absolute_url()
+
+    def items(self):
+        return self.context.get_breadcrumbs(ignore_index=None)
+
+    def url(self):
+        return self.context.absolute_url()
+
+    def is_manager(self):
+        gsm = getSecurityManager()
+        user = gsm.getUser()
+        return user.has_role(['Manager'], object=self.context)
+
+    def zmi_url(self):
+        return '%s/manage_main' % self.url()
 
 
 class SMINavigation(silvaviews.ContentProvider):

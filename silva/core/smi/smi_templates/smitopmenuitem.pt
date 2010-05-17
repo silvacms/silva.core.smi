@@ -9,10 +9,8 @@
     <img border="0"
        height="9"
        width="9"
-       tal:attributes="
-         src viewlet/up_image_src
-         alt string:style_image;
-    "/>
+       tal:attributes="src viewlet/up_image_src;
+         alt string:style_image;"/>
   </a>
   <a tal:content="structure viewlet/name"
     tal:attributes="href viewlet/target_url;
@@ -38,5 +36,5 @@
          alt string:level_up_image;"
     />
   </a>
-  <div class="air"> </div>
+  <div class="air"></div>
 </tal:menuitem>
