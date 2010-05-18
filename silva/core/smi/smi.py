@@ -33,12 +33,6 @@ class SMILayout(silvaviews.Layout):
         return self.view.__name__
 
 
-class SMITab(silvaviews.SMIView):
-    """A SMI Tab.
-    """
-    grok.baseclass()
-
-
 class SMIHeader(silvaviews.ContentProvider):
     grok.name('header')
     grok.layer(interfaces.ISMILayer)
@@ -89,6 +83,7 @@ class SMIFooter(silvaviews.ContentProvider):
 
 class SMIPathBar(silvaviews.ContentProvider):
     grok.name('path_bar')
+    grok.layer(interfaces.ISMILayer)
 
     def root_url(self):
         return self.context.get_root.absolute_url()
@@ -106,6 +101,12 @@ class SMIPathBar(silvaviews.ContentProvider):
 
     def zmi_url(self):
         return '%s/manage_main' % self.url()
+
+
+class SMITab(silvaviews.SMIView):
+    """A SMI Tab.
+    """
+    grok.baseclass()
 
 
 # For the moment tabs are not registered. Dummy tabs are used instead
@@ -176,7 +177,6 @@ class SMIMiddleGroundManager(silvaviews.ViewletManager):
     """Middleground macro.
     """
     grok.layer(interfaces.ISMILayer)
-    grok.view(silvaviews.SMIView)
 
     @CachedProperty
     def buttons(self):

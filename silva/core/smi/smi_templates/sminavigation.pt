@@ -32,11 +32,11 @@
         </a>
         <a class="normal"
           title="reload screen"
-          tal:content="provider/vein"
+          tal:content="view/tab"
           tal:attributes="href layout/view_name"
           i18n:translate=""
           i18n:attributes="title">
-          vein
+          tab
         </a>
       </th>
     </tr>

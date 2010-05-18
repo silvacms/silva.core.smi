@@ -30,7 +30,7 @@
           tal:content="provider/container_title"
           i18n:attributes="title"
           tal:attributes="
-            href  provider/container_vein_url;
+            href  provider/container_tab_url;
             title string:id: ${provider/container/id};
           ">
           container
@@ -61,7 +61,7 @@
           </a>
           <a class="navicon"
             tal:attributes="
-              href  python: provider.get_item_vein_url(item);
+              href  python: provider.get_item_tab_url(item);
               title item/meta_type;
             ">
             <img tal:attributes="
@@ -72,7 +72,7 @@
             tal:attributes="
               style   string:padding-left:8px;">
             <a tal:attributes="
-              href  python: provider.get_item_vein_url(item);
+              href  python: provider.get_item_tab_url(item);
               class status_style;
               title string:id: ${item/id};
             ">

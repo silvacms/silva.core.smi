@@ -4,7 +4,7 @@
       item python:item_indent[1];
       indent python:item_indent[0];
       item_url item/absolute_url;
-      item_vein_url python:provider.get_item_vein_url(item);
+      item_tab_url python:provider.get_item_tab_url(item);
       status_style python:item.get_object_status()[1];
       is_default
       ">
@@ -22,7 +22,7 @@
   </a>
   <a class="navicon"
     tal:attributes="
-      href  string:${item_vein_url};
+      href  string:${item_tab_url};
       style python:'padding-left:'+str(indent * 10 + 4)+'px';
       title item/meta_type;
     "
@@ -34,7 +34,7 @@
   <div class="normal">
     <a class="blacklink"
       tal:attributes="
-        href string:${item_vein_url};
+        href string:${item_tab_url};
         title string:id: ${item/id};"
       tal:content="python: provider.get_item_title(item)">
       title

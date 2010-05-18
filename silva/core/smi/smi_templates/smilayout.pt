@@ -6,9 +6,7 @@
     <tal:resource tal:replace="structure provider:resources" />
     <base href="#" target="_parent"
       tal:attributes="href string:${context/absolute_url}/edit" />
-    <style media="all" type="text/css" xml:space="preserve">
-      @import("./++resource++silva.core.smi/smi.css");
-    </style>
+    
     <link href="#"
       rel="stylesheet"
       type="text/css"
@@ -21,8 +19,8 @@
   <body onload="window.onload_registry.callHandlers()">
     <tal:header tal:content="structure provider:header" />
     <div class="workspace">
-      <div class="fixed-clear"></div>
-      <table class="columns columns3">
+      <tal:replace tal:replace="structure provider:smimiddlegroundmanager" />
+      <table class="columns columns2">
         <tr>
           <td class="left">
             <tal:navigation tal:content="structure provider:navigation" />
@@ -30,7 +28,6 @@
           <td class="main">
             <tal:content tal:content="structure view/content" />
           </td>
-          <td class="right"></td>
         </tr>
       </table>
     </div>

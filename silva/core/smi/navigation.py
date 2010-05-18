@@ -8,7 +8,9 @@ from silva.core.views import views as silvaviews
 from Products.Silva.adapters.virtualhosting import getVirtualHostingAdapter
 from Products.Silva.icon import get_icon_url
 
+
 grok.templatedir('smi_templates')
+
 
 class SMINavCommon(object):
     """ Mixin for navigation content providers
@@ -21,18 +23,6 @@ class SMINavCommon(object):
             if adapter.containsVirtualRoot():
                 self._tree_root = adapter.getVirtualRoot()
         return self._tree_root
-
-    @property
-    def vein(self):
-        if hasattr(self.view, 'vein'):
-            return self.view.vein
-        return u''
-
-    @property
-    def vein_id(self):
-        if hasattr(self.view, 'vein_id'):
-            return self.view.vein_id
-        return u''
 
 
 class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
@@ -67,8 +57,8 @@ class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):
     """
     grok.baseclass()
 
-    def get_item_vein_url(self, item):
-        return "%s/edit/%s" % (item.absolute_url(), self.vein_id,)
+    def get_item_tab_url(self, item):
+        return "%s/edit/%s" % (item.absolute_url(), self.view.tab_name,)
 
     def get_icon_url(self, item):
         return get_icon_url(item, self.request)
@@ -129,8 +119,8 @@ class SMINavigationListingForNonContainer(SMINavigationListing):
         return self.container.absolute_url()
 
     @property
-    def container_vein_url(self):
-        return "%s/edit/%s" % (self.container_url, self.vein_id,)
+    def container_tab_url(self):
+        return "%s/edit/%s" % (self.container_url, self.view.tab_name,)
 
     @property
     def gentype(self):
