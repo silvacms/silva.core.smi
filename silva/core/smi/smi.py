@@ -8,22 +8,11 @@ from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
 from urllib import quote
 
-from silva.core.interfaces import (IRoot, IPublication, IVersionedContent,
-    IContainer, IIconRegistry,)
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
 from AccessControl import getSecurityManager
 from Products.Silva import mangle
-from Products.Silva.adapters.virtualhosting import getVirtualHostingAdapter
-
-from Products.Silva.icon import registry as icons
-
-
-def get_icon(content):
-    try:
-        return icons.getIcon(content)
-    except ValueError:
-        return '/globals/silvageneric.gif'
+from silva.core.interfaces import IVersionedContent
 
 
 class SMILayout(silvaviews.Layout):
@@ -117,63 +106,6 @@ class SMIPathBar(silvaviews.ContentProvider):
 
     def zmi_url(self):
         return '%s/manage_main' % self.url()
-
-
-class SMINavigation(silvaviews.ContentProvider):
-    grok.name('navigation')
-    grok.layer(interfaces.ISMILayer)
-
-    @property
-    def tree_root(self):
-        if not hasattr(self, '_tree_root'):
-            self._tree_root = self.context.get_publication()
-            adapter = getVirtualHostingAdapter(self._tree_root)
-            if adapter.containsVirtualRoot():
-                self._tree_root = adapter.getVirtualRoot()
-        return self._tree_root
-
-    @property
-    def context_url(self):
-        if not hasattr(self, '_context_url'):
-            self._context_url = self.context.absolute_url()
-        return self._context_url
-
-    @property
-    def vein(self):
-        if hasattr(self.view, 'vein'):
-            return self.view.vein
-        return u''
-
-    def is_root(self):
-        return IRoot.providedBy(self.tree_root)
-
-    def items(self):
-        default = self.context.get_default()
-        default_doc_list = default and [default] or []
-        return default_doc_list + \
-                self.context.get_ordered_publishables() + \
-                self.context.get_non_publishables()
-
-    def up_url(self):
-        return '%s/../edit/%s' % (self.context_url, self.view.__name__,)
-
-    def top_url(self):
-        return '%s/edit/%s' % (self.layout.root_url(), self.view.__name__,)
-
-    def top_image_src(self):
-        if IPublication.providedBy(self.tree_root):
-            return '%s/globals/up_tree.gif' % self.layout.resource_base_url()
-        return '%s/globals/up_publication.gif' % self.layout.resource_base_url()
-
-    def should_link_to_tab_status(self, item):
-        return IVersionedContent.providedBy(item) or \
-            IContainer.providedBy(item)
-
-    def get_item_vein_url(self, item):
-        return "%s/edit/%s" % (item.absolute_url(), self.vein,)
-
-    def get_icon_src(self, item):
-        return u'' #get_icon(item)
 
 
 # For the moment tabs are not registered. Dummy tabs are used instead

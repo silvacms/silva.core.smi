@@ -18,12 +18,21 @@
     <link rel="shortcut icon"
           tal:attributes="href string:${layout/resource_base_url}/silvacon.ico" />
   </head>
-
   <body onload="window.onload_registry.callHandlers()">
     <tal:header tal:content="structure provider:header" />
     <div class="workspace">
-      <tal:navigation tal:content="structure provider:navigation" />
-      <tal:content tal:content="structure view/content" />
+      <div class="fixed-clear"></div>
+      <table class="columns columns3">
+        <tr>
+          <td class="left">
+            <tal:navigation tal:content="structure provider:navigation" />
+          </td>
+          <td class="main">
+            <tal:content tal:content="structure view/content" />
+          </td>
+          <td class="right"></td>
+        </tr>
+      </table>
     </div>
     <tal:footer tal:content="structure provider:footer" />
   </body>

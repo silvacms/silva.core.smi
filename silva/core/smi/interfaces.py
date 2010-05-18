@@ -79,6 +79,7 @@ class ISMIMenuItem(IViewlet):
     """
 
     name = Attribute('menu item name')
+    position = Attribute('order attribute')
 
     def available():
         """ returns whether the menu item should be displayed

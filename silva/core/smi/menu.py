@@ -20,6 +20,9 @@ class SMIMenu(silvaviews.ContentProvider):
     def target_url(self):
         return "%s/%s" % (self.context.absolute_url(), self.path,)
 
+    def sort(self, viewlets):
+        return sorted(viewlets, lambda x,y: cmp(x[1].position, y[1].position))
+
     def filter(self, viewlets):
         results = []
         for name, viewlet in viewlets:
@@ -67,6 +70,7 @@ class SMIMenuItem(silvaviews.Viewlet):
     name = u''
     permission = u''
     path = u''
+    position = 100
 
     def available(self):
         return True
@@ -155,19 +159,41 @@ class SMIEditMenuItem(SMITopMenuItem):
     """
     grok.baseclass()
     grok.viewletmanager(SMIEditMenu)
-
+    position = 1
 
 class SMIEditEditMenuItem(SMIEditMenuItem):
     """ Edit tab of the edit menu
     """
     name = _(u'edit')
     path = u'tab_edit'
-
+    position = 10
 
 class SMIEditPreviewMenuItem(SMIEditMenuItem):
     """ Preview tab of the edit menu
     """
     name = _(u'preview')
     path = u'tab_preview'
+    position = 20
+
+class SMIEditPropertiesMenuItem(SMIEditMenuItem):
+    """ Properties tab of the edit menu
+    """
+    name = _(u'properties')
+    path = u'tab_metadata'
+    position = 30
+
+class SMIEditAccessMenuItem(SMIEditMenuItem):
+    """ Access tab of the edit menu
+    """
+    name = _(u'access')
+    path = u'tab_access'
+    position = 40
+
+class SMIEditPublishMenuItem(SMIEditMenuItem):
+    """ Publish tab of the edit menu
+    """
+    name = _(u'publish')
+    path = u'tab_status'
+    position = 50
 
 
