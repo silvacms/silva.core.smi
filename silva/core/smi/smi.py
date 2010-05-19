@@ -198,7 +198,7 @@ class SMIButton(silvaviews.Viewlet):
     grok.layer(interfaces.ISMILayer)
     grok.viewletmanager(SMIMiddleGroundManager)
 
-    template = grok.PageTemplate(filename='templates/smibutton.pt')
+    template = grok.PageTemplate(filename='smi_templates/smibutton.pt')
 
     label = None
     tab = None
