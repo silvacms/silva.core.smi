@@ -9,7 +9,9 @@ from silva.translations import translate as _
 
 from five import grok
 
+
 # grok.view(smi.EditTab)
+grok.templatedir('smi_templates')
 
 
 class VersionedEditButton(smi.SMIButton):
