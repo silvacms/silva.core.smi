@@ -33,7 +33,7 @@
         <a class="normal"
           title="reload screen"
           tal:content="view/tab"
-          tal:attributes="href layout/view_name"
+          href="#"
           i18n:translate=""
           i18n:attributes="title">
           tab
