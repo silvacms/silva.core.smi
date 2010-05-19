@@ -56,8 +56,11 @@ class SMIFooter(silvaviews.ContentProvider):
         if IVersionedContent.providedBy(self.context):
             content = self.context.get_viewable()
         if content:
-            return self._service_metadata.getMetadataValue(
-                content, set_name, element_name)
+            try:
+                return self._service_metadata.getMetadataValue(
+                    content, set_name, element_name)
+            except AttributeError:
+                return u''
         return u''
 
     def contact_name(self):
