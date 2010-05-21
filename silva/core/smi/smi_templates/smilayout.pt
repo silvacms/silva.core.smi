@@ -25,6 +25,7 @@
     <tal:header tal:content="structure provider:header" />
     <div class="workspace">
       <tal:replace tal:replace="structure provider:smimiddlegroundmanager" />
+      <div class="fixed-clear">&nbsp;</div>
       <table class="columns columns2">
         <tr>
           <td class="left">

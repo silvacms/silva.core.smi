@@ -8,7 +8,7 @@
           title="up one level: alt-]"
           accesskey="]"
           tal:condition="not: provider/is_root"
-          tal:attributes="href string:provider/up_url"
+          tal:attributes="href provider/up_url"
           i18n:attributes="title">
           <img width="9"
             height="9"

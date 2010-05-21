@@ -59,7 +59,7 @@ class SMIFooter(silvaviews.ContentProvider):
             try:
                 return self._service_metadata.getMetadataValue(
                     content, set_name, element_name)
-            except AttributeError:
+            except (AttributeError, KeyError,) as e:
                 return u''
         return u''
 
@@ -70,7 +70,10 @@ class SMIFooter(silvaviews.ContentProvider):
         return self.get_metadata('contactemail')
 
     def email_url(self):
-        return "mailto:%s" % quote(self.contact_email())
+        email = self.contact_email()
+        if email:
+            return "mailto:%s" % quote(email)
+        return ''
 
     def logout_url(self):
         return mangle.urlencode(
