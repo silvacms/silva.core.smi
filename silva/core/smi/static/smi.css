@@ -200,10 +200,12 @@ div.middleground {
   line-height: 130%;
 }
 
-div.middleground a {
+div.middleground a,
+div.middleground input[type="submit"] {
   /* The normal, unselected buttons. They are all links */
   padding: 0em 2em 0.1em;
   border: 1px solid #345;
+  margin: 0;
   border-style: none solid none;
   background-image: url(./++resource++silva.core.smi/reflection.png);
   background-position: top left;
@@ -211,6 +213,14 @@ div.middleground a {
   text-align: center;
   font-weight: normal;
 }
+
+div.middleground input[type="submit"] {
+  margin:0;
+  height: 15px;
+  padding-bottom: 0;
+  line-height: none;
+}
+
 div.middleground a:link {
   color: #d9f3f1;
   background-color: #4d5680;
@@ -243,15 +253,18 @@ div.middleground div.executor {
   float: right;
 }
 
-div.middleground div.executor a {
+div.middleground div.executor a,
+div.middleground div.executor input[type="submit"] {
   color: #b3fffb;
   background-color: #1f626d;
 }
-div.middleground div.executor a:hover {
+div.middleground div.executor a:hover, 
+div.middleground div.executor input[type="submit"]:hover {
   color: #e5ffec;
   background-color: #538da3;
 }
-div.middleground div.executor a:active {
+div.middleground div.executor a:active,
+div.middleground div.executor input[type="submit"]:active {
   color: #bfffd3;
   background-color: #64ABC8;
 }

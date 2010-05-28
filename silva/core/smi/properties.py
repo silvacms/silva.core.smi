@@ -60,7 +60,7 @@ class SubscriptionButton(smi.SMIButton):
                 self.context.service_subscriptions.subscriptionsEnabled())
 
 
-class PublishNowButton(edit.PublishNowButton):
+class PublishNowButton(edit.SMIPublishForm):
     pass
 
 

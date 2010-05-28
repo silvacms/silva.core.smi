@@ -2,13 +2,11 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.smi import smi, edit
-
 from five import grok
-
+from silva.core.smi import smi, edit
 
 grok.view(smi.PreviewTab)
 
 
-class PublishNowButton(edit.PublishNowButton):
+class PublishForm(edit.SMIPublishForm):
     pass
