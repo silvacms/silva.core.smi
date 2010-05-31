@@ -2,17 +2,30 @@
 # See also LICENSE.txt
 # $Id$
 
+from urllib import quote
+
 from five import grok
 from zope.interface import Interface
 from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
-from urllib import quote
 
-from silva.core.smi import interfaces
-from silva.core.views import views as silvaviews
 from AccessControl import getSecurityManager
 from Products.Silva import mangle
-from silva.core.interfaces import IVersionedContent
+
+from silva.core.interfaces import ISilvaObject, IVersionedContent
+from silva.core.smi import interfaces
+from silva.core.views import views as silvaviews
+from silva.core.views.httpheaders import HTTPResponseHeaders
+
+
+class SMIHTTPHeaders(HTTPResponseHeaders):
+    """Define HTTP-headers for SMI pages. By default we don't want to
+    cache.
+    """
+    grok.adapts(interfaces.ISMILayer, ISilvaObject)
+
+    def cache_headers(self):
+        self.disable_cache()
 
 
 class SMILayout(silvaviews.Layout):
@@ -34,11 +47,13 @@ class SMILayout(silvaviews.Layout):
 
 
 class SMIHeader(silvaviews.ContentProvider):
+    grok.context(Interface)
     grok.name('header')
     grok.layer(interfaces.ISMILayer)
 
 
 class SMIFooter(silvaviews.ContentProvider):
+    grok.context(Interface)
     grok.name('footer')
     grok.layer(interfaces.ISMILayer)
 
@@ -88,6 +103,7 @@ class SMIFooter(silvaviews.ContentProvider):
 
 
 class SMIPathBar(silvaviews.ContentProvider):
+    grok.context(Interface)
     grok.name('path_bar')
     grok.layer(interfaces.ISMILayer)
 
@@ -182,6 +198,7 @@ class DummyEditTab(EditTab):
 class SMIMiddleGroundManager(silvaviews.ViewletManager):
     """Middleground macro.
     """
+    grok.context(Interface)
     grok.layer(interfaces.ISMILayer)
 
     @CachedProperty
