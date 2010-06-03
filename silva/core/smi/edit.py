@@ -56,9 +56,9 @@ class Publish(Action):
         return form.redirect(self.next_url(form))
 
     def next_url(self, form):
-        return_to = form.request.get('return_to')
-        if return_to:
-            return "%s/edit/%s" % (form.context.absolute_url(), return_to,)
+        if hasattr(form.view, 'tab_name'):
+            return "%s/edit/%s" % \
+                (form.context.absolute_url(), form.view.tab_name,)
         return "%s/edit" % form.context.absolute_url()
 
 
