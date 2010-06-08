@@ -35,7 +35,12 @@ class MakeCopy(Action):
 class Publish(Action):
     """ Publish the version
     """
+    tabs = ('tab_edit', 'tab_preview',)
+
     def available(self, form):
+        if hasattr(form.view, 'tab_name') and \
+                form.view.tab_name not in self.tabs:
+            return False
         return bool(form.context.get_unapproved_version())
 
     def __call__(self, form):
