@@ -107,22 +107,12 @@ class SMIPathBar(silvaviews.ContentProvider):
     grok.name('path_bar')
     grok.layer(interfaces.ISMILayer)
 
-    def root_url(self):
-        return self.context.get_root.absolute_url()
-
-    def items(self):
-        return self.context.get_breadcrumbs(ignore_index=None)
-
-    def url(self):
-        return self.context.absolute_url()
-
     def is_manager(self):
-        gsm = getSecurityManager()
-        user = gsm.getUser()
+        user = getSecurityManager().getUser()
         return user.has_role(['Manager'], object=self.context)
 
     def zmi_url(self):
-        return '%s/manage_main' % self.url()
+        return self.view.url(name='manage_main')
 
 
 class SMITab(silvaviews.SMIView):

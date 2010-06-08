@@ -15,15 +15,15 @@
      tal:attributes="href string:${layout/root_url}/edit/tab_edit"
      i18n:attributes="title">
     <img alt="Silva" height="14" width="14" border="0"
-         tal:attributes="src layout/static/silva_emblem.png" />
+         tal:attributes="src provider/static/silva_emblem.png" />
   </a>
   <a name="top"> </a>
-  <tal:block tal:repeat="item provider/items">
-    <a tal:content="python: item.get_short_title_editable() or item.id"
-       tal:attributes="href string:${item/absolute_url}/edit/${layout/view_name}">
+  <tal:block tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs">
+    <a tal:content="breadcrumb/name"
+       tal:attributes="href string:${breadcrumb/url}/edit/${layout/view_name}">
       name
     </a>
-    <tal:block tal:condition="not:repeat/item/end">
+    <tal:block tal:condition="not:repeat/breadcrumb/end">
       &middot;
     </tal:block>
   </tal:block>
