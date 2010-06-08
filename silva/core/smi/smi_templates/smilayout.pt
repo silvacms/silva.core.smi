@@ -13,10 +13,10 @@
       tal:attributes="href string:${layout/root_url}/globals/silvaContentStyle.css"
     />
     <link rel="shortcut icon"
-          tal:attributes="href string:${layout/resource_base_url}/silvacon.ico" />
+          tal:attributes="href layout/static/silvacon.ico" />
     <tal:ie6fixstart replace="structure string:&lt;!--[if IE 6]&gt;" />
     <style type="text/css" media="all"
-      tal:content="string:@import url(${layout/resource_base_url}/ie6fixes.css);">
+      tal:content="string:@import url(${layout/static/ie6fixes.css});">
     </style>
     <tal:ie6fixend replace="structure string:&lt;![endif]--&gt;" />
   </head>

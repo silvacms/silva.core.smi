@@ -15,7 +15,7 @@
             border="0"
             alt="up one level: alt-]"
             i18n:attributes="alt"
-            tal:attributes="src string:${layout/resource_base_url}/up_level.gif" />
+            tal:attributes="src layout/static/up_level.gif" />
         </a>
         <a class="top"
           title="up to containing publication: alt-["

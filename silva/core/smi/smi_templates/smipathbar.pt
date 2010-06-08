@@ -1,48 +1,39 @@
-<!-- ______________ Breadcrumb space ______________ -->
 <div class="pathbar"
-    i18n:domain="silva">
+     i18n:domain="silva">
   <div class="idea-container">
     <a class="idea"
-      href="globals/reference"
-      title="Silva info: alt-|"
-      accesskey="|"
-      i18n:attributes="title"
-      >
+       href="globals/reference"
+       title="Silva info: alt-|"
+       accesskey="|"
+       i18n:attributes="title">
       Silva
     </a>
   </div>
   <a class="normal"
-    title="Silva top: alt-/"
-    accesskey="/"
-    tal:attributes="href string:${layout/root_url}/edit/tab_edit"
-    i18n:attributes="title"
-    >
-    <img alt="Silva"
-      height="14"
-      width="14"
-      border="0"
-      tal:attributes="src string:${layout/resource_base_url}/silva_emblem.png"
-    />
+     title="Silva top: alt-/"
+     accesskey="/"
+     tal:attributes="href string:${layout/root_url}/edit/tab_edit"
+     i18n:attributes="title">
+    <img alt="Silva" height="14" width="14" border="0"
+         tal:attributes="src layout/static/silva_emblem.png" />
   </a>
   <a name="top"> </a>
   <tal:block tal:repeat="item provider/items">
     <a tal:content="python: item.get_short_title_editable() or item.id"
-      tal:attributes="href string:${item/absolute_url}/edit/${layout/view_name}">
+       tal:attributes="href string:${item/absolute_url}/edit/${layout/view_name}">
       name
     </a>
     <tal:block tal:condition="not:repeat/item/end">
       &middot;
     </tal:block>
   </tal:block>
-  <span tal:replace="nothing"><!-- _______ manage link _______ --></span>
   <tal:block condition="provider/is_manager">
     <a class="manage"
-      title="Zope manage_main: alt-."
-      accesskey="."
-      tal:attributes="href provider/zmi_url"
-      i18n:attributes="title"
-      i18n:translate=""
-    >
+       title="Zope manage_main: alt-."
+       accesskey="."
+       tal:attributes="href provider/zmi_url"
+       i18n:attributes="title"
+       i18n:translate="">
       &middot; manage...
     </a>
   </tal:block>
