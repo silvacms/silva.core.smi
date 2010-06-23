@@ -2,7 +2,8 @@ from five import grok
 from zope.interface import Interface
 from zeam.form.base import Action, Actions
 from zeam.form.base.widgets import ActionWidget
-from zeam.form.viewlet.form import ViewletForm
+from zeam.form.silva.form import SMIViewletForm
+
 from silva.core.views import views as silvaviews
 from silva.core.interfaces import IVersionedContent
 from silva.core.smi.smi import SMIMiddleGroundManager
@@ -13,7 +14,7 @@ from zope.i18nmessageid import MessageFactory
 from DateTime import DateTime
 
 
-_ = MessageFactory('smi')
+_ = MessageFactory('silva')
 
 grok.templatedir('smi_templates')
 grok.layer(ISMILayer)
@@ -29,6 +30,8 @@ class MakeCopy(Action):
         if form.request.method.lower() == 'post':
             form.context.sec_update_last_author_info()
             form.context.create_copy()
+            form.send_message(_(u'A new working copy has been created'),
+                              type=u"feedback")
         form.redirect("%s/edit" % form.context.absolute_url())
 
 
@@ -45,19 +48,20 @@ class Publish(Action):
 
     def __call__(self, form):
         if not form.context.get_unapproved_version():
-            # SHORTCUT: To allow approval of closed docs with no 
+            # SHORTCUT: To allow approval of closed docs with no
             # new version available first create a new version.
             # This "shortcuts" the workflow.
             # See also edit/Container/tab_status_approve.py
             if form.context.is_version_published():
                 # error
-                # message_type="error",
-                # message=_("There is no unapproved version to approve."))
+                message=_("There is no unapproved version to approve.")
+                form.send_message(message, type=u'error')
                 return form.redirect(self.next_url(form))
             form.context.create_copy()
 
         form.context.set_unapproved_version_publication_datetime(DateTime())
         form.context.approve_version()
+        form.send_message(_(u"Version approved."), type=u"feedback")
         return form.redirect(self.next_url(form))
 
     def next_url(self, form):
@@ -70,16 +74,6 @@ class Publish(Action):
 class SMIVersionManagement(silvaviews.ContentProvider):
     """ Content provider for new version bar
     """
-
-
-class SMIViewletForm(ViewletForm):
-    grok.baseclass()
-
-    def available(self):
-        for action in self.actions:
-            if action.available(self):
-                return True
-        return False
 
 
 class SMINewVersionForm(SMIViewletForm):

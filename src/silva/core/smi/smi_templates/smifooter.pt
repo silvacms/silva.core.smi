@@ -1,4 +1,5 @@
 <tal:footer i18n:domain="silva">
+<div id="footerarea">
   <div class="uptotop">
     <a title="jump to top: alt-t"
        href="#top"
@@ -113,4 +114,5 @@
       request access
     </a>
   </div>
+</div>
 </tal:footer>

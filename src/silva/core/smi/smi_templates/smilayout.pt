@@ -25,17 +25,9 @@
     <div class="workspace">
       <tal:replace tal:replace="structure provider:smimiddlegroundmanager" />
       <tal:replace tal:replace="structure provider:smiversionmanagement" />
-      <div class="fixed-clear">&nbsp;</div>
-      <table class="columns columns2">
-        <tr>
-          <td class="left">
-            <tal:navigation tal:content="structure provider:navigation" />
-          </td>
-          <td class="main">
-            <tal:content tal:content="structure view/content" />
-          </td>
-        </tr>
-      </table>
+      <tal:replace tal:replace="structure provider:smimessages" />
+      <tal:navigation tal:content="structure provider:navigation" />
+      <tal:content tal:content="structure view/content" />
     </div>
     <tal:footer tal:content="structure provider:footer" />
   </body>

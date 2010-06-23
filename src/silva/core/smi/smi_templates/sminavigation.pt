@@ -1,3 +1,4 @@
+<div class="navigation">
 <table class="listing" cellspacing="0"
     style="border-collapse: separate; margin-top: -1px"
     i18n:domain="silva">
@@ -43,3 +44,4 @@
   </thead>
   <tbody tal:content="structure provider:navigation_listing" />
 </table>
+</div>

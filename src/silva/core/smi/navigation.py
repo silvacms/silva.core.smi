@@ -1,5 +1,7 @@
 from five import grok
 
+from zope.interface import Interface
+
 from silva.core.interfaces import (IRoot, IPublication, IContainer,
     IVersionedContent)
 from silva.core.smi import interfaces
@@ -25,11 +27,28 @@ class SMINavCommon(object):
         return self._tree_root
 
 
+class SMINoNavigation(silvaviews.ContentProvider):
+    grok.layer(interfaces.ISMILayer)
+    grok.name('navigation')
+    grok.view(interfaces.ISMINavigationOff)
+
+    def render(self):
+        return u''
+
+
+class SMINoNavigationForContainer(SMINoNavigation):
+    grok.context(IContainer)
+
+    def render(self):
+        return u''
+
+
 class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
     """ Main content provider for navigation
     """
     grok.name('navigation')
     grok.layer(interfaces.ISMILayer)
+    grok.view(Interface)
 
     @property
     def context_url(self):

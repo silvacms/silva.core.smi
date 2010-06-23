@@ -3,12 +3,28 @@
 # $Id$
 
 
-from zope.interface import Attribute, Interface
+from zope import schema
+from zope.interface import Attribute, Interface, directlyProvides
+from zope.contentprovider.interfaces import ITALNamespaceData
 
+from grokcore.view.interfaces import IGrokView
 
 from silva.core import conf as silvaconf
 from silva.core.layout.interfaces import ICustomizableLayer
-from silva.core.views.interfaces import ISMITab, IViewlet, IViewletManager
+from silva.core.views.interfaces import IViewlet, IViewletManager
+
+
+class ISMIView(IGrokView):
+    """A view in SMI.
+    """
+    tab_name = Attribute("Name of the current tab.")
+    active_tab = Attribute(u"Which is the current active tab")
+    vein = Attribute(u"What's the vein to display")
+
+
+class ISMITab(ISMIView):
+    """A tab in SMI.
+    """
 
 
 class ISMILayer(ICustomizableLayer):
@@ -86,3 +102,27 @@ class ISMIMenuItem(IViewlet):
         """
 
 
+class IMessageProvider(Interface):
+    """ This interfaces allow to get the message varialbles declare in
+    the template into the content provider that provides this interface.
+    """
+    message = schema.Text(
+        title=u"notification message for the user",
+        required=False)
+
+    message_type = schema.TextLine(
+        title=u"notification type",
+        required=False)
+
+    nofeedback = schema.Bool(
+        title=u"omit feedback",
+        required=False,
+        default=False
+        )
+
+directlyProvides(IMessageProvider, ITALNamespaceData)
+
+
+class ISMINavigationOff(Interface):
+    """ View implementing this interface won't display navigation
+    """

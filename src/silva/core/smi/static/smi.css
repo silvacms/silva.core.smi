@@ -758,6 +758,7 @@ select.transporter {
 /* seems to keep IE7 in check without anything else */
 input[type="submit"] {
   overflow: visible;
+  cursor: pointer;
 }
 
 /* manipulator button style from which all others derive */
@@ -1579,4 +1580,10 @@ button.calendar-button {
 .idea-container {
   float: right;
   margin-right: 5px;
+}
+
+.navigation {
+    width: 20%;
+    float: left;
+    margin-right: 20px
 }

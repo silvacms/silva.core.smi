@@ -6,16 +6,65 @@ from urllib import quote
 
 from five import grok
 from zope.interface import Interface
+from zope.component import getUtility
 from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
+
+from grokcore.view.meta.views import default_view_name
 
 from AccessControl import getSecurityManager
 from Products.Silva import mangle
 
+from silva.core.conf.utils import getSilvaViewFor
 from silva.core.interfaces import ISilvaObject, IVersionedContent
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
 from silva.core.views.httpheaders import HTTPResponseHeaders
+from silva.core.messages.interfaces import IMessageService
+
+
+class SMIView(silvaviews.SilvaGrokView):
+    """A view in SMI.
+    """
+    grok.baseclass()
+    grok.context(ISilvaObject)
+    grok.implements(interfaces.ISMIView)
+
+    vein = 'contents'
+
+    def _silvaView(self):
+        # Lookup the correct Silva edit view so forms are able to use
+        # silva macros.
+        context = self.request['model']
+        return getSilvaViewFor(self.context, 'edit', context)
+
+    @property
+    def tab_name(self):
+        return grok.name.bind().get(self, default=default_view_name)
+
+    @property
+    def active_tab(self):
+        tab_class = None
+        for base in self.__class__.__bases__:
+            if interfaces.ISMITab.implementedBy(base):
+                tab_class = base
+        if tab_class:
+            name = grok.name.bind()
+            return name.get(tab_class, default=default_view_name)
+        return 'tab_edit'
+
+    def __call__(self, **kwargs):
+        return super(SMIView, self).__call__()
+
+    def namespace(self):
+        # This add to the template namespace global variable used in
+        # Zope 2 and Silva templates.  Here should be bind at the
+        # correct place in the Silva view registry so you should be
+        # able to use silva macro in your templates.
+        view = self._silvaView()
+        return {'here': view,
+                'user': getSecurityManager().getUser(),
+                'container': self.request['model'],}
 
 
 class SMIHTTPHeaders(HTTPResponseHeaders):
@@ -115,7 +164,7 @@ class SMIPathBar(silvaviews.ContentProvider):
         return self.view.url(name='manage_main')
 
 
-class SMITab(silvaviews.SMIView):
+class SMITab(SMIView):
     """A SMI Tab.
     """
     grok.baseclass()
@@ -231,3 +280,27 @@ class SMIButton(silvaviews.Viewlet):
         return self.request.URL.endswith(self.tab)
 
 
+class SMIMessages(silvaviews.ContentProvider):
+    """ Messages display
+    """
+    grok.context(Interface)
+    grok.view(Interface)
+    grok.layer(interfaces.ISMILayer)
+    grok.implements(interfaces.IMessageProvider)
+
+    message = u''
+    message_type = u''
+
+    def messages(self):
+        if self.request.response.getStatus() == 302:
+            return []
+        if hasattr(self, '_messages'):
+            return self._messages
+        service = getUtility(IMessageService)
+        self._messages = service.receive_all(self.request)
+        if self.message:
+            self._messages.insert(0, (self.message_type, self.message,))
+        return self._messages
+
+    def message_class(self, namespace):
+        return namespace == 'error' and 'fixed-alert' or 'fixed-feedback'
