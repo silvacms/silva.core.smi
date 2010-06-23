@@ -1,0 +1,53 @@
+<tal:provider>
+  <tal:if condition="provider/messages">
+    <div class="feedback"
+	 tal:attributes="class python: provider.message_class(provider.messages()[0][0])">
+      <tal:repeat repeat="message provider/messages">
+	<span tal:content="structure python:message[1]"
+	      tal:attributes="class python:provider.message_class(message[0])">
+	  message
+	</span>
+      </tal:repeat>
+    </div>
+  </tal:if>
+  <tal:if condition="python: not provider.messages()">
+    <div class="fixed-clear">&nbsp;</div>
+  </tal:if>
+<!--  <tal:if condition="python: not provider.messages()">
+    <div class="fixed-clear"
+	 tal:define="in_development_mode context/sec_in_development_mode"
+	 tal:omit-tag="provider/nofeedback">
+      <tal:if condition="in_development_mode">
+	<a class="reveal"
+           href="/manage_main"
+           title="jump to zope root: alt-z"
+           accesskey="z"
+           i18n:attributes="title"
+           i18n:translate="">
+          zroot...
+	</a>
+	&nbsp;&nbsp;&nbsp;
+	<a class="reveal"
+           title="jump to silva root in zodb: alt-'"
+           tal:attributes="href string:${context/get_root_url}/manage_main"
+           accesskey="'"
+           i18n:attributes="title"
+           i18n:translate="">
+          sroot...
+	</a>
+	&nbsp;&nbsp;&nbsp;
+	<a class="reveal"
+           title="jump to silva services: alt-`"
+           tal:attributes="href string:${context/get_root_url}/manage_services"
+           accesskey="`"
+           i18n:attributes="title"
+           i18n:translate="">
+          sservices...
+	</a>
+      </tal:if>
+      <tal:if condition="not: in_development_mode">
+	&nbsp;
+      </tal:if>
+    </div>
+  </tal:if> -->
+</tal:provider>
