@@ -23,4 +23,56 @@
     include="handler_registry.js"
     base="Products.Silva.browser.scripts" />
 
+
+  <!-- AbsoluteURL views -->
+  <view
+     for="silva.core.interfaces.ISilvaObject"
+     factory=".absoluteurl.AbsoluteURL"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     permission="zope.Public"
+     provides="silva.core.views.interfaces.ISilvaURL"
+     />
+
+  <browser:page
+     for="silva.core.interfaces.ISilvaObject"
+     name="absolute_url"
+     class=".absoluteurl.AbsoluteURL"
+     permission="zope.Public"
+     allowed_interface="silva.core.views.interfaces.ISilvaURL"
+     />
+
+  <view
+     for="silva.core.interfaces.IVersion"
+     factory=".absoluteurl.VersionAbsoluteURL"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     permission="zope.Public"
+     provides="silva.core.views.interfaces.ISilvaURL"
+     />
+
+  <browser:page
+     for="silva.core.interfaces.IVersion"
+     name="absolute_url"
+     class=".absoluteurl.VersionAbsoluteURL"
+     permission="zope.Public"
+     allowed_interface="silva.core.views.interfaces.ISilvaURL"
+     />
+
+  <!-- AbsoluteURL views for tests
+       (XXX should move to ftesting.zcml) -->
+  <view
+     for="zope.interface.Interface"
+     factory=".absoluteurl.TestAbsoluteURL"
+     type="silva.core.views.interfaces.ITestRequest"
+     permission="zope.Public"
+     provides="silva.core.views.interfaces.ISilvaURL"
+     />
+  <!-- A second time because adaptation is left to right, like Malthe says -->
+  <view
+     for="silva.core.interfaces.ISilvaObject"
+     factory=".absoluteurl.TestAbsoluteURL"
+     type="silva.core.views.interfaces.ITestRequest"
+     permission="zope.Public"
+     provides="silva.core.views.interfaces.ISilvaURL"
+     />
+
 </configure>
