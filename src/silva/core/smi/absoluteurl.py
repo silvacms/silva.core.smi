@@ -28,17 +28,18 @@ class AbsoluteURL(BrowserView):
         self.request = request
         self._preview_ns = '++preview++'
 
-    def url(self, preview=False):
+    def url(self, preview=False, public=False):
         path = list(self.context.getPhysicalPath())
         # Insert back the preview namespace. Maybe there is a better
         # way to do it, but have to do it by hand here since
         # ZPublisher.Request doesn't implements its interfaces
         # properly.
         modifier = None
-        if preview is True:
-            modifier = self._preview_ns
-        if ISMILayer.providedBy(self.request):
-            modifier = '++edit++'
+        if public is False:
+            if preview is True:
+                modifier = self._preview_ns
+            elif ISMILayer.providedBy(self.request):
+                modifier = '++edit++'
         if modifier is not None:
             root = self.context.get_root()
             root_path = root.getPhysicalPath()
@@ -47,6 +48,9 @@ class AbsoluteURL(BrowserView):
             modifier_pos = max(len(root_path), len(virtual_path))
             path.insert(modifier_pos, modifier)
         return self.request.physicalPathToURL(path)
+
+    def public(self):
+        return self.url(public=True)
 
     def preview(self):
         return self.url(preview=True)

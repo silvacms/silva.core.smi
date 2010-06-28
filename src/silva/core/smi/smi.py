@@ -6,7 +6,7 @@ from urllib import quote
 
 from five import grok
 from zope.interface import Interface
-from zope.component import getUtility
+from zope.component import getUtility, queryMultiAdapter
 from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
 
@@ -93,6 +93,32 @@ class SMILayout(silvaviews.Layout):
 
     def view_name(self):
         return self.view.__name__
+
+
+class SMIDefaultPage(grok.View):
+    grok.name('index.html')
+    grok.context(ISilvaObject)
+    grok.layer(interfaces.ISMILayer)
+
+    def render(self):
+        """Compatibliy call for /edit/tab_name
+        """
+        # XXX This is actually a bad idea and should be removed.
+        name = 'tab_' + self.request.get('SILVA_SMI_NAME', 'edit')
+
+        # All SMI views end up including SilvaViews templates, that
+        # expect to have request['model']
+        self.request['model'] = self.context
+
+        view = queryMultiAdapter((self.context, self.request), name=name)
+        if view:
+            view.__parent__ = self.context
+            return view()
+
+        # Default behaviour of ViewAttribute, but look at a Five
+        # views if the asked one doesn't exists.
+        view = getSilvaViewFor(self.context, 'edit', self.context)
+        return getattr(view, name)()
 
 
 class SMIHeader(silvaviews.ContentProvider):
