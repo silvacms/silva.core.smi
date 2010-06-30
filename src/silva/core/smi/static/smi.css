@@ -6,8 +6,6 @@ html {
 
 body {
   color: red;
-  background-image: url(./++resource++silva.core.smi/skyrise.gif);
-  background-repeat: repeat-x;
   font: 70% Verdana, Arial, Helvetica, sans-serif;
 }
 
@@ -15,6 +13,16 @@ body {
 
 div.workspace {
   background: #dde5ee;
+}
+
+div.error {
+  padding: 50px;
+  color: black;
+  border-bottom: 1em solid #4C5C6C;
+}
+
+div.error h1 {
+  font-size: 200%;
 }
 
 /* ____________________________________ path bar _______ */

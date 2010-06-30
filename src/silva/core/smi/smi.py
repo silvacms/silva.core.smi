@@ -83,42 +83,12 @@ class SMILayout(silvaviews.Layout):
     grok.context(Interface)
     grok.layer(interfaces.ISMILayer)
 
-    def root_url(self):
-        if not hasattr(self, '_root_url'):
-            self._root_url = self.context.get_root_url()
-        return self._root_url
-
-    def resource_base_url(self):
-        return '%s/++resource++silva.core.smi' % self.root_url()
-
-    def view_name(self):
-        return self.view.__name__
-
-
-class SMIDefaultPage(grok.View):
-    grok.name('index.html')
-    grok.context(ISilvaObject)
-    grok.layer(interfaces.ISMILayer)
-
-    def render(self):
-        """Compatibliy call for /edit/tab_name
-        """
-        # XXX This is actually a bad idea and should be removed.
-        name = 'tab_' + self.request.get('SILVA_SMI_NAME', 'edit')
-
-        # All SMI views end up including SilvaViews templates, that
-        # expect to have request['model']
-        self.request['model'] = self.context
-
-        view = queryMultiAdapter((self.context, self.request), name=name)
-        if view:
-            view.__parent__ = self.context
-            return view()
-
-        # Default behaviour of ViewAttribute, but look at a Five
-        # views if the asked one doesn't exists.
-        view = getSilvaViewFor(self.context, 'edit', self.context)
-        return getattr(view, name)()
+    def update(self):
+        self.root_url = self.context.get_root_url()
+        self.view_name = self.view.__name__
+        # XXX this next one should go away and replace with static
+        self.resource_base_url = '%s/++resource++silva.core.smi' % (
+            self.root_url(),)
 
 
 class SMIHeader(silvaviews.ContentProvider):

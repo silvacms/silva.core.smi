@@ -36,7 +36,7 @@
       <tal:block i18n:translate="">contact:</tal:block>
       <a shape="rect"
          tal:attributes="href provider/email_url">
-        <tal:block tal:condition="provider/contact_name" 
+        <tal:block tal:condition="provider/contact_name"
                    tal:content="provider/contact_name">
         </tal:block>
         <tal:block tal:condition="python:not provider.contact_name()">

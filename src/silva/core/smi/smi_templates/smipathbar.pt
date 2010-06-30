@@ -1,4 +1,5 @@
 <div class="pathbar"
+     tal:define="model context/get_silva_object"
      i18n:domain="silva">
   <div class="idea-container">
     <a class="idea"
@@ -18,7 +19,7 @@
          tal:attributes="src provider/static/silva_emblem.png" />
   </a>
   <a name="top"> </a>
-  <tal:block tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs">
+  <tal:block tal:repeat="breadcrumb model/@@absolute_url/breadcrumbs">
     <a tal:content="breadcrumb/name"
        tal:attributes="href string:${breadcrumb/url}/edit/${layout/view_name}">
       name
