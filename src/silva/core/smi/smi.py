@@ -88,7 +88,7 @@ class SMILayout(silvaviews.Layout):
         self.view_name = self.view.__name__
         # XXX this next one should go away and replace with static
         self.resource_base_url = '%s/++resource++silva.core.smi' % (
-            self.root_url(),)
+            self.root_url,)
 
 
 class SMIHeader(silvaviews.ContentProvider):

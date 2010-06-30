@@ -63,12 +63,12 @@ class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
         return '%s/../edit/%s' % (self.context_url, self.view.__name__,)
 
     def top_url(self):
-        return '%s/edit/%s' % (self.layout.root_url(), self.view.__name__,)
+        return '%s/edit/%s' % (self.layout.root_url, self.view.__name__,)
 
     def top_image_src(self):
         if IPublication.providedBy(self.tree_root):
-            return '%s/up_tree.gif' % self.layout.resource_base_url()
-        return '%s/up_publication.gif' % self.layout.resource_base_url()
+            return '%s/up_tree.gif' % self.layout.resource_base_url
+        return '%s/up_publication.gif' % self.layout.resource_base_url
 
 
 class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):

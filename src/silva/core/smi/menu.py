@@ -97,13 +97,13 @@ class SMITopMenuItem(SMIMenuItem):
 
     @property
     def root_url(self):
-        return self.layout.root_url()
+        return self.layout.root_url
 
     @property
     def up_image_src(self):
         if IPublication.providedBy(self.context):
-            return '%s/up_publication.gif' % self.layout.resource_base_url()
-        return '%s/up_tree.gif' % self.layout.resource_base_url()
+            return '%s/up_publication.gif' % self.layout.resource_base_url
+        return '%s/up_tree.gif' % self.layout.resource_base_url
 
     @property
     def selected(self):
@@ -125,7 +125,7 @@ class SMITopMenuItem(SMIMenuItem):
 
     @property
     def up_level_url(self):
-        return '%s/up_level.gif' % self.layout.resource_base_url()
+        return '%s/up_level.gif' % self.layout.resource_base_url
 
     @property
     def uplink_url(self):
