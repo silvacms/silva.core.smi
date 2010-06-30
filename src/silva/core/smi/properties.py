@@ -58,10 +58,3 @@ class SubscriptionButton(smi.SMIButton):
     def available(self):
         return (interfaces.ISubscribable(self.context, None) is not None and
                 self.context.service_subscriptions.subscriptionsEnabled())
-
-
-class PublishNowButton(edit.SMIPublishForm):
-    pass
-
-
-

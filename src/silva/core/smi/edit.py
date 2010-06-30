@@ -38,7 +38,7 @@ class MakeCopy(Action):
 class Publish(Action):
     """ Publish the version
     """
-    tabs = ('tab_edit', 'tab_preview',)
+    tabs = ('tab_edit', 'tab_preview', 'tab_metadata')
 
     def available(self, form):
         if hasattr(form.view, 'tab_name') and \
@@ -97,10 +97,15 @@ class SMIPublishForm(SMIViewletForm):
     grok.order(20)
 
     prefix = 'publishform'
+    label = _(u'publish now')
     actions = Actions(
-        Publish(_(u'publish now'), identifier='publish'))
+        Publish(label, identifier='publish'))
 
     help = _(u"publish this document: alt-p")
-    accesskey = 'p'
+    accesskey = u'p'
 
+    @property
+    def tab(self):
+        # not used, it's here to comply with the interface
+        return self.view.tab_name
 
