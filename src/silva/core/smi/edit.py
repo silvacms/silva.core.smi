@@ -97,9 +97,9 @@ class SMIPublishForm(SMIViewletForm):
     grok.order(20)
 
     prefix = 'publishform'
-    label = _(u'publish now')
+    label = None
     actions = Actions(
-        Publish(label, identifier='publish'))
+        Publish(_(u'publish now'), identifier='publish'))
 
     help = _(u"publish this document: alt-p")
     accesskey = u'p'
