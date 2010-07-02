@@ -70,7 +70,7 @@ class BreakReferencesForm(silvaforms.SMIForm):
         if IContainer.providedBy(self.context):
             rcontext = self.context.get_container()
         self.request.response.redirect(
-            absoluteURL(rcontext, self.request) + '/edit'))
+            absoluteURL(rcontext, self.request) + '/edit')
 
     def _next_url():
         pass
