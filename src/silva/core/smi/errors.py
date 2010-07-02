@@ -33,7 +33,7 @@ class SMIHTTPHeaders(HTTPResponseHeaders):
     """Define HTTP-headers for SMI pages. By default we don't want to
     cache.
     """
-    grok.adapts(interfaces.ISMILayer, Exception)
+    grok.adapts(interfaces.ISMILayer, Interface)
 
     def cache_headers(self):
         self.disable_cache()

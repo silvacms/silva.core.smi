@@ -19,7 +19,6 @@ from silva.core.conf.utils import getSilvaViewFor
 from silva.core.interfaces import ISilvaObject, IVersionedContent
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
-from silva.core.views.httpheaders import HTTPResponseHeaders
 from silva.core.messages.interfaces import IMessageService
 
 
@@ -65,16 +64,6 @@ class SMIView(silvaviews.SilvaGrokView):
         return {'here': view,
                 'user': getSecurityManager().getUser(),
                 'container': self.request['model'],}
-
-
-class SMIHTTPHeaders(HTTPResponseHeaders):
-    """Define HTTP-headers for SMI pages. By default we don't want to
-    cache.
-    """
-    grok.adapts(interfaces.ISMILayer, ISilvaObject)
-
-    def cache_headers(self):
-        self.disable_cache()
 
 
 class SMILayout(silvaviews.Layout):
