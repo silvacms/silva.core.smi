@@ -5,11 +5,13 @@ from silva.core.references.interfaces import IReferenceService
 from silva.core.references.reference import BrokenReferenceError
 from silva.core.smi.interfaces import ISMILayer
 from silva.core.views import views as silvaviews
+from zeam.form.base import Fields, Field
 from zeam.form import silva as silvaforms
 from zope.traversing.browser import absoluteURL
 from zope.component import getUtility
 from infrae.layout import layout
 from silva.core.smi.errors import ISimpleSMILayout
+from silva.translations import translate as _
 
 
 class BreakPerm(grok.Permission):
@@ -36,10 +38,17 @@ class BrokenReferenceErrorPage(silvaviews.Page):
             'Break silva references', self.context)
 
         if allowed_to_break_refs:
-            self.response.redirect(
-                absoluteURL(self.context, self.request) +
-                '/edit/break_references')
+            url = absoluteURL(self.context.error.reference.target, self.request)
+            url += '/edit/break_references?form.field.redirect_to='
+            url += self.url(name="edit")
+            self.redirect(url)
             return
+
+
+class RedirectField(Field):
+    ignoreRequest = False
+    ignoreContent = True
+    mode = u'hidden'
 
 
 class BreakReferencesForm(silvaforms.SMIForm):
@@ -53,6 +62,7 @@ class BreakReferencesForm(silvaforms.SMIForm):
 
     tab = None
     tab_name = u'tab_reference_error'
+    fields = Fields(RedirectField('redirect_to'))
 
     def update(self):
         ref_service = getUtility(IReferenceService)
@@ -61,17 +71,17 @@ class BreakReferencesForm(silvaforms.SMIForm):
     @silvaforms.action(u'break references')
     def break_references(self):
         for ref in self.references:
-            ref.set_target(0)
+            ref.set_target_id(0)
+        self.send_message(_("references to %s have been broken") %
+                            "/".join(self.context.getPhysicalPath()),
+                          type=u"feedback")
         self._next_url()
 
     @silvaforms.action(u'cancel')
     def cancel(self):
-        rcontext = self.context
-        if IContainer.providedBy(self.context):
-            rcontext = self.context.get_container()
-        self.request.response.redirect(
-            absoluteURL(rcontext, self.request) + '/edit')
+        self._next_url()
 
-    def _next_url():
-        pass
+    def _next_url(self):
+        data, errors = self.extractData()
+        self.redirect(data['redirect_to'] or self.url(name="edit"))
 

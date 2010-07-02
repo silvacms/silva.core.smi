@@ -19,7 +19,9 @@
     </ul>
   </div>
   <div>
+    <input tal:repeat="widget view/fieldWidgets"
+           tal:replace="structure widget/render" />
     <input tal:repeat="widget view/actionWidgets"
-         tal:replace="structure widget/render" />
+           tal:replace="structure widget/render" />
   </div>
 </form>
