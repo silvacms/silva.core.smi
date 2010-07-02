@@ -113,8 +113,8 @@ class SMINavigationListingForNonContainer(SMINavigationListing):
     grok.layer(interfaces.ISMILayer)
 
     def items(self):
-        default_doc_list = self.default_document and \
-            [self.default_document] or []
+        default_doc_list = self.default_document() and \
+            [self.default_document()] or []
         return default_doc_list + \
             self.context.get_ordered_publishables() + \
             self.context.get_non_publishables()
@@ -125,32 +125,25 @@ class SMINavigationListingForNonContainer(SMINavigationListing):
             self._container = self.context.get_container()
         return self._container
 
-    @property
     def container_icon_url(self):
         return get_icon_url(self.container, self.request)
 
-    @property
     def container_title(self):
         return self.container.get_short_title_editable() or container.id
 
-    @property
     def container_url(self):
         return self.container.absolute_url()
 
-    @property
     def container_tab_url(self):
-        return "%s/edit/%s" % (self.container_url, self.view.tab_name,)
+        return u"%s/edit/%s" % (self.container_url(), self.view.tab_name,)
 
-    @property
     def gentype(self):
         return self.context.meta_type.startswith('Silva ') and \
             self.context.meta_type[6:].lower() or \
             self.context.meta_type
 
-    @property
     def default_document(self):
         if not hasattr(self, '_default_document'):
             self._default_document = self.context.get_default()
         return self._default_document
-
 

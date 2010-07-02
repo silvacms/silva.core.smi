@@ -40,7 +40,7 @@
   </tr>
   <tal:repeat repeat="item provider/items">
     <tal:define define="
-      is_default    python: item == provider.default_document;
+      is_default    python: item == provider.default_document();
       status_style  python: item.get_object_status()[1];
       location      python: context.id == item.id and 'selected' or 'unselected';
     ">

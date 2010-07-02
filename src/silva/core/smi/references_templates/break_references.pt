@@ -1,0 +1,25 @@
+<form action="." tal:attributes="action request/URL" method="post"
+      name="edit_object"
+      enctype="multipart/form-data"
+      i18n:domain="silva">
+  <div>
+    <div class="disclaimer" i18n:translate="">
+      If you break the references you will alter the following objects
+      that maintain a reference to it:
+    </div>
+    <ul>
+      <tal:repeat repeat="ref view/references">
+        <li tal:define="source ref/source">
+          <a tal:attributes="href string:${source/@@absolute_url}/edit">
+            <span tal:replace="source/get_title"/>
+          </a>
+          (<span tal:replace="python: '/'.join(source.getPhysicalPath())" />)
+        </li>
+      </tal:repeat>
+    </ul>
+  </div>
+  <div>
+    <input tal:repeat="widget view/actionWidgets"
+         tal:replace="structure widget/render" />
+  </div>
+</form>

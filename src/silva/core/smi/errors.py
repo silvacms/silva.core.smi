@@ -3,17 +3,26 @@
 # $Id$
 
 from five import grok
+from zope.interface import Interface
 
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
 from silva.core.views.httpheaders import HTTPResponseHeaders
+from infrae.layout import ILayout, layout
 
 
-class SMILayout(silvaviews.Layout):
+class ISimpleSMILayout(ILayout):
+    """ Interface for simple SMI layout
+    """
+
+
+class SimpleSMILayout(silvaviews.Layout):
     """ Layout for SMI.
     """
-    grok.context(Exception)
+    grok.context(Interface)
     grok.layer(interfaces.ISMILayer)
+    grok.implements(ISimpleSMILayout)
+    layout(ISimpleSMILayout)
 
     def update(self):
         self.root_url = self.context.get_root_url()
