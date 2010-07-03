@@ -12,6 +12,7 @@ from zope.component import getUtility
 from infrae.layout import layout
 from silva.core.smi.errors import ISimpleSMILayout
 from silva.translations import translate as _
+from urllib import urlencode
 
 
 class BreakPerm(grok.Permission):
@@ -39,10 +40,15 @@ class BrokenReferenceErrorPage(silvaviews.Page):
 
         if allowed_to_break_refs:
             url = absoluteURL(self.context.error.reference.target, self.request)
-            url += '/edit/break_references?form.field.redirect_to='
-            url += self.url(name="edit")
+            url += '/edit/break_references?'
+            url += urlencode(
+                {'form.field.redirect_to': self.url(name="edit")})
             self.redirect(url)
             return
+
+        self.source_path = "/".join(
+            self.context.error.reference.source.getPhysicalPath())
+        self.next_url = self.url(name="edit")
 
 
 class RedirectField(Field):
@@ -73,8 +79,7 @@ class BreakReferencesForm(silvaforms.SMIForm):
         for ref in self.references:
             ref.set_target_id(0)
         self.send_message(_("references to %s have been broken") %
-                            "/".join(self.context.getPhysicalPath()),
-                          type=u"feedback")
+                            "/".join(self.context.getPhysicalPath()))
         self._next_url()
 
     @silvaforms.action(u'cancel')

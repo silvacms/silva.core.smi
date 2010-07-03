@@ -1,0 +1,14 @@
+<tal:tpl i18n:domain="silva">
+  <p>
+    <div i18n:translate="">
+      The action could not perform because it would break a reference from :
+    </div>
+    <div tal:content="view.source_path" />
+    <div i18n:translate="">
+      Hit the back button of your navigator or
+          <a tal:attributes="href view.next_url" i18n:translate="">
+            click here to continue
+          </a>
+    </div>
+  </p>
+</tal:tpl>
