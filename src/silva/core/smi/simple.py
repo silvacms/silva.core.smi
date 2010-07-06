@@ -47,3 +47,4 @@ class SMIHTTPHeaders(HTTPResponseHeaders):
 
 class ErrorHTTPHeaders(SMIHTTPHeaders):
     grok.adapts(interfaces.ISMILayer, Exception)
+

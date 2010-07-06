@@ -3,10 +3,11 @@
       enctype="multipart/form-data"
       i18n:domain="silva">
   <div>
-    <div class="disclaimer" i18n:translate="">
+    <h1 tal:content="view/label">Label</h1>
+    <p class="disclaimer" i18n:translate="">
       If you break the references you will alter the following objects
       that maintain a reference to it:
-    </div>
+    </p>
     <ul>
       <tal:repeat repeat="ref view/references">
         <li tal:define="source ref/source">
@@ -18,7 +19,7 @@
       </tal:repeat>
     </ul>
   </div>
-  <div>
+  <div class="actions">
     <input tal:repeat="widget view/fieldWidgets"
            tal:replace="structure widget/render" />
     <input tal:repeat="widget view/actionWidgets"
