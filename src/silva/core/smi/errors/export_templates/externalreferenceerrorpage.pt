@@ -1,0 +1,17 @@
+<tal:error>
+  <h1>Error: External reference</h1>
+  <p>You tried to export the content
+    <a href="#"
+       tal:attributes="href view/exported/@@absolute_url"
+       tal:content="view/exported/get_title_or_id">EXPORTED</a>
+    which contains the content
+    <a href="#"
+       tal:attributes="href view/origin/@@absolute_url"
+       tal:content="view/origin/get_title_or_id">ORIGIN</a>
+    who have a reference to the content
+    <a href="#"
+       tal:attributes="href view/target/@@absolute_url"
+       tal:content="view/target/get_title_or_id">ORIGIN</a>
+    which is not itself contained in the exported content.
+  </p>
+</tal:error>
