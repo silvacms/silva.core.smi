@@ -15,13 +15,13 @@ div.workspace {
   background: #dde5ee;
 }
 
-div.error {
+div.simple-page {
   padding: 50px;
   color: black;
   border-bottom: 1em solid #4C5C6C;
 }
 
-div.error h1 {
+div.simple-page h1 {
   font-size: 200%;
 }
 

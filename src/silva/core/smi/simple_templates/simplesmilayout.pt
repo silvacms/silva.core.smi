@@ -22,7 +22,7 @@
   </head>
   <body>
     <tal:pathbar tal:content="structure provider:path_bar" />
-    <div class="workspace error">
+    <div class="workspace simple-page">
       <tal:content tal:content="structure view/content" />
     </div>
   </body>
