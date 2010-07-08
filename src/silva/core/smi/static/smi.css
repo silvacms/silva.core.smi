@@ -769,8 +769,13 @@ input[type="submit"] {
   cursor: pointer;
 }
 
+/* zeam form action align */
+input.action {
+  float: right;
+}
+
 /* manipulator button style from which all others derive */
-input.button, button.button, input.manipulator {
+input.button, input.action, button.button, input.manipulator {
   margin: 0 1px;
   padding: 1px 0.5em;
   border: none;
