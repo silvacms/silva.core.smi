@@ -11,9 +11,11 @@ body {
 
 /* _________________________________________________________ sectors _______ */
 
-div.workspace {
+div.workspace,
+div#footerarea {
   background: #dde5ee;
 }
+
 
 div.simple-page {
   padding: 50px;
@@ -692,7 +694,6 @@ form.sublisting {
 /* used to shape non-nested listing tables */
 .focus-rectangle {
   width: 64em;
-  margin: 0 7px;
 }
 
 /* ________________________________________________ form definitions _______ */
@@ -715,7 +716,7 @@ textarea {
   font: normal 100% verdana, helvetica, arial, sans-serif;
 }
 
-input.store, textarea.store {
+input.store, textarea.store, input.field, textarea.field {
   width: 99%;
 }
 
@@ -1596,7 +1597,22 @@ button.calendar-button {
 }
 
 .navigation {
-    width: 20%;
-    float: left;
-    margin-right: 20px
+  width: 20%;
+  float: left;
+}
+
+.middlespace {
+  padding: 0px 8px;
+}
+
+.viewport {
+   padding: 0px 0px 0px 8px;
+}
+
+.viewport-with-navigation {
+   margin-left: 20%;
+}
+
+.viewport-clear {
+   clear: both;
 }

@@ -75,6 +75,11 @@ class SMILayout(silvaviews.Layout):
     def update(self):
         self.root_url = self.context.get_root_url()
         self.view_name = self.view.__name__
+        self.have_navigation = not interfaces.ISMINavigationOff.providedBy(
+            self.view)
+        self.viewport_css_class = 'viewport'
+        if self.have_navigation:
+            self.viewport_css_class += ' viewport-with-navigation'
         # XXX this next one should go away and replace with static
         self.resource_base_url = '%s/++resource++silva.core.smi' % (
             self.root_url,)
