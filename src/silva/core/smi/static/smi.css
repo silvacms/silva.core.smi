@@ -776,7 +776,7 @@ input.action {
 }
 
 /* manipulator button style from which all others derive */
-input.button, input.action, button.button, input.manipulator {
+input.button, input.action, input.canceler, button.button, input.manipulator {
   margin: 0 1px;
   padding: 1px 0.5em;
   border: none;
