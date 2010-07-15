@@ -10,7 +10,7 @@ from zope.component import getUtility
 from zope.traversing.browser import absoluteURL
 
 from infrae.layout import layout
-from silva.core.interfaces import ISilvaObject, IContainer
+from silva.core.interfaces import ISilvaObject
 from silva.core.references.interfaces import IReferenceService
 from silva.core.references.reference import BrokenReferenceError
 from silva.core.smi.simple import ISimpleSMILayout

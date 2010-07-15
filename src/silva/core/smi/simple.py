@@ -6,7 +6,6 @@ from five import grok
 from zope.interface import Interface
 
 from silva.core.smi import interfaces
-from silva.core.interfaces import ISilvaObject
 from silva.core.views import views as silvaviews
 from silva.core.views.httpheaders import HTTPResponseHeaders
 from infrae.layout import ILayout, layout

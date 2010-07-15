@@ -8,6 +8,10 @@ import os
 
 version = '2.3dev'
 
+tests_require = [
+    'BeautifulSoup',
+    ]
+
 setup(name='silva.core.smi',
       version=version,
       description="Silva Management Interface",
@@ -57,7 +61,6 @@ setup(name='silva.core.smi',
         'zope.schema',
         'zope.traversing',
         ],
-      tests_requires=[
-        'BeautifulSoup',
-        ],
+      tests_require=tests_require,
+      extras_require={'test': tests_require},
       )

@@ -7,9 +7,7 @@ from zeam.form.silva.form import SMIViewletForm
 from silva.core.views import views as silvaviews
 from silva.core.interfaces import IVersionedContent
 from silva.core.smi.smi import SMIMiddleGroundManager
-from silva.core.smi.interfaces import (
-    ISMILayer, ISMIExecutorButton, ISMISpecialButton)
-from zope.publisher.interfaces.browser import IBrowserRequest
+from silva.core.smi.interfaces import ISMILayer, ISMIExecutorButton
 from zope.i18nmessageid import MessageFactory
 from DateTime import DateTime
 

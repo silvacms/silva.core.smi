@@ -6,7 +6,7 @@ from urllib import quote
 
 from five import grok
 from zope.interface import Interface
-from zope.component import getUtility, queryMultiAdapter
+from zope.component import getUtility
 from zope.cachedescriptors.property import CachedProperty
 from zope.i18n import translate
 

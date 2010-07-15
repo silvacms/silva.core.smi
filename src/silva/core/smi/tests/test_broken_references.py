@@ -1,5 +1,4 @@
 import unittest
-import base64
 from zope.component import getUtility
 from BeautifulSoup import BeautifulSoup
 from Products.Silva.testing import FunctionalLayer, http

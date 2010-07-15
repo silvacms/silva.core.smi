@@ -4,7 +4,7 @@
 from five import grok
 
 from silva.core import interfaces
-from silva.core.smi import smi, edit
+from silva.core.smi import smi
 from silva.translations import translate as _
 
 
