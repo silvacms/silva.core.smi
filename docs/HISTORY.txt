@@ -1,19 +1,19 @@
 Changelog
 =========
 
-silva.core.smi 2.3 (unreleased)
--------------------------------
+2.3b1 (2010-07-15)
+------------------
 
-* ...
+* A SMI layout defined using ``silva.core.layout`` has been added. It
+  includes some CSS and JS resources.
 
-silva.core.smi 2.3b1 (2010-07-15)
----------------------------------
+* Forms now use ``zeam.form``.
 
-* A layout with silva.core.smi is now used where silva.core.views views are used
+* Flash messages now use ``silva.core.messages``.
 
-* Forms now use zeam.form.silva
+* It is possible to make SMI views and forms using only
+  ``silva.core.smi``, and not rely anymore on old Silva Views macros.
 
-* Flash messages now use silva.core.messages
 
 2.2b1 (2010-01-25)
 ------------------
