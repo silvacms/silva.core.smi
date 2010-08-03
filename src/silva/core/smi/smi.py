@@ -66,6 +66,23 @@ class SMIView(silvaviews.SilvaGrokView):
                 'container': self.request['model'],}
 
 
+class SMIPage(silvaviews.Page):
+    """Page for SMI.
+    """
+    grok.baseclass()
+    grok.layer(interfaces.ISMILayer)
+
+    tab = 'contents'
+
+    @property
+    def tab_name(self):
+        return grok.name.bind().get(self, default=default_view_name)
+
+    def send_message(self, message, type=u""):
+        service = getUtility(IMessageService)
+        service.send(message, self.request, namespace=type)
+
+
 class SMILayout(silvaviews.Layout):
     """ Layout for SMI.
     """
