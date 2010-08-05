@@ -786,6 +786,7 @@ input.button, input.action, input.canceler, button.button, input.manipulator {
   background-position: top left;
   background-repeat: repeat-x;
   cursor: pointer;
+  border-radius: 6px;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
 }
