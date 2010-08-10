@@ -1,11 +1,19 @@
 <form action="." tal:attributes="action request/URL" method="post"
-      name="edit_object"
       enctype="multipart/form-data"
+      tal:define="here_url context/@@absolute_url"
       i18n:domain="silva">
   <div>
     <h1 tal:content="view/label">Label</h1>
     <p class="disclaimer" i18n:translate="">
-      If you break the references you will alter the following objects
+      You can break the references to the content
+      <a href="#"
+         i18n:name="content_link"
+         tal:attributes="href here_url"
+         tal:content="context/get_title_or_id">
+        Content</a>.
+    </p>
+    <p class="disclaimer" i18n:translate="">
+      If you break references you will alter the following contents
       that maintain a reference to it:
     </p>
     <ul>
@@ -18,7 +26,12 @@
         </li>
       </tal:repeat>
     </ul>
+    <p class="disclaimer" i18n:translate="">
+      You cannot undo this operation, and you might break those
+      (potentially published) contents.
+    </p>
   </div>
+
   <div class="actions">
     <input tal:repeat="widget view/fieldWidgets"
            tal:replace="structure widget/render" />

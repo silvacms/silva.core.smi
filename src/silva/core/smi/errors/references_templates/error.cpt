@@ -1,12 +1,16 @@
 <tal:error i18n:domain="silva">
-  <div i18n:translate="">
+  <p i18n:translate="">
     The action could not perform because it would break a reference from :
-  </div>
-  <div tal:content="view.source_path" />
-  <div i18n:translate="">
+    <a href="#"
+       tal:attributes="href view.source_url"
+       tal:content="view.source_title">
+    </a>
+    (<span tal:replace="view.source_path" />)
+  </p>
+  <p i18n:translate="">
     Hit the back button of your navigator or
     <a tal:attributes="href view.next_url" i18n:translate="">
       click here to continue
-    </a>
-  </div>
+    </a>.
+  </p>
 </tal:error>
