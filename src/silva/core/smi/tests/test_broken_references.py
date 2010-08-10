@@ -50,13 +50,13 @@ class TestBreakReference(unittest.TestCase):
                               'tab_edit_delete:method': 'delete'})
         self.assertEquals(302, response.getStatus())
         self.assertEquals(
-            'http://localhost/root/file/edit/break_references'
+            'http://localhost/root/file/edit/tab_reference_error'
             '?form.field.redirect_to=http%3A%2F%2Flocalhost%2Froot%2Fedit',
             response.getHeaders()['Location'])
 
     def test_form_break_references(self):
         response = http(
-            'GET /root/file/edit/break_references'
+            'GET /root/file/edit/tab_reference_error'
             '?form.field.redirect_to=http%3A%2F%2Flocalhost%2Froot%2Fedit '
             'HTTP/1.1',
             auth='manager',
@@ -77,7 +77,7 @@ class TestBreakReference(unittest.TestCase):
         self.assertEquals('cancel', cancel_button['value'])
 
     def test_break_references(self):
-        response = http('POST /root/file/edit/break_references HTTP/1.1',
+        response = http('POST /root/file/edit/tab_reference_error HTTP/1.1',
             auth='manager',
             parsed = True,
             data={'form.action.break-references': 'break references',
@@ -103,7 +103,7 @@ class TestBreakReference(unittest.TestCase):
 #             feedback.text)
 
     def test_cancel(self):
-        response = http('POST /root/file/edit/break_references HTTP/1.1',
+        response = http('POST /root/file/edit/tab_reference_error HTTP/1.1',
                         auth='manager',
                         parsed=True,
                         data={'form.action.cancel': 'cancel',
@@ -129,4 +129,3 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBreakReference))
     return suite
-
