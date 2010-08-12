@@ -97,9 +97,6 @@ class SMILayout(silvaviews.Layout):
         self.viewport_css_class = 'viewport'
         if self.have_navigation:
             self.viewport_css_class += ' viewport-with-navigation'
-        # XXX this next one should go away and replace with static
-        self.resource_base_url = '%s/++resource++silva.core.smi' % (
-            self.root_url,)
 
 
 class SMIHeader(silvaviews.ContentProvider):
@@ -181,16 +178,8 @@ class SMITab(SMIView):
 # to register components to, they will become the real tab when we
 # will switch from Silva views to that system completly.
 
-class AccessTab(SMITab):
-    """Access
-    """
+class DummyAccessTab(SMITab):
     grok.implements(interfaces.IAccessTab)
-    grok.name('tab_access')
-    grok.baseclass()
-
-
-class DummyAccessTab(AccessTab):
-
     grok.template('smitab')
     grok.name('tab_access_extra')
     tab_name = 'tab_access'

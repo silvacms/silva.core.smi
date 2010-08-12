@@ -2,35 +2,69 @@
 # See also LICENSE.txt
 # $Id$
 
+import operator
+
 from five import grok
 
-from silva.core import interfaces
 from silva.core.smi import smi
+from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
+from silva.core.interfaces import ISilvaObject, IUserAccessSecurity
+from silva.core.interfaces import IUserAuthorization
 from silva.translations import translate as _
+from zeam.form import silva as silvaforms
 
 
-grok.view(smi.AccessTab)
+class AccessTab(silvaforms.SMIComposedForm):
+    """Control access to Silva.
+    """
+    grok.context(ISilvaObject)
+    grok.implements(IAccessTab, ISMITabIndex)
+    grok.name('tab_access')
+    grok.require('silva.ChangeSilvaAccess')
+
+    tab = 'access'
+
+    label = _(u"manage access to Silva content")
+    description = _(u"This screen let you authorize or cancel access "
+                    u"to this content and content below it.")
 
 
-class GroupAdminButton(smi.SMIButton):
+class UserAccessForm(silvaforms.SMISubTableForm):
+    """Form to give/revoke access to users.
+    """
+    grok.context(ISilvaObject)
+    grok.order(10)
+    grok.view(AccessTab)
 
-    grok.context(interfaces.IContainer)
-    grok.order(50)
+    label = _(u"user roles")
+    fields = silvaforms.Fields(IUserAuthorization)
+    ignoreContent = False
+    mode = silvaforms.DISPLAY
 
-    tab = 'tab_access_groups'
-    label = _(u"groups admin")
-    help = _(u"groups administration: alt-g")
-    accesskey = 'g'
+    def getItems(self):
+        values = IUserAccessSecurity(self.context).getAuthorizations().items()
+        values.sort(key=operator.itemgetter(0))
+        return map(operator.itemgetter(1), values)
 
+    @silvaforms.action(_(u"revoke"), category='tableActions')
+    def revoke(self):
+        self.status = "Dude, you lost in the ware"
 
-    def available(self):
-        # Berk.
-        return self.context.sec_groups_enabled() and \
-            hasattr(self.context, 'service_groups')
+class AccessPermissionForm(silvaforms.SMISubForm):
+    """Form to manage default permission needed to see the current
+    content.
+    """
+    grok.context(ISilvaObject)
+    grok.order(30)
+    grok.view(AccessTab)
+
+    label = _(u"public view access restrictions")
+    description = _(u"Setting an access restriction here affects "
+                    u"contents on this and lower levels.")
 
 
 class LookupUserButton(smi.SMIButton):
-
+    grok.view(AccessTab)
     grok.order(10)
 
     tab = 'lookup'

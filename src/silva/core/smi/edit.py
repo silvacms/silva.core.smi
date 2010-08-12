@@ -1,3 +1,9 @@
+# Copyright (c) 2008-2010 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
+
+from DateTime import DateTime
+
 from five import grok
 from zope.interface import Interface
 from zeam.form.base import Action, Actions
@@ -8,11 +14,7 @@ from silva.core.views import views as silvaviews
 from silva.core.interfaces import IVersionedContent
 from silva.core.smi.smi import SMIMiddleGroundManager
 from silva.core.smi.interfaces import ISMILayer, ISMIExecutorButton
-from zope.i18nmessageid import MessageFactory
-from DateTime import DateTime
-
-
-_ = MessageFactory('silva')
+from silva.translations import translate as _
 
 grok.templatedir('smi_templates')
 grok.layer(ISMILayer)

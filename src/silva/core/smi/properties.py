@@ -5,10 +5,11 @@ from five import grok
 
 from silva.core import interfaces
 from silva.core.smi import smi
+from silva.core.smi.interfaces import IPropertiesTab
 from silva.translations import translate as _
 
 
-grok.view(smi.PropertiesTab)
+grok.view(IPropertiesTab)
 
 
 class AddablesButton(smi.SMIButton):

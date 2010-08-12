@@ -1,41 +1,34 @@
 <tal:menuitem
-    i18n:domain="silva">
+   i18n:domain="silva">
   <a class="left"
-    id="tree_up"
-    tal:condition="viewlet/toplink_url"
-    tal:attributes="href viewlet/toplink_url;
-      title viewlet/toplink_title;"
-      i18n:attributes="title"
-      >
+     id="tree_up"
+     tal:condition="viewlet/toplink_url"
+     tal:attributes="href viewlet/toplink_url;
+                     title viewlet/toplink_title;"
+     i18n:attributes="title">
     <img border="0"
-       height="9"
-       width="9"
-       tal:attributes="src viewlet/up_image_src;
-         alt string:style_image;"/>
+         height="9"
+         width="9"
+         tal:attributes="src viewlet/up_image_src;
+                         alt string:style_image;"/>
   </a>
   <a tal:content="structure viewlet/name"
-    tal:attributes="href viewlet/target_url;
-      class viewlet/item_class_name;
-      title viewlet/title;
-      accesskey viewlet/accesskey;"
-      i18n:translate=""
-      i18n:attributes="title"
-    >
+     tal:attributes="href viewlet/target_url;
+                     class viewlet/css_class;
+                     title viewlet/title;
+                     accesskey viewlet/accesskey;"
+     i18n:attributes="title">
     tab name
   </a>
   <a class="right"
-    id="level_up"
-    tal:condition="viewlet/uplink_url"
-    tal:attributes="href viewlet/uplink_url;
-      title viewlet/uplink_title;"
-    i18n:attributes="title"
-    >
-    <img border="0"
-       height="9"
-       width="9"
-       tal:attributes="src viewlet/up_level_url;
-         alt string:level_up_image;"
-    />
+     id="level_up"
+     tal:condition="viewlet/uplink_url"
+     tal:attributes="href viewlet/uplink_url;
+                     title viewlet/uplink_title;"
+     i18n:attributes="title">
+    <img border="0" height="9" width="9"
+         src="# " alt="level up"
+         tal:attributes="src layout/static/up_level.gif" />
   </a>
   <div class="air"></div>
 </tal:menuitem>

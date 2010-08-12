@@ -1,11 +1,17 @@
-from five import grok
-from silva.core.interfaces import IRoot, IPublication
-from silva.core.views import views as silvaviews
-from silva.core.smi.interfaces import ISMIMenu, ISMIMenuItem
-from AccessControl import getSecurityManager
-from zope.i18nmessageid import MessageFactory
+# Copyright (c) 2008-2010 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
 
-_ = MessageFactory('smi')
+from five import grok
+from zope.traversing.browser import absoluteURL
+
+from Acquisition import aq_parent
+
+from silva.core.interfaces import IRoot, IPublication
+from silva.core.smi import interfaces
+from silva.core.smi.interfaces import ISMIMenu, ISMIMenuItem, ISMITabIndex
+from silva.core.views import views as silvaviews
+from silva.translations import translate as _
 
 
 class SMIMenu(silvaviews.ContentProvider):
@@ -18,28 +24,15 @@ class SMIMenu(silvaviews.ContentProvider):
 
     @property
     def target_url(self):
-        return "%s/%s" % (self.context.absolute_url(), self.path,)
-
-    def sort(self, viewlets):
-        return sorted(viewlets, lambda x,y: cmp(x[1].position, y[1].position))
+        return "%s/%s" % (absoluteURL(self.context, self.request), self.path)
 
     def filter(self, viewlets):
         results = []
         for name, viewlet in viewlets:
-            if not self._check_permission(viewlet):
-                continue
             if not viewlet.available():
                 continue
             results.append((name, viewlet,))
         return results
-
-    def _check_permission(self, viewlet):
-        if viewlet.permission:
-            if not hasattr(self, '_security_manager'):
-                self._security_manager = getSecurityManager()
-            return self._security_manager.checkPermission(
-                viewlet.permission, self.context)
-        return True
 
 
 class SMITopMenu(SMIMenu):
@@ -66,11 +59,10 @@ class SMIMenuItem(silvaviews.Viewlet):
     grok.baseclass()
     grok.viewletmanager(SMIMenu)
     grok.implements(ISMIMenuItem)
+    grok.order(100)
 
     name = u''
-    permission = u''
     path = u''
-    position = 100
 
     def available(self):
         return True
@@ -91,62 +83,55 @@ class SMITopMenuItem(SMIMenuItem):
     template = grok.PageTemplate(
         filename='smi_templates/smitopmenuitem.pt')
 
+    tab = None
     accesskey = u''
     uplink_accesskey = u''
     toplink_accesskey = u''
 
     @property
-    def root_url(self):
-        return self.layout.root_url
+    def selected(self):
+        return self.tab is not None and self.tab.providedBy(self.view)
+
+    @property
+    def active(self):
+        return self.selected and ISMITabIndex.providedBy(self.view)
+
+    @property
+    def css_class(self):
+        return self.selected and \
+            (self.active and 'selected' or 'recede') \
+            or ''
 
     @property
     def up_image_src(self):
         if IPublication.providedBy(self.context):
-            return '%s/up_publication.gif' % self.layout.resource_base_url
-        return '%s/up_tree.gif' % self.layout.resource_base_url
-
-    @property
-    def selected(self):
-        return self.request.URL.endswith(self.path)
-
-    @property
-    def active(self):
-        return self.request.URL.endswith(self.path)
-
-    @property
-    def item_class_name(self):
-        return self.selected and \
-            (self.active and 'recede' or 'selected') \
-            or ''
+            self.layout.static['up_publication.gif']()
+        return self.layout.static['up_tree.gif']()
 
     @property
     def title(self):
         return self.name
 
     @property
-    def up_level_url(self):
-        return '%s/up_level.gif' % self.layout.resource_base_url
-
-    @property
-    def uplink_url(self):
-        if not IRoot.providedBy(self.context):
-            return "%s/edit/%s" % (
-                self.context.aq_parent.absolute_url(),
-                self.path)
-        return None
-
-    @property
     def toplink_url(self):
         if not IRoot.providedBy(self.context):
+            publication = aq_parent(self.context).get_publication()
             return "%s/edit/%s" % (
-                self.context.aq_parent.get_publication().absolute_url(),
-                self.path)
+                absoluteURL(publication, self.request), self.path)
         return None
 
     @property
     def toplink_title(self):
         return _('up to top of publication: alt-${key}',
                     mapping={'key': self.toplink_accesskey})
+
+    @property
+    def uplink_url(self):
+        if not IRoot.providedBy(self.context):
+            parent = aq_parent(self.context)
+            return "%s/edit/%s" % (
+                absoluteURL(parent, self.request), self.path)
+        return None
 
     @property
     def uplink_title(self):
@@ -159,41 +144,49 @@ class SMIEditMenuItem(SMITopMenuItem):
     """
     grok.baseclass()
     grok.viewletmanager(SMIEditMenu)
-    position = 1
+    grok.order(1)
+
 
 class SMIEditEditMenuItem(SMIEditMenuItem):
     """ Edit tab of the edit menu
     """
     name = _(u'edit')
     path = u'tab_edit'
-    position = 10
+    tab = interfaces.IEditTab
+    grok.order(10)
+
 
 class SMIEditPreviewMenuItem(SMIEditMenuItem):
     """ Preview tab of the edit menu
     """
     name = _(u'preview')
     path = u'tab_preview'
-    position = 20
+    tab = interfaces.IPreviewTab
+    grok.order(20)
+
 
 class SMIEditPropertiesMenuItem(SMIEditMenuItem):
     """ Properties tab of the edit menu
     """
     name = _(u'properties')
     path = u'tab_metadata'
-    position = 30
+    tab = interfaces.IPropertiesTab
+    grok.order(30)
+
 
 class SMIEditAccessMenuItem(SMIEditMenuItem):
     """ Access tab of the edit menu
     """
     name = _(u'access')
     path = u'tab_access'
-    position = 40
+    tab = interfaces.IAccessTab
+    grok.order(40)
+
 
 class SMIEditPublishMenuItem(SMIEditMenuItem):
     """ Publish tab of the edit menu
     """
     name = _(u'publish')
     path = u'tab_status'
-    position = 50
-
-
+    tab = interfaces.IPublishTab
+    grok.order(50)

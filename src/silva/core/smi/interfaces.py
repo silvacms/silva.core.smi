@@ -18,13 +18,15 @@ from silva.core.views.interfaces import IViewlet, IViewletManager
 class ISMIView(IGrokView):
     """A view in SMI.
     """
-    tab_name = Attribute("Name of the current tab.")
-    active_tab = Attribute(u"Which is the current active tab")
-    vein = Attribute(u"What's the vein to display")
 
-
-class ISMITab(ISMIView):
+# XXX ISMIView and ISMITab should be the same ?
+class ISMITab(IGrokView):
     """A tab in SMI.
+    """
+
+
+class ISMITabIndex(IGrokView):
+    """A view that is an index of a tab in SMI.
     """
 
 
@@ -50,6 +52,10 @@ class IPropertiesTab(ISMITab):
 
 class IPreviewTab(ISMITab):
     """Preview tab.
+    """
+
+class IPublishTab(ISMITab):
+    """Publish tab.
     """
 
 

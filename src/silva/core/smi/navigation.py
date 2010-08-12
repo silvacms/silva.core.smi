@@ -11,9 +11,6 @@ from Products.Silva.adapters.virtualhosting import getVirtualHostingAdapter
 from Products.Silva.icon import get_icon_url
 
 
-grok.templatedir('smi_templates')
-
-
 class SMINavCommon(object):
     """ Mixin for navigation content providers
     """
@@ -38,9 +35,6 @@ class SMINoNavigation(silvaviews.ContentProvider):
 
 class SMINoNavigationForContainer(SMINoNavigation):
     grok.context(IContainer)
-
-    def render(self):
-        return u''
 
 
 class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
@@ -67,8 +61,8 @@ class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
 
     def top_image_src(self):
         if IPublication.providedBy(self.tree_root):
-            return '%s/up_tree.gif' % self.layout.resource_base_url
-        return '%s/up_publication.gif' % self.layout.resource_base_url
+            return self.layout.static['up_tree.gif']()
+        return self.layout.static['up_publication.gif']()
 
 
 class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):
@@ -129,7 +123,7 @@ class SMINavigationListingForNonContainer(SMINavigationListing):
         return get_icon_url(self.container, self.request)
 
     def container_title(self):
-        return self.container.get_short_title_editable() or container.id
+        return self.container.get_short_title_editable() or self.container.id
 
     def container_url(self):
         return self.container.absolute_url()
@@ -146,4 +140,3 @@ class SMINavigationListingForNonContainer(SMINavigationListing):
         if not hasattr(self, '_default_document'):
             self._default_document = self.context.get_default()
         return self._default_document
-
