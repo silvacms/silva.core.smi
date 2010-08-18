@@ -5,11 +5,14 @@
 import operator
 
 from five import grok
+from zope import interface, schema
 
-from silva.core.smi import smi
+from Products.Silva.Security import UnauthorizedRoleAssignement
+
 from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
 from silva.core.interfaces import ISilvaObject, IUserAccessSecurity
-from silva.core.interfaces import IUserAuthorization
+from silva.core.interfaces import IAccessSecurity
+from silva.core.interfaces import IUserAuthorization, role_vocabulary
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 
@@ -29,6 +32,15 @@ class AccessTab(silvaforms.SMIComposedForm):
                     u"to this content and content below it.")
 
 
+class IGrantRole(interface.Interface):
+    """A role for a user.
+    """
+    role = schema.Choice(
+        title=_(u"role to grant"),
+        source=role_vocabulary,
+        required=True)
+
+
 class UserAccessForm(silvaforms.SMISubTableForm):
     """Form to give/revoke access to users.
     """
@@ -37,18 +49,115 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     grok.view(AccessTab)
 
     label = _(u"user roles")
-    fields = silvaforms.Fields(IUserAuthorization)
     ignoreContent = False
+    ignoreRequest = True
     mode = silvaforms.DISPLAY
+    fields = silvaforms.Fields(IGrantRole)
+    fields['role'].mode = silvaforms.INPUT
+    fields['role'].ignoreRequest = False
+    fields['role'].ignoreContent = True
+    tableFields = silvaforms.Fields(IUserAuthorization)
+    tableActions = silvaforms.TableActions()
 
     def getItems(self):
-        values = IUserAccessSecurity(self.context).getAuthorizations().items()
+        access = IUserAccessSecurity(self.context)
+        values = access.get_authorizations().items()
         values.sort(key=operator.itemgetter(0))
         return map(operator.itemgetter(1), values)
 
-    @silvaforms.action(_(u"revoke"), category='tableActions')
-    def revoke(self):
-        self.status = "Dude, you lost in the ware"
+    @silvaforms.action(_(u"revoke role"), category='tableActions')
+    def revoke(self, authorization, line):
+        try:
+            if authorization.revoke():
+                self.send_message(
+                    _('Removed role "${role}" from user "${username}"',
+                      mapping={'role': authorization.local_role,
+                               'username': authorization.username}),
+                    type="feedback")
+            else:
+                self.send_message(
+                    _('User "${username}" doesn\'t have any local role',
+                      mapping={'username': authorization.username}),
+                    type="error")
+        except UnauthorizedRoleAssignement, error:
+            self.send_message(
+                _(u'You are not allowed to remove role "${role}" '
+                  u'from user "${userid}"',
+                  mapping={'role': error.args[0],
+                           'userid': error.args[1]}),
+                type="error")
+        return silvaforms.SUCCESS
+
+    @silvaforms.action(_(u"grant role"), category='tableActions')
+    def grant(self, authorization, line):
+        data, errors = self.extractData(self.fields)
+        if errors:
+            return silvaforms.FAILURE
+        role = data['role']
+        if not role:
+            return self.revoke(authorization, line)
+        mapping = {'role': role,
+                   'username': authorization.username}
+        try:
+            if authorization.grant(role):
+                self.send_message(
+                    _('Role "${role}" granted to user "${username}"',
+                      mapping=mapping),
+                    type="feedback")
+            else:
+                self.send_message(
+                    _('User "${username}" already have role "${role}"',
+                      mapping=mapping),
+                    type="feedback")
+        except UnauthorizedRoleAssignement:
+            self.send_message(
+                _(u'You are not allowed to remove role "${role}" '
+                  u'from user "${userid}"',
+                  mapping=mapping),
+                type="error")
+        return silvaforms.SUCCESS
+
+
+class ILookupUser(interface.Interface):
+    """Lookup a new user
+    """
+    user = schema.TextLine(
+        title=_(u"username"),
+        description=_(u"username or part of the username to lookup"),
+        required=True)
+
+
+class LookupForm(silvaforms.SMISubForm):
+    """Form to manage default permission needed to see the current
+    content.
+    """
+    grok.context(ISilvaObject)
+    grok.order(5)
+    grok.view(AccessTab)
+
+    label = _(u"lookup users")
+    description = _(u"Lookup new user to give them roles.")
+    fields = silvaforms.Fields(ILookupUser)
+
+    @silvaforms.action(_(u"lookup user"))
+    def lookup(self):
+        pass
+
+
+class IGrantRole(interface.Interface):
+    """A role for a user.
+    """
+    acquired = schema.Bool(
+        title=_(u"is role acquired ?"),
+        description=_(u"acquire the minimum role from the parent content"),
+        readonly=True,
+        required=False)
+    role = schema.Choice(
+        title=_(u"minimum role"),
+        description=_(u"minimum required role needed to access this content"),
+        source=role_vocabulary,
+        required=False)
+
 
 class AccessPermissionForm(silvaforms.SMISubForm):
     """Form to manage default permission needed to see the current
@@ -58,29 +167,37 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     grok.order(30)
     grok.view(AccessTab)
 
-    label = _(u"public view access restrictions")
+    label = _(u"public view access restriction")
     description = _(u"Setting an access restriction here affects "
                     u"contents on this and lower levels.")
+    ignoreRequest = True
+    ignoreContent = False
+    dataManager = silvaforms.makeAdaptiveDataManager(IAccessSecurity)
+    fields = silvaforms.Fields(IGrantRole)
 
+    @silvaforms.action(_(u"acquire restriction"))
+    def acquire(self):
+        access = self.getContentData().getContent()
+        if access.is_acquired():
+            self.send_message(
+                _(u"Minimum role setting was already acquired"),
+                type="error")
+        else:
+            access.set_acquired()
+            self.send_message(
+                _(u"Acquiring minimum role setting"),
+                type="feedback")
+        return silvaforms.SUCCESS
 
-class LookupUserButton(smi.SMIButton):
-    grok.view(AccessTab)
-    grok.order(10)
-
-    tab = 'lookup'
-    help = _(u"lookup users: alt-l")
-    accesskey = 'l'
-    style = 'float:right'
-
-    @property
-    def selected(self):
-        # XXX hack  for the moment.  Should have something  nicer when
-        # every view will be a real view.
-        path = self.request.PATH_TRANSLATED.split('/')
-        return path[-1].startswith('lookup_ui')
-
-    @property
-    def label(self):
-        if self.context.sec_can_find_users():
-            return _(u"add users")
-        return _(u"lookup users")
+    @silvaforms.action(_(u"set restriction"))
+    def restrict(self):
+        data, errors = self.extractData()
+        if errors:
+            return silvaforms.FAILURE
+        role = data['role']
+        access = self.getContentData().getContent()
+        if role:
+            access.set_role(role)
+        else:
+            access.set_acquired()
+        return silvaforms.SUCCESS

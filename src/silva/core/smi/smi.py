@@ -284,19 +284,21 @@ class SMIMessages(silvaviews.ContentProvider):
     grok.layer(interfaces.ISMILayer)
     grok.implements(interfaces.IMessageProvider)
 
-    message = u''
-    message_type = u''
+    message = None
+    message_type = None
 
-    def messages(self):
+    def update(self):
         if self.request.response.getStatus() == 302:
-            return []
+            self.messages = []
         if hasattr(self, '_messages'):
             return self._messages
         service = getUtility(IMessageService)
-        self._messages = service.receive_all(self.request)
+        all_messages = service.receive_all(self.request)
         if self.message:
-            self._messages.insert(0, (self.message_type, self.message,))
-        return self._messages
+            all_messages.insert(0, (self.message_type, self.message,))
+        self.messages = map(
+            lambda m: {'text': m[1], 'css_class': self.css_class(m[0])},
+            all_messages)
 
-    def message_class(self, namespace):
+    def css_class(self, namespace):
         return namespace == 'error' and 'fixed-alert' or 'fixed-feedback'
