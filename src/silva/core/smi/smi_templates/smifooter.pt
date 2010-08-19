@@ -35,15 +35,15 @@
     <div style="float: left;">
       <tal:block i18n:translate="">contact:</tal:block>
       <a shape="rect"
-         tal:attributes="href provider/email_url">
+         tal:attributes="href provider/contact_email_url">
         <tal:block tal:condition="provider/contact_name"
                    tal:content="provider/contact_name">
         </tal:block>
-        <tal:block tal:condition="python:not provider.contact_name()">
+        <tal:block tal:condition="not:provider/contact_name">
           <tal:block tal:condition="provider/contact_email"
                      tal:content="provider/contact_email">
           </tal:block>
-          <tal:block tal:condition="python:not provider.contact_email()"
+          <tal:block tal:condition="not:provider/contact_email"
                      i18n:translate="">
             no name
           </tal:block>
@@ -53,7 +53,7 @@
     <div style="float: right;">
       <a shape="rect"
          title="Leave Silva and view the public page: alt-:"
-         tal:attributes="href context/absolute_url"
+         tal:attributes="href context/@@absolute_url"
          i18n:attributes="title"
          i18n:translate="">
         view public version
@@ -85,7 +85,7 @@
         <span i18n:translate="">user settings</span>
       </a>
     </div>
-    <div style="float: right;">
+    <div style="float:right;">
       <a href="#"
          accesskey="q"
          title="Logout of Silva: alt-q"
@@ -93,9 +93,9 @@
          i18n:attributes="title"
          tal:attributes="href provider/logout_url">
         logout
-        <tal:block tal:condition="provider/get_user_role"
+        <tal:block tal:condition="provider/role"
                    i18n:name="role"
-                   tal:content="structure string:${provider/get_user_role}" />
+                   tal:content="structure string:${provider/role}" />
         <tal:block i18n:name="userid" tal:content="userid" />
       </a>
     </div>

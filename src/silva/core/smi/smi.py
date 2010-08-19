@@ -16,7 +16,8 @@ from AccessControl import getSecurityManager
 from Products.Silva import mangle
 
 from silva.core.conf.utils import getSilvaViewFor
-from silva.core.interfaces import ISilvaObject, IVersionedContent
+from silva.core.interfaces import ISilvaObject, IUserAccessSecurity
+from silva.core.layout.interfaces import IMetadata
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
 from silva.core.messages.interfaces import IMessageService
@@ -90,6 +91,7 @@ class SMILayout(silvaviews.Layout):
     grok.layer(interfaces.ISMILayer)
 
     def update(self):
+        self.metadata = IMetadata(self.context)
         self.root_url = self.context.get_root_url()
         self.view_name = self.view.__name__
         self.have_navigation = not interfaces.ISMINavigationOff.providedBy(
@@ -110,46 +112,23 @@ class SMIFooter(silvaviews.ContentProvider):
     grok.name('footer')
     grok.layer(interfaces.ISMILayer)
 
-    def username(self):
-        return self._get_user().name
+    def update(self):
+        metadata = self.layout.metadata['silva-extra']
+        self.contact_name = metadata['contactname']
+        self.contact_email = metadata['contactemail']
+        self.contact_email_url = None
+        if self.contact_email:
+            self.contact_email_url = "mailto:%s" % quote(self.contact_email)
 
-    def _get_user(self):
-        gsm = getSecurityManager()
-        return gsm.getUser()
-
-    def get_metadata(self, element_name, set_name='silvaextra'):
-        if not hasattr(self, '_service_metadata'):
-            self._service_metadata = self.context.service_metadata
-        content = self.context
-        if IVersionedContent.providedBy(self.context):
-            content = self.context.get_viewable()
-        if content:
-            try:
-                return self._service_metadata.getMetadataValue(
-                    content, set_name, element_name)
-            except (AttributeError, KeyError,) as e:
-                return u''
-        return u''
-
-    def contact_name(self):
-        return self.get_metadata('contactname')
-
-    def contact_email(self):
-        return self.get_metadata('contactemail')
-
-    def email_url(self):
-        email = self.contact_email()
-        if email:
-            return "mailto:%s" % quote(email)
-        return ''
+        authorization = IUserAccessSecurity(
+            self.context).get_user_authorization()
+        self.username = authorization.username
+        self.role = authorization.role
 
     def logout_url(self):
         return mangle.urlencode(
             self.context.absolute_url() + '/service_members/logout',
             came_from=self.context.get_publication().absolute_url())
-
-    def get_user_role(self):
-        return '/'.join(self.context.sec_get_all_roles())
 
     def can_request_role(self):
         return self.context.service_members.allow_authentication_requests()
