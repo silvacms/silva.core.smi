@@ -5,6 +5,7 @@
 import operator
 
 from five import grok
+from zope.cachedescriptors.property import CachedProperty
 from zope import interface, schema, component
 
 from Products.Silva.Security import UnauthorizedRoleAssignement
@@ -120,9 +121,8 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     tableActions = silvaforms.TableActions()
 
     def getItems(self):
-        extra_users = ClientStore(self.request).get(USER_STORE_KEY, set())
         access = IUserAccessSecurity(self.context)
-        authorizations = access.get_users_authorization(extra_users).items()
+        authorizations = access.get_authorizations().items()
         authorizations.sort(key=operator.itemgetter(0))
         return map(operator.itemgetter(1), authorizations)
 
@@ -177,6 +177,41 @@ class UserAccessForm(silvaforms.SMISubTableForm):
                   mapping=mapping),
                 type="error")
         return silvaforms.SUCCESS
+
+
+class LookupResultForm(UserAccessForm):
+    """Form to give/revoke access to users.
+    """
+    grok.order(6)
+
+    label = _(u"lookup results")
+    tableActions = silvaforms.TableActions()
+
+    @CachedProperty
+    def store(self):
+        return ClientStore(self.request)
+
+    def getUserIds(self):
+        return self.store.get(USER_STORE_KEY, set())
+
+    def available(self):
+        return len(self.getUserIds()) != 0
+
+    def getItems(self):
+        user_ids = self.getUserIds()
+        access = IUserAccessSecurity(self.context)
+        authorizations = access.get_users_authorization(user_ids).items()
+        authorizations.sort(key=operator.itemgetter(0))
+        return map(operator.itemgetter(1), authorizations)
+
+    @silvaforms.action(_(u"grant role"), category='tableActions')
+    def grant(self, authorization, line):
+        super(LookupResultForm, self).grant(authorization, line)
+
+    @silvaforms.action(_(u"clear result"))
+    def clear(self):
+        self.store.set(USER_STORE_KEY, set())
+
 
 
 class IGrantRole(interface.Interface):
