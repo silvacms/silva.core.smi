@@ -5,16 +5,20 @@
 import operator
 
 from five import grok
-from zope import interface, schema
+from zope import interface, schema, component
 
 from Products.Silva.Security import UnauthorizedRoleAssignement
 
 from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
-from silva.core.interfaces import ISilvaObject, IUserAccessSecurity
-from silva.core.interfaces import IAccessSecurity
+from silva.core.interfaces import ISilvaObject
+from silva.core.interfaces import IAccessSecurity, IUserAccessSecurity
 from silva.core.interfaces import IUserAuthorization, role_vocabulary
+from silva.core.interfaces import IMemberService
+from silva.core.cache.store import ClientStore
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
+
+USER_STORE_KEY = 'lookup user'
 
 
 class AccessTab(silvaforms.SMIComposedForm):
@@ -57,13 +61,15 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     fields['role'].ignoreRequest = False
     fields['role'].ignoreContent = True
     tableFields = silvaforms.Fields(IUserAuthorization)
+    tableFields['username'].mode = 'silva.icon'
     tableActions = silvaforms.TableActions()
 
     def getItems(self):
+        extra_users = ClientStore(self.request).get(USER_STORE_KEY, set())
         access = IUserAccessSecurity(self.context)
-        values = access.get_authorizations().items()
-        values.sort(key=operator.itemgetter(0))
-        return map(operator.itemgetter(1), values)
+        authorizations = access.get_authorizations_for(extra_users).items()
+        authorizations.sort(key=operator.itemgetter(0))
+        return map(operator.itemgetter(1), authorizations)
 
     @silvaforms.action(_(u"revoke role"), category='tableActions')
     def revoke(self, authorization, line):
@@ -141,7 +147,29 @@ class LookupForm(silvaforms.SMISubForm):
 
     @silvaforms.action(_(u"lookup user"))
     def lookup(self):
-        pass
+        data, errors = self.extractData()
+        if errors:
+            return silvaforms.FAILURE
+        username = data['user']
+        service = component.getUtility(IMemberService)
+
+        store = ClientStore(self.request)
+        users = set()
+        for member in service.find_members(username, location=self.context):
+            users.add(member.userid())
+        if users:
+            users = store.get(USER_STORE_KEY, set()).union(users)
+            store.set(USER_STORE_KEY, users)
+            self.send_message(
+                _(u"Found ${count} users: ${users}",
+                  mapping={'count': len(users),
+                           'users': u', '.join(users)}),
+                type="feedback")
+        else:
+            self.send_message(
+                _(u"No matching users"),
+                type="error")
+        return silvaforms.SUCCESS
 
 
 class IGrantRole(interface.Interface):

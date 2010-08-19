@@ -297,8 +297,10 @@ class SMIMessages(silvaviews.ContentProvider):
         if self.message:
             all_messages.insert(0, (self.message_type, self.message,))
         self.messages = map(
-            lambda m: {'text': m[1], 'css_class': self.css_class(m[0])},
+            lambda m: {'text': unicode(m), 'css_class': self.css_class(m)},
             all_messages)
 
-    def css_class(self, namespace):
-        return namespace == 'error' and 'fixed-alert' or 'fixed-feedback'
+    def css_class(self, message):
+        if message.namespace == 'error':
+            return 'fixed-alert'
+        return 'fixed-feedback'
