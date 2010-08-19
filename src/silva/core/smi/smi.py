@@ -21,6 +21,7 @@ from silva.core.layout.interfaces import IMetadata
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
 from silva.core.messages.interfaces import IMessageService
+from silva.core.messages.service import Message
 
 
 class SMIView(silvaviews.SilvaGrokView):
@@ -269,15 +270,13 @@ class SMIMessages(silvaviews.ContentProvider):
     def update(self):
         if self.request.response.getStatus() == 302:
             self.messages = []
-        if hasattr(self, '_messages'):
-            return self._messages
         service = getUtility(IMessageService)
-        all_messages = service.receive_all(self.request)
+        messages = service.receive_all(self.request)
         if self.message:
-            all_messages.insert(0, (self.message_type, self.message,))
+            messages.insert(0, Message(self.message, self.message_type))
         self.messages = map(
             lambda m: {'text': unicode(m), 'css_class': self.css_class(m)},
-            all_messages)
+            messages)
 
     def css_class(self, message):
         if message.namespace == 'error':

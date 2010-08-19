@@ -36,6 +36,61 @@ class AccessTab(silvaforms.SMIComposedForm):
                     u"to this content and content below it.")
 
 
+class ILookupUser(interface.Interface):
+    """Lookup a new user
+    """
+    user = schema.TextLine(
+        title=_(u"username"),
+        description=_(u"username or part of the username to lookup"),
+        required=True)
+
+
+class LookupForm(silvaforms.SMISubForm):
+    """Form to manage default permission needed to see the current
+    content.
+    """
+    grok.context(ISilvaObject)
+    grok.order(5)
+    grok.view(AccessTab)
+
+    label = _(u"lookup users")
+    description = _(u"Lookup new user to give them roles.")
+    fields = silvaforms.Fields(ILookupUser)
+
+    @silvaforms.action(_(u"lookup user"))
+    def lookup(self):
+        data, errors = self.extractData()
+        if errors:
+            return silvaforms.FAILURE
+        username = data['user'].strip()
+        if len(username) < 2:
+            self.send_message(
+                _(u"Search input is too short. "
+                  u"Please supply more characters"),
+                type="error")
+            return silvaforms.FAILURE
+
+        service = component.getUtility(IMemberService)
+
+        store = ClientStore(self.request)
+        users = set()
+        for member in service.find_members(username, location=self.context):
+            users.add(member.userid())
+        if users:
+            users = store.get(USER_STORE_KEY, set()).union(users)
+            store.set(USER_STORE_KEY, users)
+            self.send_message(
+                _(u"Found ${count} users: ${users}",
+                  mapping={'count': len(users),
+                           'users': u', '.join(users)}),
+                type="feedback")
+        else:
+            self.send_message(
+                _(u"No matching users"),
+                type="error")
+        return silvaforms.SUCCESS
+
+
 class IGrantRole(interface.Interface):
     """A role for a user.
     """
@@ -67,7 +122,7 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     def getItems(self):
         extra_users = ClientStore(self.request).get(USER_STORE_KEY, set())
         access = IUserAccessSecurity(self.context)
-        authorizations = access.get_authorizations_for(extra_users).items()
+        authorizations = access.get_users_authorization(extra_users).items()
         authorizations.sort(key=operator.itemgetter(0))
         return map(operator.itemgetter(1), authorizations)
 
@@ -120,54 +175,6 @@ class UserAccessForm(silvaforms.SMISubTableForm):
                 _(u'You are not allowed to remove role "${role}" '
                   u'from user "${userid}"',
                   mapping=mapping),
-                type="error")
-        return silvaforms.SUCCESS
-
-
-class ILookupUser(interface.Interface):
-    """Lookup a new user
-    """
-    user = schema.TextLine(
-        title=_(u"username"),
-        description=_(u"username or part of the username to lookup"),
-        required=True)
-
-
-class LookupForm(silvaforms.SMISubForm):
-    """Form to manage default permission needed to see the current
-    content.
-    """
-    grok.context(ISilvaObject)
-    grok.order(5)
-    grok.view(AccessTab)
-
-    label = _(u"lookup users")
-    description = _(u"Lookup new user to give them roles.")
-    fields = silvaforms.Fields(ILookupUser)
-
-    @silvaforms.action(_(u"lookup user"))
-    def lookup(self):
-        data, errors = self.extractData()
-        if errors:
-            return silvaforms.FAILURE
-        username = data['user']
-        service = component.getUtility(IMemberService)
-
-        store = ClientStore(self.request)
-        users = set()
-        for member in service.find_members(username, location=self.context):
-            users.add(member.userid())
-        if users:
-            users = store.get(USER_STORE_KEY, set()).union(users)
-            store.set(USER_STORE_KEY, users)
-            self.send_message(
-                _(u"Found ${count} users: ${users}",
-                  mapping={'count': len(users),
-                           'users': u', '.join(users)}),
-                type="feedback")
-        else:
-            self.send_message(
-                _(u"No matching users"),
                 type="error")
         return silvaforms.SUCCESS
 
@@ -225,7 +232,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
         role = data['role']
         access = self.getContentData().getContent()
         if role:
-            access.set_role(role)
+            access.set_minimum_role(role)
         else:
             access.set_acquired()
         return silvaforms.SUCCESS
