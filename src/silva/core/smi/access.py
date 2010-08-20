@@ -15,7 +15,7 @@ from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import IAccessSecurity, IUserAccessSecurity
 from silva.core.interfaces import IUserAuthorization, role_vocabulary
 from silva.core.interfaces import IMemberService
-from silva.core.cache.store import ClientStore
+from silva.core.cache.store import SessionStore
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 
@@ -73,7 +73,7 @@ class LookupForm(silvaforms.SMISubForm):
 
         service = component.getUtility(IMemberService)
 
-        store = ClientStore(self.request)
+        store = SessionStore(self.request)
         users = set()
         for member in service.find_members(username, location=self.context):
             users.add(member.userid())
@@ -189,7 +189,7 @@ class LookupResultForm(UserAccessForm):
 
     @CachedProperty
     def store(self):
-        return ClientStore(self.request)
+        return SessionStore(self.request)
 
     def getUserIds(self):
         return self.store.get(USER_STORE_KEY, set())
