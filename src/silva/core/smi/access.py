@@ -122,7 +122,7 @@ class UserAccessForm(silvaforms.SMISubTableForm):
 
     def getItems(self):
         access = IUserAccessSecurity(self.context)
-        authorizations = access.get_authorizations().items()
+        authorizations = access.get_defined_authorizations().items()
         authorizations.sort(key=operator.itemgetter(0))
         return map(operator.itemgetter(1), authorizations)
 
