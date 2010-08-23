@@ -58,7 +58,9 @@ class LookupForm(silvaforms.SMISubForm):
     description = _(u"Lookup new user to give them roles.")
     fields = silvaforms.Fields(ILookupUser)
 
-    @silvaforms.action(_(u"lookup user"))
+    @silvaforms.action(
+        _(u"lookup user"),
+        description=_(u"look for users in order to assign them roles"))
     def lookup(self):
         data, errors = self.extractData()
         if errors:
@@ -101,6 +103,68 @@ class IGrantRole(interface.Interface):
         required=True)
 
 
+class GrantAccessAction(silvaforms.Action):
+
+    title = _(u"grant role")
+    description = _(u"grant selected role to selected users(s)")
+
+    def __call__(self, form, authorization, line):
+        data, errors = form.extractData(form.fields)
+        if errors:
+            return silvaforms.FAILURE
+        role = data['role']
+        if not role:
+            return form.revoke(authorization, line)
+        mapping = {'role': role,
+                   'username': authorization.username}
+        try:
+            if authorization.grant(role):
+                form.send_message(
+                    _('Role "${role}" granted to user "${username}"',
+                      mapping=mapping),
+                    type="feedback")
+            else:
+                form.send_message(
+                    _('User "${username}" already have role "${role}"',
+                      mapping=mapping),
+                    type="feedback")
+        except UnauthorizedRoleAssignement:
+            form.send_message(
+                _(u'You are not allowed to remove role "${role}" '
+                  u'from user "${userid}"',
+                  mapping=mapping),
+                type="error")
+        return silvaforms.SUCCESS
+
+
+class RevokeAccessAction(silvaforms.Action):
+
+    title = _(u"revoke role")
+    description=_(u"revoke roles of selected user(s)")
+
+    def __call__(self, form, authorization, line):
+        try:
+            if authorization.revoke():
+                form.send_message(
+                    _('Removed role "${role}" from user "${username}"',
+                      mapping={'role': authorization.local_role,
+                               'username': authorization.username}),
+                    type="feedback")
+            else:
+                form.send_message(
+                    _('User "${username}" doesn\'t have any local role',
+                      mapping={'username': authorization.username}),
+                    type="error")
+        except UnauthorizedRoleAssignement, error:
+            form.send_message(
+                _(u'You are not allowed to remove role "${role}" '
+                  u'from user "${userid}"',
+                  mapping={'role': error.args[0],
+                           'userid': error.args[1]}),
+                type="error")
+        return silvaforms.SUCCESS
+
+
 class UserAccessForm(silvaforms.SMISubTableForm):
     """Form to give/revoke access to users.
     """
@@ -118,65 +182,14 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     fields['role'].ignoreContent = True
     tableFields = silvaforms.Fields(IUserAuthorization)
     tableFields['username'].mode = 'silva.icon'
-    tableActions = silvaforms.TableActions()
+    tableActions = silvaforms.TableActions(
+        RevokeAccessAction(), GrantAccessAction())
 
     def getItems(self):
         access = IUserAccessSecurity(self.context)
         authorizations = access.get_defined_authorizations().items()
         authorizations.sort(key=operator.itemgetter(0))
         return map(operator.itemgetter(1), authorizations)
-
-    @silvaforms.action(_(u"revoke role"), category='tableActions')
-    def revoke(self, authorization, line):
-        try:
-            if authorization.revoke():
-                self.send_message(
-                    _('Removed role "${role}" from user "${username}"',
-                      mapping={'role': authorization.local_role,
-                               'username': authorization.username}),
-                    type="feedback")
-            else:
-                self.send_message(
-                    _('User "${username}" doesn\'t have any local role',
-                      mapping={'username': authorization.username}),
-                    type="error")
-        except UnauthorizedRoleAssignement, error:
-            self.send_message(
-                _(u'You are not allowed to remove role "${role}" '
-                  u'from user "${userid}"',
-                  mapping={'role': error.args[0],
-                           'userid': error.args[1]}),
-                type="error")
-        return silvaforms.SUCCESS
-
-    @silvaforms.action(_(u"grant role"), category='tableActions')
-    def grant(self, authorization, line):
-        data, errors = self.extractData(self.fields)
-        if errors:
-            return silvaforms.FAILURE
-        role = data['role']
-        if not role:
-            return self.revoke(authorization, line)
-        mapping = {'role': role,
-                   'username': authorization.username}
-        try:
-            if authorization.grant(role):
-                self.send_message(
-                    _('Role "${role}" granted to user "${username}"',
-                      mapping=mapping),
-                    type="feedback")
-            else:
-                self.send_message(
-                    _('User "${username}" already have role "${role}"',
-                      mapping=mapping),
-                    type="feedback")
-        except UnauthorizedRoleAssignement:
-            self.send_message(
-                _(u'You are not allowed to remove role "${role}" '
-                  u'from user "${userid}"',
-                  mapping=mapping),
-                type="error")
-        return silvaforms.SUCCESS
 
 
 class LookupResultForm(UserAccessForm):
@@ -185,7 +198,7 @@ class LookupResultForm(UserAccessForm):
     grok.order(6)
 
     label = _(u"lookup results")
-    tableActions = silvaforms.TableActions()
+    tableActions = silvaforms.TableActions(GrantAccessAction())
 
     @CachedProperty
     def store(self):
@@ -204,11 +217,9 @@ class LookupResultForm(UserAccessForm):
         authorizations.sort(key=operator.itemgetter(0))
         return map(operator.itemgetter(1), authorizations)
 
-    @silvaforms.action(_(u"grant role"), category='tableActions')
-    def grant(self, authorization, line):
-        super(LookupResultForm, self).grant(authorization, line)
-
-    @silvaforms.action(_(u"clear result"))
+    @silvaforms.action(
+        _(u"clear result"),
+        description=_(u"clear user lookup results"))
     def clear(self):
         self.store.set(USER_STORE_KEY, set())
 
@@ -245,7 +256,10 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     dataManager = silvaforms.makeAdaptiveDataManager(IAccessSecurity)
     fields = silvaforms.Fields(IGrantRole)
 
-    @silvaforms.action(_(u"acquire restriction"))
+    @silvaforms.action(
+        _(u"acquire restriction"),
+        description=_(u"set access restriction to acquire its "
+                      u"settings from the parent"))
     def acquire(self):
         access = self.getContentData().getContent()
         if access.is_acquired():
@@ -259,7 +273,9 @@ class AccessPermissionForm(silvaforms.SMISubForm):
                 type="feedback")
         return silvaforms.SUCCESS
 
-    @silvaforms.action(_(u"set restriction"))
+    @silvaforms.action(
+        _(u"set restriction"),
+        description=_(u"restrict access to this content to the selected role"))
     def restrict(self):
         data, errors = self.extractData()
         if errors:
