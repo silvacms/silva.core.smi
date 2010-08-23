@@ -46,12 +46,12 @@ class ILookupUser(interface.Interface):
         required=True)
 
 
-class LookupForm(silvaforms.SMISubForm):
+class LookupUserForm(silvaforms.SMISubForm):
     """Form to manage default permission needed to see the current
     content.
     """
     grok.context(ISilvaObject)
-    grok.order(5)
+    grok.order(10)
     grok.view(AccessTab)
 
     label = _(u"lookup users")
@@ -169,7 +169,7 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     """Form to give/revoke access to users.
     """
     grok.context(ISilvaObject)
-    grok.order(10)
+    grok.order(20)
     grok.view(AccessTab)
 
     label = _(u"user roles")
@@ -192,10 +192,10 @@ class UserAccessForm(silvaforms.SMISubTableForm):
         return map(operator.itemgetter(1), authorizations)
 
 
-class LookupResultForm(UserAccessForm):
+class LookupUserResultForm(UserAccessForm):
     """Form to give/revoke access to users.
     """
-    grok.order(6)
+    grok.order(11)
 
     label = _(u"lookup results")
     tableActions = silvaforms.TableActions(GrantAccessAction())
@@ -245,7 +245,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     content.
     """
     grok.context(ISilvaObject)
-    grok.order(30)
+    grok.order(100)
     grok.view(AccessTab)
 
     label = _(u"public view access restriction")
