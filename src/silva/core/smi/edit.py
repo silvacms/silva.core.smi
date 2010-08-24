@@ -185,8 +185,8 @@ class SMIVersionActionForm(SMIActionForm):
 
     prefix = 'version_actions'
     actions = silvaforms.Actions(
+        Publish(_(u'publish now')),
         WithdrawApprovalRequest(_(u'withdraw request')),
         RejectApprovalRequest(_(u'reject request')),
         RevokeApproval(_(u'revoke approval')),
-        NewVersion(_(u'new version')),
-        Publish(_(u'publish now')))
+        NewVersion(_(u'new version')))
