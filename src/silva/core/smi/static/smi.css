@@ -210,6 +210,10 @@ div.middleground {
   line-height: 130%;
 }
 
+div.middleground form.middleground-form {
+  display: inline;
+}
+
 div.middleground a,
 div.middleground input[type="submit"] {
   /* The normal, unselected buttons. They are all links */

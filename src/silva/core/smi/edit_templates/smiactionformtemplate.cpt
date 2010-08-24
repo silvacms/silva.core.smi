@@ -1,0 +1,6 @@
+<form action="#" tal:attributes="action request.URL" method="post"
+      enctype="multipart/form-data" class="middleground-form">
+  <tal:actions tal:repeat="actionWidget viewlet.actionWidgets">
+    <tal:action tal:content="structure actionWidget.render()" />
+  </tal:actions>
+</form>
