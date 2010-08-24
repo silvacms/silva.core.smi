@@ -6,6 +6,7 @@ from DateTime import DateTime
 
 from five import grok
 from zope.interface import Interface
+from zope.traversing.browser import absoluteURL
 from zeam.form.base import Action, Actions
 from zeam.form.base.widgets import ActionWidget
 from zeam.form.silva.form import SMIViewletForm
@@ -53,9 +54,9 @@ class Publish(Action):
             # This "shortcuts" the workflow.
             # See also edit/Container/tab_status_approve.py
             if form.context.is_version_published():
-                # error
-                message=_("There is no unapproved version to approve.")
-                form.send_message(message, type=u'error')
+                form.send_message(
+                    _("There is no unapproved version to approve."),
+                    type=u'error')
                 return form.redirect(self.next_url(form))
             form.context.create_copy()
 
@@ -65,10 +66,10 @@ class Publish(Action):
         return form.redirect(self.next_url(form))
 
     def next_url(self, form):
+        url_parts = [absoluteURL(form.context, form.request), 'edit']
         if hasattr(form.view, 'tab_name'):
-            return "%s/edit/%s" % \
-                (form.context.absolute_url(), form.view.tab_name,)
-        return "%s/edit" % form.context.absolute_url()
+            url_parts.append(form.view.tab_name)
+        return "/".join(url_parts)
 
 
 class SMIVersionManagement(silvaviews.ContentProvider):
@@ -103,9 +104,3 @@ class SMIPublishForm(SMIViewletForm):
 
     help = _(u"publish this document: alt-p")
     accesskey = u'p'
-
-    @property
-    def tab(self):
-        # not used, it's here to comply with the interface
-        return self.view.tab_name
-
