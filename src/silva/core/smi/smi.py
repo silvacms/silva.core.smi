@@ -24,7 +24,7 @@ from silva.core.messages.interfaces import IMessageService
 from silva.core.messages.service import Message
 
 
-class SMIView(silvaviews.SilvaGrokView):
+class SMIView(silvaviews.HTTPHeaderView, grok.View):
     """A view in SMI.
     """
     grok.baseclass()
