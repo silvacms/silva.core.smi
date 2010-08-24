@@ -1,4 +1,4 @@
-<tal:provider>
+<tal:feedback tal:condition="not:provider/no_empty_feedback">
   <tal:messages condition="provider/messages">
     <div class="feedback"
          tal:repeat="message provider/messages"
@@ -9,4 +9,4 @@
   <tal:empty condition="not: provider/messages">
     <div class="fixed-clear">&nbsp;</div>
   </tal:empty>
-</tal:provider>
+</tal:feedback>

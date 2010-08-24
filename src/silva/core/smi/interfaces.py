@@ -121,11 +121,10 @@ class IMessageProvider(Interface):
         title=u"notification type",
         required=False)
 
-    nofeedback = schema.Bool(
-        title=u"omit feedback",
+    no_empty_feedback = schema.Bool(
+        title=u"omit feedback space if there is no messages",
         required=False,
-        default=False
-        )
+        default=False)
 
 directlyProvides(IMessageProvider, ITALNamespaceData)
 

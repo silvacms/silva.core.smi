@@ -24,7 +24,6 @@
     <tal:header tal:content="structure provider:header" />
     <div class="workspace">
       <tal:replace tal:replace="structure provider:smimiddlegroundmanager" />
-      <tal:replace tal:replace="structure provider:smiversionmanagement" />
       <tal:replace tal:replace="structure provider:smimessages" />
       <div class="middlespace">
         <tal:navigation tal:content="structure provider:navigation" />

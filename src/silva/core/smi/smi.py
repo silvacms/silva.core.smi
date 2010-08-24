@@ -244,6 +244,7 @@ class SMIMessages(silvaviews.ContentProvider):
 
     message = None
     message_type = None
+    no_empty_feedback = False
 
     def update(self):
         if self.request.response.getStatus() == 302:
@@ -255,6 +256,8 @@ class SMIMessages(silvaviews.ContentProvider):
         self.messages = map(
             lambda m: {'text': unicode(m), 'css_class': self.css_class(m)},
             messages)
+        self.no_empty_feedback = (
+            self.no_empty_feedback and not len(self.messages))
 
     def css_class(self, message):
         if message.namespace == 'error':
