@@ -1,6 +1,0 @@
-<div class="fixed-feedback"
-     style="padding:0">
-     <tal:repeat tal:repeat="viewlet provider/viewlets">
-       <tal:item tal:content="structure viewlet/render" />
-     </tal:repeat>
-</div>
