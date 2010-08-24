@@ -234,6 +234,12 @@ class SMIButton(silvaviews.Viewlet):
         return self.request.URL.endswith(self.tab)
 
 
+class SMIPortletManager(silvaviews.ViewletManager):
+    """Third SMI column manager.
+    """
+    grok.view(Interface)
+
+
 class SMIMessages(silvaviews.ContentProvider):
     """ Messages display
     """
