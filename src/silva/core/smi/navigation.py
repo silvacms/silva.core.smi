@@ -71,7 +71,8 @@ class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):
     grok.baseclass()
 
     def get_item_tab_url(self, item):
-        return "%s/edit/%s" % (item.absolute_url(), self.view.tab_name,)
+        tab_name = getattr(self.view, 'tab_name', 'tab_edit')
+        return "%s/edit/%s" % (item.absolute_url(), tab_name,)
 
     def get_icon_url(self, item):
         return get_icon_url(item, self.request)
@@ -129,7 +130,8 @@ class SMINavigationListingForNonContainer(SMINavigationListing):
         return self.container.absolute_url()
 
     def container_tab_url(self):
-        return u"%s/edit/%s" % (self.container_url(), self.view.tab_name,)
+        tab_name = getattr(self.view, 'tab_name', 'tab_edit')
+        return u"%s/edit/%s" % (self.container_url(), tab_name,)
 
     def gentype(self):
         return self.context.meta_type.startswith('Silva ') and \

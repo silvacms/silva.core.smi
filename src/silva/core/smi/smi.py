@@ -158,23 +158,9 @@ class SMITab(SMIView):
 # to register components to, they will become the real tab when we
 # will switch from Silva views to that system completly.
 
-class DummyAccessTab(SMITab):
-    grok.implements(interfaces.IAccessTab)
-    grok.template('smitab')
-    grok.name('tab_access_extra')
-    tab_name = 'tab_access'
 
-
-class PropertiesTab(SMITab):
-    """Properties
-    """
+class DummyPropertiesTab(SMITab):
     grok.implements(interfaces.IPropertiesTab)
-    grok.name('tab_metadata')
-    grok.baseclass()
-
-
-class DummyPropertiesTab(PropertiesTab):
-
     grok.template('smitab')
     grok.name('tab_metadata_extra')
     tab_name = 'tab_metadata'
@@ -195,16 +181,8 @@ class DummyPreviewTab(PreviewTab):
     tab_name = 'tab_preview'
 
 
-class EditTab(SMITab):
-    """Edit
-    """
+class DummyEditTab(SMITab):
     grok.implements(interfaces.IEditTab)
-    grok.name('tab_edit')
-    grok.baseclass()
-
-
-class DummyEditTab(EditTab):
-
     grok.template('smitab')
     grok.name('tab_edit_extra')
     tab_name = 'tab_edit'
