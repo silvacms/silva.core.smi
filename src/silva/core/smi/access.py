@@ -127,7 +127,7 @@ class GrantAccessAction(silvaforms.Action):
                 form.send_message(
                     _('User "${username}" already have role "${role}"',
                       mapping=mapping),
-                    type="feedback")
+                    type="error")
         except UnauthorizedRoleAssignement:
             form.send_message(
                 _(u'You are not allowed to remove role "${role}" '
