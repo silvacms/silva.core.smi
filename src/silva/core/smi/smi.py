@@ -4,24 +4,25 @@
 
 from urllib import quote
 
-from five import grok
-from zope.interface import Interface
-from zope.component import getUtility
-from zope.cachedescriptors.property import CachedProperty
-from zope.i18n import translate
-
-from grokcore.view.meta.views import default_view_name
-
 from AccessControl import getSecurityManager
 from Products.Silva import mangle
 
+from five import grok
+from grokcore.view.meta.views import default_view_name
+from megrok import pagetemplate as pt
 from silva.core.conf.utils import getSilvaViewFor
 from silva.core.interfaces import ISilvaObject, IUserAccessSecurity
 from silva.core.layout.interfaces import IMetadata
-from silva.core.smi import interfaces
-from silva.core.views import views as silvaviews
 from silva.core.messages.interfaces import IMessageService
 from silva.core.messages.service import Message
+from silva.core.smi import interfaces
+from silva.core.views import views as silvaviews
+from silva.core.views.interfaces import IVirtualSite
+from zeam.form import silva as silvaforms
+from zope.cachedescriptors.property import CachedProperty
+from zope.component import getUtility
+from zope.i18n import translate
+from zope.interface import Interface
 
 
 class SMIView(silvaviews.HTTPHeaderView, grok.View):
@@ -93,13 +94,8 @@ class SMILayout(silvaviews.Layout):
 
     def update(self):
         self.metadata = IMetadata(self.context)
-        self.root_url = self.context.get_root_url()
-        self.view_name = self.view.__name__
-        self.have_navigation = not interfaces.ISMINavigationOff.providedBy(
-            self.view)
-        self.viewport_css_class = 'viewport'
-        if self.have_navigation:
-            self.viewport_css_class += ' viewport-with-navigation'
+        self.root_url = IVirtualSite(self.request).get_root_url()
+        self.tab_name = getattr(self.view, 'tab_name', self.view.__name__)
 
 
 class SMIHeader(silvaviews.ContentProvider):
@@ -207,7 +203,7 @@ class SMIMiddleGroundManager(silvaviews.ViewletManager):
                     and viewlet.available())
 
 
-class SMIButton(silvaviews.Viewlet):
+class SMIMiddleGroundButton(silvaviews.Viewlet):
     """A button.
     """
     grok.baseclass()
@@ -233,6 +229,21 @@ class SMIButton(silvaviews.Viewlet):
     def selected(self):
         return self.request.URL.endswith(self.tab)
 
+
+# BBB
+SMIButton = SMIMiddleGroundButton
+
+class SMIMiddleGroundActionForm(silvaforms.SMIViewletForm):
+    grok.baseclass()
+    grok.require('silva.ChangeSilvaContent')
+    grok.implements(interfaces.ISMIExecutorButton)
+    grok.viewletmanager(SMIMiddleGroundManager)
+
+    postOnly = True
+
+
+class SMIMiddleGroundActionFormTemplate(pt.PageTemplate):
+    grok.view(SMIMiddleGroundActionForm)
 
 class SMIPortletManager(silvaviews.ViewletManager):
     """Third SMI column manager.

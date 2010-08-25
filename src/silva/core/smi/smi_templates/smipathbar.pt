@@ -21,7 +21,7 @@
   <a name="top"> </a>
   <tal:block tal:repeat="breadcrumb model/@@absolute_url/breadcrumbs">
     <a tal:content="breadcrumb/name"
-       tal:attributes="href string:${breadcrumb/url}/edit/${layout/view_name}">
+       tal:attributes="href string:${breadcrumb/url}/edit/${layout/tab_name}">
       name
     </a>
     <tal:block tal:condition="not:repeat/breadcrumb/end">

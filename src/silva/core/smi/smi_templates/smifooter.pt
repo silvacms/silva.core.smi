@@ -108,7 +108,7 @@
     <a title="Request an additional role in this location: alt-,"
        accesskey=","
        tal:condition="provider/can_request_role"
-       tal:attributes="href string:public/request_roles?last_url=${context/absolute_url}/edit/${layout/view_name}"
+       tal:attributes="href string:public/request_roles?last_url=${context/absolute_url}/edit/${layout/tab_name}"
        i18n:attributes="title"
        i18n:translate="">
       request access

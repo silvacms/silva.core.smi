@@ -9,6 +9,7 @@ from five import grok
 from silva.core.conf import schema as silvaschema
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
+from silva.core.smi.interfaces import IEditTab
 from silva.translations import translate as _
 from zeam.form.silva.form import ExtractedDecoratedAction
 from zeam.form import silva as silvaforms
@@ -51,14 +52,17 @@ class ImportForm(silvaforms.SMIForm):
     grok.name('tab_edit_import')
     grok.require('silva.ChangeSilvaContent')
     grok.context(IContainer)
+    grok.implements(IEditTab)
 
     tab = 'edit'
 
     label = _(u"import and extract zip archive")
     fields = silvaforms.Fields(IImportFields)
+    actions = silvaforms.Actions(silvaforms.CancelAction())
 
     @silvaforms.action(
-        _(u"Import"),
+        _(u"import"),
+        description=_(u"upload and import file"),
         factory=ExtractedDecoratedAction)
     def import_file(self, data):
         importer = IZipFileImporter(self.context)

@@ -26,10 +26,14 @@
       <tal:replace tal:replace="structure provider:smimiddlegroundmanager" />
       <tal:replace tal:replace="structure provider:smimessages" />
       <div class="middlespace">
-        <tal:navigation tal:content="structure provider:navigation" />
-        <div class="#"
-             tal:attributes="class layout/viewport_css_class">
-          <tal:content tal:content="structure view/content" />
+        <div class="navigation"
+             tal:content="structure provider:sminavigation">
+        </div>
+        <div class="viewport"
+             tal:content="structure view/content">
+        </div>
+        <div class="portlets"
+             tal:content="structure provider:smiportletmanager">
         </div>
         <div class="viewport-clear"></div>
       </div>

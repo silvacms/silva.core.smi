@@ -26,7 +26,7 @@ class SMINavCommon(object):
 
 class SMINoNavigation(silvaviews.ContentProvider):
     grok.layer(interfaces.ISMILayer)
-    grok.name('navigation')
+    grok.name('sminavigation')
     grok.view(interfaces.ISMINavigationOff)
 
     def render(self):
@@ -40,7 +40,7 @@ class SMINoNavigationForContainer(SMINoNavigation):
 class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
     """ Main content provider for navigation
     """
-    grok.name('navigation')
+    grok.name('sminavigation')
     grok.layer(interfaces.ISMILayer)
     grok.view(Interface)
 

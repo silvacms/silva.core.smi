@@ -1,5 +1,8 @@
 <form action="#" tal:attributes="action request.URL" method="post"
       enctype="multipart/form-data" class="middleground-form">
+  <tal:fields tal:repeat="fieldWidget viewlet.fieldWidgets">
+    <tal:field tal:content="structure fieldWidget.render()" />
+  </tal:fields>
   <tal:actions tal:repeat="actionWidget viewlet.actionWidgets">
     <tal:action tal:content="structure actionWidget.render()" />
   </tal:actions>

@@ -5,15 +5,13 @@
 from DateTime import DateTime
 from AccessControl import getSecurityManager
 
-from megrok import pagetemplate as pt
 from five import grok
-from zope.traversing.browser import absoluteURL
-from zeam.form import silva as silvaforms
-
 from silva.core.interfaces import IVersionedContent
-from silva.core.smi.smi import SMIMiddleGroundManager
-from silva.core.smi.interfaces import ISMILayer, ISMIExecutorButton
+from silva.core.smi import smi as silvasmi
+from silva.core.smi.interfaces import ISMILayer
 from silva.translations import translate as _
+from zeam.form import silva as silvaforms
+from zope.traversing.browser import absoluteURL
 
 grok.layer(ISMILayer)
 
@@ -39,19 +37,6 @@ class SMIAction(silvaforms.Action):
         if tab_name:
             url_parts.append(tab_name)
         return form.redirect("/".join(url_parts))
-
-
-class SMIActionForm(silvaforms.SMIViewletForm):
-    grok.baseclass()
-    grok.context(IVersionedContent)
-    grok.implements(ISMIExecutorButton)
-    grok.viewletmanager(SMIMiddleGroundManager)
-
-    postOnly = True
-
-
-class SMIActionFormTemplate(pt.PageTemplate):
-    grok.view(SMIActionForm)
 
 
 class NewVersion(SMIAction):
@@ -178,9 +163,10 @@ class Publish(SMIAction):
         return self.redirect(form)
 
 
-class SMIVersionActionForm(SMIActionForm):
+class SMIVersionActionForm(silvasmi.SMIMiddleGroundActionForm):
     """ Button form to create a new Version
     """
+    grok.context(IVersionedContent)
     grok.order(20)
 
     prefix = 'version_actions'
