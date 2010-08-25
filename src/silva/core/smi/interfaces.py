@@ -135,6 +135,11 @@ class IEditTab(ISMITab):
     """
 
 
+class IEditTabIndex(IEditTab, ISMITabIndex):
+    """Edit tab index: edit form.
+    """
+
+
 class IAddingTab(IEditTab, ISMINavigationOff):
     """Adding tab.
     """
