@@ -34,9 +34,9 @@ class ISMILayer(ICustomizableLayer, INonCachedLayer):
     """Layer for SMI.
     """
     silvaconf.resource('jquery-1.3.2.js')
-    silvaconf.resource('jquery-ui-1.7.2.js')
+    silvaconf.resource('jquery-ui-1.7.3.min.js')
 
-    silvaconf.resource('jquery-ui-1.7.2.css')
+    silvaconf.resource('jquery-ui-1.7.3.custom.css')
     silvaconf.resource('smi.css')
 
 
