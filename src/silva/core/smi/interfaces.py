@@ -19,49 +19,15 @@ class ISMIView(IGrokView):
     """A view in SMI.
     """
 
-# XXX ISMIView and ISMITab should be the same ?
-class ISMITab(IGrokView):
-    """A tab in SMI.
-    """
-
-
-class ISMITabIndex(IGrokView):
-    """A view that is an index of a tab in SMI.
-    """
-
-
 class ISMILayer(ICustomizableLayer, INonCachedLayer):
     """Layer for SMI.
     """
     silvaconf.resource('jquery-1.3.2.js')
     silvaconf.resource('jquery-ui-1.7.3.min.js')
+    silvaconf.resource('smi.js')
 
     silvaconf.resource('jquery-ui-1.7.3.custom.css')
     silvaconf.resource('smi.css')
-
-
-class IAccessTab(ISMITab):
-    """Access tab.
-    """
-
-
-class IPropertiesTab(ISMITab):
-    """Properties tab.
-    """
-
-
-class IPreviewTab(ISMITab):
-    """Preview tab.
-    """
-
-class IPublishTab(ISMITab):
-    """Publish tab.
-    """
-
-
-class IEditTab(ISMITab):
-    """Edit tab.
-    """
 
 
 class ISMIButtonManager(IViewletManager):
@@ -132,3 +98,44 @@ directlyProvides(IMessageProvider, ITALNamespaceData)
 class ISMINavigationOff(Interface):
     """ View implementing this interface won't display navigation
     """
+
+
+# XXX ISMIView and ISMITab should be the same ?
+class ISMITab(IGrokView):
+    """A tab in SMI.
+    """
+
+
+class ISMITabIndex(IGrokView):
+    """A view that is an index of a tab in SMI.
+    """
+
+
+class IAccessTab(ISMITab):
+    """Access tab.
+    """
+
+
+class IPropertiesTab(ISMITab):
+    """Properties tab.
+    """
+
+
+class IPreviewTab(ISMITab):
+    """Preview tab.
+    """
+
+class IPublishTab(ISMITab):
+    """Publish tab.
+    """
+
+
+class IEditTab(ISMITab):
+    """Edit tab.
+    """
+
+
+class IAddingTab(IEditTab, ISMINavigationOff):
+    """Adding tab.
+    """
+    __name__ = Attribute("Content type of the added content")

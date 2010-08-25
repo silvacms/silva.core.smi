@@ -4,11 +4,13 @@
 # $Id$
 
 from Products.Silva.icon import get_meta_type_icon
+from Products.Silva.ExtensionRegistry import extensionRegistry as registry
 
 from five import grok
 from silva.core.interfaces import IContainer
+from silva.core.views import views as silvaviews
 from silva.core.smi import smi as silvasmi
-from silva.core.smi.interfaces import ISMILayer
+from silva.core.smi.interfaces import ISMILayer, IAddingTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zope import schema, interface
@@ -36,7 +38,7 @@ class ImportButton(silvasmi.SMIMiddleGroundButton):
 
 @grok.provider(IContextSourceBinder)
 def silva_content_types(context):
-    contents = [SimpleTerm(value='', token='none', title=_('select:'))]
+    contents = [SimpleTerm(value=None, token='none', title=_('select:'))]
     for addable in context.get_silva_addables():
         contents.append(SimpleTerm(
                 value=addable['name'],
@@ -46,7 +48,10 @@ def silva_content_types(context):
 
 
 class INewContent(interface.Interface):
-    content_type = schema.Choice(
+    position = schema.Int(
+        title=_(u"Content position"),
+        required=False)
+    content = schema.Choice(
         title=_(u"Content type"),
         description=_("Select a new content to add"),
         source=silva_content_types,
@@ -60,21 +65,47 @@ class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
     grok.order(20)
 
     fields = silvaforms.Fields(INewContent)
-    prefix = 'container_actions'
+    fields['position'].mode = silvaforms.HIDDEN
+    prefix = 'md.container'
+    ignoreContent = False
+
+    def __init__(self, *args):
+        super(SMIContainerActionForm, self).__init__(*args)
+        # We edit ourselves, to get the default value (which dependent
+        # of the selected view).
+        self.setContentData(self)
+
+    @property
+    def content(self):
+        if IAddingTab.providedBy(self.view):
+            return self.view.__name__
+        return None
 
     @silvaforms.action(
         _(u"new..."),
+        identifier="new",
         description=_(u"add a new item"))
     def new(self):
         data, errors = self.extractData()
         if errors:
             return silvaforms.FAILURE
-        url = [
-            absoluteURL(self.context, self.request),
-            'edit', '+',
-            data['content_type']]
+        url = [absoluteURL(self.context, self.request), 'edit', '+']
+        if data['content']:
+            url.append(data['content'])
         self.redirect('/'.join(url))
         return silvaforms.SUCCESS
+
+
+class PortletAddDescription(silvaviews.Viewlet):
+    grok.viewletmanager(silvasmi.SMIPortletManager)
+    grok.order(0)
+    grok.view(IAddingTab)
+
+    def update(self):
+        addable = registry.get_addable(self.view.__name__)
+        self.icon = get_meta_type_icon(self.view.__name__)
+        self.title = addable.get('name')
+        self.description = addable.get('doc')
 
 
 class AddingView(silvasmi.SMIPage):

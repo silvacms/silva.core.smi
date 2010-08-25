@@ -245,6 +245,7 @@ class SMIMiddleGroundActionForm(silvaforms.SMIViewletForm):
 class SMIMiddleGroundActionFormTemplate(pt.PageTemplate):
     grok.view(SMIMiddleGroundActionForm)
 
+
 class SMIPortletManager(silvaviews.ViewletManager):
     """Third SMI column manager.
     """

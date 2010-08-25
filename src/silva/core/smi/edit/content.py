@@ -169,7 +169,7 @@ class SMIVersionActionForm(silvasmi.SMIMiddleGroundActionForm):
     grok.context(IVersionedContent)
     grok.order(20)
 
-    prefix = 'version_actions'
+    prefix = 'md.version'
     actions = silvaforms.Actions(
         Publish(_(u'publish now')),
         WithdrawApprovalRequest(_(u'withdraw request')),

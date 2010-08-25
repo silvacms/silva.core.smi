@@ -2,6 +2,8 @@
 # See also LICENSE.txt
 # $Id$
 
+from Acquisition import aq_parent
+
 from five import grok
 from zope.interface import Interface
 
@@ -26,6 +28,9 @@ class SimpleSMILayout(SMILayout):
 
 class ErrorSMILayout(SimpleSMILayout):
     grok.context(Exception)
+
+    def __init__(self, request, context):
+        super(ErrorSMILayout, self).__init__(request, aq_parent(context))
 
 
 class SMIHTTPHeaders(HTTPResponseHeaders):
