@@ -257,7 +257,7 @@ class SMIMessages(silvaviews.ContentProvider):
     """
     grok.context(Interface)
     grok.view(Interface)
-    grok.layer(interfaces.ISMILayer)
+    grok.layer(Interface)
     grok.implements(interfaces.IMessageProvider)
 
     message = None

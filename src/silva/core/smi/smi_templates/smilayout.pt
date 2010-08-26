@@ -34,5 +34,7 @@
       </div>
     </div>
     <tal:footer tal:content="structure provider:footer" />
+    <div id="remote-form-dialog">
+    </div>
   </body>
 </html>

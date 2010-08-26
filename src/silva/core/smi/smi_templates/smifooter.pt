@@ -1,118 +1,112 @@
-<tal:footer i18n:domain="silva">
-<div id="footerarea">
-  <div class="uptotop">
-    <a title="jump to top: alt-t"
-       href="#top"
-       i18n:attributes="title">
-      <img alt="jump to top: alt-t"
-           border="0"
-           height="16"
-           width="16"
-           tal:attributes="src layout/static/up_to_top_gray.gif"
-           i18n:attributes="alt"
-           />
-    </a>
-  </div>
-  <div class="jumtotop">
-    <a title="jump to top: alt-t"
-       accesskey="t"
-       href="#top"
-       i18n:attributes="title">
-      <img alt="jump to top: alt-t"
-           border="0"
-           height="16"
-           width="16"
-           tal:attributes="src layout/static/up_to_top_gray.gif"
-           i18n:attributes="alt"
-           />
-    </a>
-  </div>
-
-  <span tal:replace="nothing">
-    <!-- ______________ page info ______________ -->
-  </span>
-  <div class="footer">
-    <div style="float: left;">
-      <tal:block i18n:translate="">contact:</tal:block>
-      <a shape="rect"
-         tal:attributes="href provider/contact_email_url">
-        <tal:block tal:condition="provider/contact_name"
-                   tal:content="provider/contact_name">
-        </tal:block>
-        <tal:block tal:condition="not:provider/contact_name">
-          <tal:block tal:condition="provider/contact_email"
-                     tal:content="provider/contact_email">
-          </tal:block>
-          <tal:block tal:condition="not:provider/contact_email"
-                     i18n:translate="">
-            no name
-          </tal:block>
-        </tal:block>
+<tal:footer i18n:domain="silva"
+            tal:define="here_url context/@@absolute_url">
+  <div id="footerarea">
+    <div class="uptotop">
+      <a title="jump to top: alt-t"
+         href="#top"
+         i18n:attributes="title">
+        <img alt="jump to top: alt-t"
+             border="0"
+             height="16"
+             width="16"
+             tal:attributes="src layout/static/up_to_top_gray.gif"
+             i18n:attributes="alt" />
       </a>
     </div>
-    <div style="float: right;">
-      <a shape="rect"
-         title="Leave Silva and view the public page: alt-:"
-         tal:attributes="href context/@@absolute_url"
+    <div class="jumtotop">
+      <a title="jump to top: alt-t"
+         accesskey="t"
+         href="#top"
+         i18n:attributes="title">
+        <img alt="jump to top: alt-t"
+             border="0"
+             height="16"
+             width="16"
+             tal:attributes="src layout/static/up_to_top_gray.gif"
+             i18n:attributes="alt" />
+      </a>
+    </div>
+
+    <div class="footer">
+      <div style="float: left;">
+        <tal:block i18n:translate="">contact:</tal:block>
+        <a shape="rect"
+           tal:attributes="href provider/contact_email_url">
+          <tal:block tal:condition="provider/contact_name"
+                     tal:content="provider/contact_name">
+          </tal:block>
+          <tal:block tal:condition="not:provider/contact_name">
+            <tal:block tal:condition="provider/contact_email"
+                       tal:content="provider/contact_email">
+            </tal:block>
+            <tal:block tal:condition="not:provider/contact_email"
+                       i18n:translate="">
+              no name
+            </tal:block>
+          </tal:block>
+        </a>
+      </div>
+      <div style="float: right;">
+        <a shape="rect"
+           title="Leave Silva and view the public page: alt-:"
+           tal:attributes="href here_url"
+           i18n:attributes="title"
+           i18n:translate="">
+          view public version
+        </a>
+      </div>
+      &nbsp;
+    </div>
+
+    <span tal:replace="nothing">
+      <!-- ______________ user tools ______________ -->
+    </span>
+    <div class="personalbar"
+         tal:define="userid provider/username">
+      <div style="float: left;">
+        <a title="Change your settings: alt-~"
+           accesskey="~"
+           class="link-remote-form"
+           href="#"
+           tal:attributes="href string:${here_url}/++rest++userinfo"
+           i18n:attributes="title">
+          <img border="0"
+               height="9"
+               width="9"
+               alt="user icon"
+               tal:attributes="src layout/static/user.png"
+               />
+          <span i18n:translate="">user settings</span>
+        </a>
+      </div>
+      <div style="float:right;">
+        <a href="#"
+           accesskey="q"
+           title="Logout of Silva: alt-q"
+           i18n:translate=""
+           i18n:attributes="title"
+           tal:attributes="href provider/logout_url">
+          logout
+          <tal:block tal:condition="provider/role"
+                     i18n:name="role"
+                     tal:content="structure string:${provider/role}" />
+          <tal:block i18n:name="userid" tal:content="userid" />
+        </a>
+      </div>
+      <a href="#bottom"
+         accesskey="m">
+      </a>
+      <a name="bottom">
+        &nbsp;
+      </a>
+      <a title="Request an additional role in this location: alt-,"
+         accesskey=","
+         tal:condition="provider/can_request_role"
+         tal:attributes="href string:public/request_roles?last_url=${here_url}/edit/${layout/tab_name}"
          i18n:attributes="title"
          i18n:translate="">
-        view public version
+        request access
       </a>
     </div>
-    &nbsp;
   </div>
-
-  <span tal:replace="nothing">
-    <!-- ______________ user tools ______________ -->
-  </span>
-  <div class="personalbar"
-       tal:define="userid provider/username">
-    <div style="float: left;">
-      <a href="service_resources/Silva/edit_member"
-         title="Change your settings: alt-~"
-         accesskey="~"
-         tal:attributes="
-                         onclick string:userWindow = window.open('service_resources/Silva/edit_member', 'userWindow', 'width=450, height=250, resizable=no');;
-                         userWindow.focus();;
-                         return false;;"
-         i18n:attributes="title">
-        <img border="0"
-             height="9"
-             width="9"
-             alt="user icon"
-             tal:attributes="src layout/static/user.png"
-             />
-        <span i18n:translate="">user settings</span>
-      </a>
-    </div>
-    <div style="float:right;">
-      <a href="#"
-         accesskey="q"
-         title="Logout of Silva: alt-q"
-         i18n:translate=""
-         i18n:attributes="title"
-         tal:attributes="href provider/logout_url">
-        logout
-        <tal:block tal:condition="provider/role"
-                   i18n:name="role"
-                   tal:content="structure string:${provider/role}" />
-        <tal:block i18n:name="userid" tal:content="userid" />
-      </a>
-    </div>
-    <a href="#bottom"
-       accesskey="m">
-    </a>
-    <a name="bottom">
-      &nbsp;
-    </a>
-    <a title="Request an additional role in this location: alt-,"
-       accesskey=","
-       tal:condition="provider/can_request_role"
-       tal:attributes="href string:public/request_roles?last_url=${context/absolute_url}/edit/${layout/tab_name}"
-       i18n:attributes="title"
-       i18n:translate="">
-      request access
-    </a>
-  </div>
-</div>
 </tal:footer>

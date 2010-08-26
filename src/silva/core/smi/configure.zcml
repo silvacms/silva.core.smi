@@ -7,11 +7,11 @@
   <include package="silva.core.views" />
   <include package="silva.core.layout" />
   <include package="silva.core.messages" />
-  <include package="zeam.form.silva" />
-  <include package="zeam.form.viewlet" />
   <include package="Products.Silva" />
 
   <!-- Grok this package -->
   <grok:grok package="." />
+
+  <!-- <include package="zeam.form.silva" /> -->
 
 </configure>
