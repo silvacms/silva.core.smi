@@ -14,15 +14,4 @@
   <!-- Grok this package -->
   <grok:grok package="." />
 
-  <browser:resourceInclude
-     layer="silva.core.smi.interfaces.ISMILayer"
-     include="helperscripts.js"
-     base="Products.Silva.browser.scripts" />
-
-  <browser:resourceInclude
-    layer="silva.core.smi.interfaces.ISMILayer"
-    include="handler_registry.js"
-    base="Products.Silva.browser.scripts" />
-
-
 </configure>
