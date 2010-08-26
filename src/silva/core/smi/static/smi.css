@@ -9,6 +9,8 @@ body {
   font: 70% Verdana, Arial, Helvetica, sans-serif;
 }
 
+p { color: #2D374C;}
+
 /* _________________________________________________________ sectors _______ */
 
 div.workspace,
@@ -1202,10 +1204,12 @@ h1 {
 
 h2 {
   font-size: 125%;
+  color:#455885;
 }
 
 h3 {
   font-size: 115%;
+  color:#455885;
 }
 
 h4 {
