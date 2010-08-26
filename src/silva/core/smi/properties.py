@@ -12,8 +12,7 @@ from silva.translations import translate as _
 grok.view(IPropertiesTab)
 
 
-class AddablesButton(smi.SMIButton):
-
+class AddablesButton(smi.SMIMiddleGroundButton):
     grok.context(interfaces.IContainer)
     grok.order(50)
 
@@ -23,8 +22,7 @@ class AddablesButton(smi.SMIButton):
     accesskey = 'd'
 
 
-class SettingsButton(smi.SMIButton):
-
+class SettingsButton(smi.SMIMiddleGroundButton):
     grok.order(10)
 
     tab = 'tab_settings'
@@ -33,8 +31,7 @@ class SettingsButton(smi.SMIButton):
     accesskey = 'e'
 
 
-class LocalSiteButton(smi.SMIButton):
-
+class LocalSiteButton(smi.SMIMiddleGroundButton):
     grok.context(interfaces.IPublication)
     grok.require('zope2.ViewManagementScreens')
     grok.order(70)
@@ -47,8 +44,7 @@ class LocalSiteButton(smi.SMIButton):
         return not interfaces.IRoot.providedBy(self.context)
 
 
-class SubscriptionButton(smi.SMIButton):
-
+class SubscriptionButton(smi.SMIMiddleGroundButton):
     grok.order(110)
 
     tab = 'tab_subscriptions'

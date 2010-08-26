@@ -35,20 +35,19 @@ class IUserInfo(interface.Interface):
     userid = schema.TextLine(
         title=_(u"user identifier"),
         description=_(
-            u"Identifier used to authenticate. Cannot be modified."),
-        readonly=True,
+            u"identifier used to authenticate"),
         required=False)
     fullname = schema.TextLine(
         title=_(u"fullname"),
-        description=_(u"Fullname of the user"),
+        description=_(u"user full name"),
         required=True)
     email = schema.TextLine(
         title=_(u"email address"),
-        description=_(u"Contact email address"),
+        description=_(u"contact email address"),
         required=True)
     language = schema.Choice(
         title=_(u"preferred language"),
-        description=_(u"Silva interface language"),
+        description=_(u"language to use the for Silva interface"),
         source=language_source,
         required=True)
 
@@ -77,10 +76,13 @@ class UserInfo(silvaforms.RESTForm):
     grok.context(ISilvaObject)
     grok.name('userinfo')
 
-    label = _(u"User information")
+    label = _(u"user settings")
     fields = silvaforms.Fields(IUserInfo)
+    fields['userid'].mode = silvaforms.DISPLAY
     ignoreContent = False
-    actions = silvaforms.Actions(silvaforms.EditAction())
+    actions = silvaforms.Actions(
+        silvaforms.EditAction(),
+        silvaforms.CancelAction())
 
     def getContentData(self):
         service = getUtility(IMemberService)

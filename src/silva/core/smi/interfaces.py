@@ -31,29 +31,39 @@ class ISMILayer(ICustomizableLayer, INonCachedLayer):
 
 
 class ISMIButtonManager(IViewletManager):
-    """Where SMI button apprears.
+    """Where SMI (middleground) buttons apprears.
     """
 
 
 class ISMIButton(IViewlet):
     """A button which appears at the top of the management tab.
     """
-    label = Attribute("Label of the button")
-    tab = Attribute("Where do that button links to")
-    accesskey = Attribute("Access Key")
-    help = Attribute("Description of that tab")
 
     def available():
         """Is that button available ?
         """
 
 
-class ISMISpecialButton(Interface):
-    """A special button.
+class ISMIBasicButton(ISMIButton):
+    """Basic link-o-button.
     """
+    label = Attribute("Label of the button")
+    tab = Attribute("Where do that button links to")
+    accesskey = Attribute("Access Key")
+    help = Attribute("Description of that tab")
 
 
-class ISMIExecutorButton(ISMIButton, ISMISpecialButton):
+
+class ISMIRemoteButton(ISMIBasicButton):
+    """Button that open a popup form.
+    """
+    label = Attribute("Label of the button")
+    action = Attribute("What action the popup does trigger")
+    accesskey = Attribute("Access Key")
+    help = Attribute("Description of that tab")
+
+
+class ISMIExecutorButton(ISMIButton):
     """This button execute an action.
     """
 

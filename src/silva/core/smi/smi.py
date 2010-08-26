@@ -20,10 +20,11 @@ from silva.core.views import views as silvaviews
 from silva.core.views.interfaces import IVirtualSite
 from zeam.form import silva as silvaforms
 from zope.cachedescriptors.property import CachedProperty
+from zope.traversing.browser import absoluteURL
 from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface import Interface
-
+from megrok.chameleon.components import ChameleonPageTemplate
 
 class SMIView(silvaviews.HTTPHeaderView, grok.View):
     """A view in SMI.
@@ -192,15 +193,15 @@ class SMIMiddleGroundManager(silvaviews.ViewletManager):
 
     @CachedProperty
     def buttons(self):
-        return (viewlet for viewlet in self.viewlets if \
-                    not interfaces.ISMISpecialButton.providedBy(viewlet) \
-                    and viewlet.available())
+        return (viewlet for viewlet in self.viewlets if
+                not interfaces.ISMIExecutorButton.providedBy(viewlet)
+                and viewlet.available())
 
     @CachedProperty
     def executors(self):
-        return (viewlet for viewlet in self.viewlets if \
-                    interfaces.ISMIExecutorButton.providedBy(viewlet) \
-                    and viewlet.available())
+        return (viewlet for viewlet in self.viewlets if
+                interfaces.ISMIExecutorButton.providedBy(viewlet)
+                and viewlet.available())
 
 
 class SMIMiddleGroundButton(silvaviews.Viewlet):
@@ -209,17 +210,20 @@ class SMIMiddleGroundButton(silvaviews.Viewlet):
     grok.baseclass()
     grok.layer(interfaces.ISMILayer)
     grok.viewletmanager(SMIMiddleGroundManager)
+    grok.implements(interfaces.ISMIBasicButton)
 
-    template = grok.PageTemplate(filename='smi_templates/smibutton.pt')
+    template = ChameleonPageTemplate(filename='smi_templates/smibutton.cpt')
 
     label = None
     tab = None
     help = None
     accesskey = None
 
+    def url(self):
+        return ''.join(
+            (absoluteURL(self.context, self.request), '/edit/', self.tab))
+
     def formatedLabel(self):
-        if interfaces.ISMISpecialButton.providedBy(self):
-            return self.label
         return translate(self.label, context=self.request) + '...'
 
     def available(self):
@@ -233,6 +237,31 @@ class SMIMiddleGroundButton(silvaviews.Viewlet):
 # BBB
 SMIButton = SMIMiddleGroundButton
 
+
+class SMIMiddleGroundRemoteButton(silvaviews.Viewlet):
+    """A button.
+    """
+    grok.baseclass()
+    grok.layer(interfaces.ISMILayer)
+    grok.viewletmanager(SMIMiddleGroundManager)
+    grok.implements(interfaces.ISMIRemoteButton)
+
+    template = ChameleonPageTemplate(
+        filename='smi_templates/smiremotebutton.cpt')
+
+    label = None
+    action = None
+    help = None
+    accesskey = None
+
+    def url(self):
+        return ''.join(
+            (absoluteURL(self.context, self.request), '/++rest++', self.action))
+
+    def available(self):
+        return True
+
+
 class SMIMiddleGroundActionForm(silvaforms.SMIViewletForm):
     grok.baseclass()
     grok.require('silva.ChangeSilvaContent')
@@ -240,6 +269,9 @@ class SMIMiddleGroundActionForm(silvaforms.SMIViewletForm):
     grok.viewletmanager(SMIMiddleGroundManager)
 
     postOnly = True
+
+    def available(self):
+        return True
 
 
 class SMIMiddleGroundActionFormTemplate(pt.PageTemplate):

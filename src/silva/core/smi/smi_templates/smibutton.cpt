@@ -1,0 +1,11 @@
+<tal:button i18n:domain="silva">
+  <a href="${viewlet.url()}"
+     tal:attributes="title viewlet.help;
+                     class viewlet.selected and 'selected' or None;
+                     accesskey viewlet.accesskey">
+    <span tal:replace="viewlet.label"
+          tal:condition="viewlet.selected" />
+    <span tal:replace="viewlet.formatedLabel()"
+          tal:condition="not viewlet.selected" />
+  </a>
+</tal:button>

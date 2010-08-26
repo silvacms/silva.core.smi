@@ -10,6 +10,7 @@ from zope import interface, schema, component
 
 from Products.Silva.Security import UnauthorizedRoleAssignement
 
+from silva.core.smi import smi as silvasmi
 from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
 from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import IAccessSecurity, IUserAccessSecurity
@@ -18,6 +19,7 @@ from silva.core.services.interfaces import IMemberService
 from silva.core.cache.store import SessionStore
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
+from zeam.form.silva.interfaces import IRESTCloseOnSuccessAction
 
 USER_STORE_KEY = 'lookup user'
 
@@ -37,6 +39,16 @@ class AccessTab(silvaforms.SMIComposedForm):
                     u"to this content and content below it.")
 
 
+class LookupUserButton(silvasmi.SMIMiddleGroundRemoteButton):
+    grok.view(IAccessTab)
+    grok.order(20)
+
+    label = _(u"lookup users")
+    description = _(u"look for users to assign roles: alt-l")
+    action = 'smi-lookupuser'
+    accesskey = u'l'
+
+
 class ILookupUser(interface.Interface):
     """Lookup a new user
     """
@@ -46,28 +58,22 @@ class ILookupUser(interface.Interface):
         required=True)
 
 
-class LookupUserForm(silvaforms.SMISubForm):
-    """Form to manage default permission needed to see the current
-    content.
-    """
-    grok.context(ISilvaObject)
-    grok.order(10)
-    grok.view(AccessTab)
+class LookupUserAction(silvaforms.Action):
+    grok.implements(IRESTCloseOnSuccessAction)
 
-    label = _(u"lookup users")
-    description = _(u"Lookup new user to give them roles.")
-    fields = silvaforms.Fields(ILookupUser)
+    title = _(u"lookup user")
+    description = _(u"look for users in order to assign them roles")
 
-    @silvaforms.action(
-        _(u"lookup user"),
-        description=_(u"look for users in order to assign them roles"))
-    def lookup(self):
-        data, errors = self.extractData()
+    def __call__(self, form):
+        data, errors = form.extractData()
         if errors:
+            form.send_message(
+                _(u"There were errors."),
+                type="error")
             return silvaforms.FAILURE
         username = data['user'].strip()
         if len(username) < 2:
-            self.send_message(
+            form.send_message(
                 _(u"Search input is too short. "
                   u"Please supply more characters"),
                 type="error")
@@ -75,23 +81,39 @@ class LookupUserForm(silvaforms.SMISubForm):
 
         service = component.getUtility(IMemberService)
 
-        store = SessionStore(self.request)
+        store = SessionStore(form.request)
         users = set()
-        for member in service.find_members(username, location=self.context):
+        for member in service.find_members(username, location=form.context):
             users.add(member.userid())
         if users:
             users = store.get(USER_STORE_KEY, set()).union(users)
             store.set(USER_STORE_KEY, users)
-            self.send_message(
+            form.send_message(
                 _(u"Found ${count} users: ${users}",
                   mapping={'count': len(users),
                            'users': u', '.join(users)}),
                 type="feedback")
         else:
-            self.send_message(
+            form.send_message(
                 _(u"No matching users"),
                 type="error")
+            return silvaforms.FAILURE
         return silvaforms.SUCCESS
+
+
+class LookupUserForm(silvaforms.RESTForm):
+    """Form to manage default permission needed to see the current
+    content.
+    """
+    grok.name('smi-lookupuser')
+    grok.context(ISilvaObject)
+
+    label = _(u"lookup users")
+    description = _(u"Lookup new user to give them roles.")
+    fields = silvaforms.Fields(ILookupUser)
+    actions = silvaforms.Actions(
+        LookupUserAction(),
+        silvaforms.CancelAction())
 
 
 class IGrantRole(interface.Interface):

@@ -69,11 +69,10 @@ class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
     prefix = 'md.container'
     ignoreContent = False
 
-    def __init__(self, *args):
-        super(SMIContainerActionForm, self).__init__(*args)
+    def getContentData(self):
         # We edit ourselves, to get the default value (which dependent
         # of the selected view).
-        self.setContentData(self)
+        return self.dataManager(self)
 
     @property
     def content(self):
