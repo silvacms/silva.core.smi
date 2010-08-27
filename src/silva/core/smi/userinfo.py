@@ -24,10 +24,17 @@ def language_source(context):
             value=None,
             token='none',
             title=_(u'Use browser language setting'))]
-    language = ILanguageProvider(context.REQUEST)
-    for lang in language.getAvailableLanguages():
+    languages = ILanguageProvider(context.REQUEST)
+    codes = languages.getAvailableLanguages()
+    # If the current language is not in the available list, we
+    # still add it in order to prevent vocabularies to fail
+    preferred = languages.getPreferredLanguage()
+    if preferred not in codes:
+        codes.append(preferred)
+    codes.sort()
+    for lang in codes:
         langs.append(SimpleTerm(
-                value=lang, token=lang, title=language.getLanguageName(lang)))
+                value=lang, token=lang, title=languages.getLanguageName(lang)))
     return SimpleVocabulary(langs)
 
 
@@ -49,7 +56,7 @@ class IUserInfo(interface.Interface):
         title=_(u"preferred language"),
         description=_(u"language to use the for Silva interface"),
         source=language_source,
-        required=True)
+        required=False)
 
 
 class UserDataManager(silvaforms.ObjectDataManager):
