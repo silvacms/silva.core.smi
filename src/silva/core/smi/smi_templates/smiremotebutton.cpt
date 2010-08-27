@@ -1,5 +1,5 @@
 <tal:button i18n:domain="silva">
-  <a href="${viewlet.url()}" class="link-remote-form"
+  <a href="${viewlet.url()}" class="link-popup-form"
      tal:attributes="title viewlet.help;
                      accesskey viewlet.accesskey"
      tal:content="viewlet.label">

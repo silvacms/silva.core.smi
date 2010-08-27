@@ -1,0 +1,9 @@
+<div class="middleground">
+  <div class="executor" tal:condition="viewletmanager.executors">
+    <tal:button tal:repeat="button viewletmanager.executors"
+               tal:replace="structure button.render()" />
+  </div>
+  <tal:button tal:repeat="button viewletmanager.buttons"
+             tal:replace="structure button.render()" />
+  &nbsp;
+</div>

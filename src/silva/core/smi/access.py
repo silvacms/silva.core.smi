@@ -41,7 +41,7 @@ class AccessTab(silvaforms.SMIComposedForm):
 
 class LookupUserButton(silvasmi.SMIMiddleGroundRemoteButton):
     grok.view(IAccessTab)
-    grok.order(20)
+    grok.order(0)
 
     label = _(u"lookup users")
     description = _(u"look for users to assign roles: alt-l")
@@ -49,7 +49,7 @@ class LookupUserButton(silvasmi.SMIMiddleGroundRemoteButton):
     accesskey = u'l'
 
 
-class ILookupUser(interface.Interface):
+class ILookupUserSchema(interface.Interface):
     """Lookup a new user
     """
     user = schema.TextLine(
@@ -83,15 +83,18 @@ class LookupUserAction(silvaforms.Action):
 
         store = SessionStore(form.request)
         users = set()
+        new_users = set()
         for member in service.find_members(username, location=form.context):
-            users.add(member.userid())
-        if users:
+            userid = member.userid()
+            users.add(userid)
+            new_users.add(userid)
+        if new_users:
             users = store.get(USER_STORE_KEY, set()).union(users)
             store.set(USER_STORE_KEY, users)
             form.send_message(
                 _(u"Found ${count} users: ${users}",
-                  mapping={'count': len(users),
-                           'users': u', '.join(users)}),
+                  mapping={'count': len(new_users),
+                           'users': u', '.join(new_users)}),
                 type="feedback")
         else:
             form.send_message(
@@ -110,7 +113,7 @@ class LookupUserForm(silvaforms.RESTForm):
 
     label = _(u"lookup users")
     description = _(u"Lookup new user to give them roles.")
-    fields = silvaforms.Fields(ILookupUser)
+    fields = silvaforms.Fields(ILookupUserSchema)
     actions = silvaforms.Actions(
         LookupUserAction(),
         silvaforms.CancelAction())

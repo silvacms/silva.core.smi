@@ -510,11 +510,6 @@ table.listing td.listing-right {
   white-space: nowrap;
 }
 
-/* deprecated, use designator
-table.listing td.field-title {
-  text-align: right;
-}
-*/
 /*
 * some usability selectors:
 * create a displayed block of the links, because then you can click on
@@ -852,15 +847,18 @@ table.listing td.designator span.matchlabel {
   font-size: 115%;
 }
 table.listing td.designator p, td.designator ul,
+table.listing td.element p,
 table.listing td.field p {
   margin:0;
   color:#667;
 }
 table.listing tr:hover td.designator p,
 table.listing tr:hover td.designator ul:hover,
+table.listing tr:hover td.element p,
 table.listing tr:hover td.field p {
   color:#333;
 }
+table.listing td.element,
 table.listing td.field {
   padding-top:0.1em;
   padding-right:0.4em;

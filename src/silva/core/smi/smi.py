@@ -26,6 +26,7 @@ from zope.i18n import translate
 from zope.interface import Interface
 from megrok.chameleon.components import ChameleonPageTemplate
 
+
 class SMIView(silvaviews.HTTPHeaderView, grok.View):
     """A view in SMI.
     """
@@ -193,15 +194,15 @@ class SMIMiddleGroundManager(silvaviews.ViewletManager):
 
     @CachedProperty
     def buttons(self):
-        return (viewlet for viewlet in self.viewlets if
-                not interfaces.ISMIExecutorButton.providedBy(viewlet)
-                and viewlet.available())
+        return [viewlet for viewlet in self.viewlets if
+                ((not interfaces.ISMIExecutorButton.providedBy(viewlet))
+                 and viewlet.available())]
 
     @CachedProperty
     def executors(self):
-        return (viewlet for viewlet in self.viewlets if
-                interfaces.ISMIExecutorButton.providedBy(viewlet)
-                and viewlet.available())
+        return [viewlet for viewlet in self.viewlets if
+                (interfaces.ISMIExecutorButton.providedBy(viewlet)
+                 and viewlet.available())]
 
 
 class SMIMiddleGroundButton(silvaviews.Viewlet):

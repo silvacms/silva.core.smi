@@ -2,6 +2,8 @@
 # See also LICENSE.txt
 # $Id$
 
+import operator
+
 from DateTime import DateTime
 from AccessControl import getSecurityManager
 
@@ -176,3 +178,8 @@ class SMIVersionActionForm(silvasmi.SMIMiddleGroundActionForm):
         RejectApprovalRequest(_(u'reject request')),
         RevokeApproval(_(u'revoke approval')),
         NewVersion(_(u'new version')))
+
+    def available(self):
+        return reduce(
+            operator.or_,
+            [False] + map(lambda a: a.available(self), self.actions))
