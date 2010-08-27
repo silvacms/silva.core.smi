@@ -46,7 +46,7 @@ class SMITopMenu(SMIMenu):
 class SMIEditMenu(SMITopMenu):
     """ Menu for the edit tab
     """
-    grok.name(u'menu_edit')
+    grok.name(u'smimenutabs')
     path = u'edit'
 
     def selected(self):

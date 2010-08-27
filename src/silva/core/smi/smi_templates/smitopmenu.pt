@@ -1,22 +1,23 @@
 <div class="tabs"
-    i18n:domain="silva">
+     i18n:domain="silva">
   <span tal:replace="nothing"><!-- _______ public link _______ --></span>
   <a class="transportlet"
-    style="float:right"
-    title="Leave Silva and view the public page: alt-;"
-    accesskey=";"
-    tal:attributes="href context/absolute_url"
-    i18n:attributes="title"
-    i18n:translate="">
+     style="float:right"
+     id="smi-content-url"
+     title="Leave Silva and view the public page: alt-;"
+     accesskey=";"
+     tal:attributes="href context/absolute_url"
+     i18n:attributes="title"
+     i18n:translate="">
     view...
   </a>
   <span tal:replace="nothing"><!-- _______ help link _______ --></span>
   <a class="normal"
-    title="Silva access keys: alt-?"
-    accesskey="?"
-    tal:condition="exists:view/help_url"
-    tal:attributes="href view/help_url"
-    i18n:attributes="title"></a>
+     title="Silva access keys: alt-?"
+     accesskey="?"
+     tal:condition="exists:view/help_url"
+     tal:attributes="href view/help_url"
+     i18n:attributes="title"></a>
   <tal:menu tal:repeat="viewlet provider/viewlets">
     <tal:menuitem tal:content="structure viewlet/render" />
   </tal:menu>

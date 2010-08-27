@@ -12,6 +12,23 @@
   <!-- Grok this package -->
   <grok:grok package="." />
 
+  <!-- SMI absolute_url -->
+  <view
+     for=".interfaces.ISMITab"
+     factory=".smi.SMIAbsoluteURL"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     permission="zope.Public"
+     provides="silva.core.views.interfaces.ISilvaURL"
+     />
+
+  <browser:page
+     for=".interfaces.ISMITab"
+     name="absolute_url"
+     class=".smi.SMIAbsoluteURL"
+     permission="zope.Public"
+     allowed_interface="silva.core.views.interfaces.ISilvaURL"
+     />
+
   <!-- <include package="zeam.form.silva" /> -->
 
 </configure>

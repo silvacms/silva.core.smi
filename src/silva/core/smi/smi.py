@@ -4,12 +4,15 @@
 
 from urllib import quote
 
+from Acquisition import aq_parent
 from AccessControl import getSecurityManager
 from Products.Silva import mangle
 
 from five import grok
 from grokcore.view.meta.views import default_view_name
+from infrae import rest
 from megrok import pagetemplate as pt
+from megrok.chameleon.components import ChameleonPageTemplate
 from silva.core.conf.utils import getSilvaViewFor
 from silva.core.interfaces import ISilvaObject, IUserAccessSecurity
 from silva.core.layout.interfaces import IMetadata
@@ -17,14 +20,26 @@ from silva.core.messages.interfaces import IMessageService
 from silva.core.messages.service import Message
 from silva.core.smi import interfaces
 from silva.core.views import views as silvaviews
+from silva.core.views.absoluteurl import AbsoluteURL
 from silva.core.views.interfaces import IVirtualSite
 from zeam.form import silva as silvaforms
 from zope.cachedescriptors.property import CachedProperty
-from zope.traversing.browser import absoluteURL
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from zope.i18n import translate
 from zope.interface import Interface
-from megrok.chameleon.components import ChameleonPageTemplate
+from zope.traversing.browser import absoluteURL
+
+
+
+class SMIAbsoluteURL(AbsoluteURL):
+    """Support URL computation on SMI pages/views/forms.
+    """
+
+    def url(self, preview=False):
+        path = list(aq_parent(self.context).getPhysicalPath())
+        # Insert back the 'edit' element. We don't care about preview here.
+        path.extend(['edit', self.context.tab_name])
+        return self.request.physicalPathToURL(path)
 
 
 class SMIView(silvaviews.HTTPHeaderView, grok.View):
@@ -135,7 +150,7 @@ class SMIFooter(silvaviews.ContentProvider):
 
 class SMIPathBar(silvaviews.ContentProvider):
     grok.context(Interface)
-    grok.name('path_bar')
+    grok.name('smipathbar')
     grok.layer(interfaces.ISMILayer)
 
     def is_manager(self):
@@ -314,3 +329,14 @@ class SMIMessages(silvaviews.ContentProvider):
         if message.namespace == 'error':
             return 'fixed-alert'
         return 'fixed-feedback'
+
+
+class SMIFeedback(rest.REST):
+    grok.name('smi-feedback')
+    grok.context(ISilvaObject)
+
+    def GET(self):
+        messages = getMultiAdapter(
+            (self.context, self.request, self), name='smimessages')
+        messages.update()
+        return self.json_response({'messages': messages.render()})

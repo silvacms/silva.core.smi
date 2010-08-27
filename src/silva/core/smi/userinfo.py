@@ -72,7 +72,7 @@ class UserDataManager(silvaforms.ObjectDataManager):
             return self.language.setPreferredLanguage(value)
 
 
-class UserInfo(silvaforms.RESTForm):
+class UserInfo(silvaforms.RESTPopupForm):
     grok.context(ISilvaObject)
     grok.name('userinfo')
 

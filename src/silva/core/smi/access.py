@@ -19,7 +19,8 @@ from silva.core.services.interfaces import IMemberService
 from silva.core.cache.store import SessionStore
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
-from zeam.form.silva.interfaces import IRESTCloseOnSuccessAction
+from zeam.form.silva.interfaces import (
+    IRESTCloseOnSuccessAction, IRESTRefreshAction)
 
 USER_STORE_KEY = 'lookup user'
 
@@ -59,7 +60,8 @@ class ILookupUserSchema(interface.Interface):
 
 
 class LookupUserAction(silvaforms.Action):
-    grok.implements(IRESTCloseOnSuccessAction)
+    grok.implements(IRESTCloseOnSuccessAction, IRESTRefreshAction)
+    refresh = 'form-userrole'
 
     title = _(u"lookup user")
     description = _(u"look for users in order to assign them roles")
@@ -104,7 +106,7 @@ class LookupUserAction(silvaforms.Action):
         return silvaforms.SUCCESS
 
 
-class LookupUserForm(silvaforms.RESTForm):
+class LookupUserForm(silvaforms.RESTPopupForm):
     """Form to manage default permission needed to see the current
     content.
     """
@@ -117,6 +119,15 @@ class LookupUserForm(silvaforms.RESTForm):
     actions = silvaforms.Actions(
         LookupUserAction(),
         silvaforms.CancelAction())
+
+
+class UserRole(silvaforms.SMISubFormGroup):
+    grok.context(ISilvaObject)
+    grok.order(20)
+    grok.view(AccessTab)
+
+    #label = _(u'manage users roles')
+    #description = _(u"find, add and remove roles to users")
 
 
 class IGrantRole(interface.Interface):
@@ -195,7 +206,7 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     """
     grok.context(ISilvaObject)
     grok.order(20)
-    grok.view(AccessTab)
+    grok.view(UserRole)
 
     label = _(u"user roles")
     ignoreContent = False
