@@ -209,7 +209,9 @@ div.middleground {
   background-image: url(reflection.png);
   background-position: top left;
   background-repeat: repeat-x;
-  line-height: 140%;
+  /* line-height: 140%;
+  not sure why this needs to be 20% higher */
+  line-height: 160%;
 }
 
 div.middleground form.middleground-form {
@@ -232,7 +234,6 @@ div.middleground input[type="submit"] {
 
 div.middleground input[type="submit"] {
   margin:0;
-  height: 15px;
   padding-bottom: 0;
   line-height: none;
 }
