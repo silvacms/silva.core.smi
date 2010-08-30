@@ -10,7 +10,8 @@ from five import grok
 from silva.core.interfaces import IContainer
 from silva.core.views import views as silvaviews
 from silva.core.smi import smi as silvasmi
-from silva.core.smi.interfaces import ISMILayer, IAddingTab
+from silva.core.smi.interfaces import ISMILayer
+from silva.core.smi.interfaces import IAddingTab, IPublicationAwareTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zope import schema, interface
@@ -27,8 +28,9 @@ grok.layer(ISMILayer)
 
 class ImportButton(silvasmi.SMIMiddleGroundButton):
     grok.context(IContainer)
+    grok.order(200)
     grok.require('silva.ChangeSilvaContent')
-    grok.order(50)
+    grok.view(IPublicationAwareTab)
 
     tab = 'tab_edit_import'
     label = _(u"import")
@@ -61,6 +63,7 @@ class INewContent(interface.Interface):
 class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
     """ Button form to create a new Version
     """
+    grok.view(IPublicationAwareTab)
     grok.context(IContainer)
     grok.order(20)
 

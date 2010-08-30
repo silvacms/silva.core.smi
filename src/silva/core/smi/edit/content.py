@@ -10,7 +10,7 @@ from AccessControl import getSecurityManager
 from five import grok
 from silva.core.interfaces import IVersionedContent
 from silva.core.smi import smi as silvasmi
-from silva.core.smi.interfaces import ISMILayer
+from silva.core.smi.interfaces import ISMILayer, IPublicationAwareTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zope.traversing.browser import absoluteURL
@@ -21,17 +21,11 @@ grok.layer(ISMILayer)
 class SMIAction(silvaforms.Action):
     """Base for Action.
     """
-    tabs = ('tab_edit', 'tab_preview', 'tab_metadata')
-
-    def form_tab_name(self, form):
-        return getattr(form.view, 'tab_name', None)
+    grok.view(IPublicationAwareTab)
 
     def can_approve_content(self, form):
         return getSecurityManager().checkPermission(
             'Approve Silva content', form.context)
-
-    def available(self, form):
-        return (self.form_tab_name(form) in self.tabs)
 
     def redirect(self, form):
         url_parts = [absoluteURL(form.context, form.request), 'edit']
@@ -48,8 +42,7 @@ class NewVersion(SMIAction):
     accesskey = u'n'
 
     def available(self, form):
-        return (SMIAction.available(self, form) and
-                (form.context.get_editable() is None))
+        return form.context.get_editable() is None
 
     def __call__(self, form):
         form.context.create_copy()
@@ -66,8 +59,7 @@ class WithdrawApprovalRequest(SMIAction):
     accesskey = u'w'
 
     def available(self, form):
-        return (SMIAction.available(self, form) and
-                not self.can_approve_content(form) and
+        return (not self.can_approve_content(form) and
                 bool(form.context.is_version_approval_requested()))
 
     def __call__(self, form):
@@ -95,8 +87,7 @@ class RejectApprovalRequest(SMIAction):
     accesskey = u'w'
 
     def available(self, form):
-        return (SMIAction.available(self, form) and
-                self.can_approve_content(form) and
+        return (self.can_approve_content(form) and
                 bool(form.context.is_version_approval_requested()))
 
     def __call__(self, form):
@@ -124,8 +115,7 @@ class RevokeApproval(SMIAction):
     accesskey = u'r'
 
     def available(self, form):
-        return (SMIAction.available(self, form) and
-                bool(form.context.get_approved_version()))
+        return bool(form.context.get_approved_version())
 
     def __call__(self, form):
         form.context.unapprove_version()
@@ -142,8 +132,7 @@ class Publish(SMIAction):
     accesskey = u'p'
 
     def available(self, form):
-        return (SMIAction.available(self, form) and
-                self.can_approve_content(form) and
+        return (self.can_approve_content(form) and
                 bool(form.context.get_unapproved_version()))
 
     def __call__(self, form):

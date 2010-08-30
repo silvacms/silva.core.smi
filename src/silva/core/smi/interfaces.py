@@ -121,26 +121,37 @@ class ISMITabIndex(IGrokView):
     """
 
 
+class IPublicationAwareTab(ISMITab):
+    """Tabs where publication like tasks are done.
+    """
+
+
+class IEditionAwareTab(IPublicationAwareTab):
+    """Tabs where edition like tasks are done.
+    """
+
+
 class IAccessTab(ISMITab):
     """Access tab.
     """
 
 
-class IPropertiesTab(ISMITab):
+class IPropertiesTab(IEditionAwareTab):
     """Properties tab.
     """
 
 
-class IPreviewTab(ISMITab):
+class IPreviewTab(IEditionAwareTab):
     """Preview tab.
     """
 
-class IPublishTab(ISMITab):
+
+class IPublishTab(IPublicationAwareTab):
     """Publish tab.
     """
 
 
-class IEditTab(ISMITab):
+class IEditTab(IEditionAwareTab):
     """Edit tab.
     """
 
