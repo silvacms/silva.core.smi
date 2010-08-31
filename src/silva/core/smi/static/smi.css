@@ -218,6 +218,7 @@ div.middleground form.middleground-form {
   display: inline;
 }
 
+a.popup-button,
 div.middleground a,
 div.middleground input[type="submit"] {
   /* The normal, unselected buttons. They are all links */
@@ -232,26 +233,42 @@ div.middleground input[type="submit"] {
   font-weight: normal;
 }
 
+a.popup-button {
+  float: left;
+  line-height: 1.6em;
+  padding-bottom: 0px;
+}
+
+.zeam-form span.footer-fields {
+  line-height: 1.6em;
+  float: right;
+}
+
 div.middleground input[type="submit"] {
   margin:0;
   padding-bottom: 0;
   line-height: none;
 }
 
+a.popup-button:link,
 div.middleground a:link {
   color: #d9f3f1;
   background-color: #4d5680;
+  text-decoration: none;
 }
+a.popup-button:visited,
 div.middleground a:visited {
   color: #d9f3f1;
   background-color: #4d5680;
 }
+a.popup-button:hover,
 div.middleground a:hover {
   border-color: #567;
   color: #e5fffe;
   background-color: #74748b;
   text-decoration: none;
 }
+a.popup-button:active,
 div.middleground a:active {
   border-color: #789;
   color: #b3fffb;

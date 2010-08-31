@@ -10,7 +10,6 @@ from zope import interface, schema, component
 
 from Products.Silva.Security import UnauthorizedRoleAssignement
 
-from silva.core.smi import smi as silvasmi
 from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
 from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import IAccessSecurity, IUserAccessSecurity
@@ -40,11 +39,8 @@ class AccessTab(silvaforms.SMIComposedForm):
                     u"to this content and content below it.")
 
 
-class LookupUserButton(silvasmi.SMIMiddleGroundRemoteButton):
-    grok.view(IAccessTab)
-    grok.order(0)
-
-    label = _(u"lookup users")
+class LookupUserPopupAction(silvaforms.PopupAction):
+    title = _(u"lookup users")
     description = _(u"look for users to assign roles: alt-l")
     action = 'smi-lookupuser'
     accesskey = u'l'
@@ -144,6 +140,9 @@ class GrantAccessAction(silvaforms.Action):
     title = _(u"grant role")
     description = _(u"grant selected role to selected users(s)")
 
+    def available(self, form):
+        return len(form.lines) != 0
+
     def __call__(self, form, authorization, line):
         data, errors = form.extractData(form.fields)
         if errors:
@@ -178,18 +177,26 @@ class RevokeAccessAction(silvaforms.Action):
     title = _(u"revoke role")
     description=_(u"revoke roles of selected user(s)")
 
+    def available(self, form):
+        return reduce(
+            operator.or_,
+            [False] + map(lambda l: l.getContent().local_role is not None,
+                          form.lines))
+
     def __call__(self, form, authorization, line):
         try:
+            role = authorization.local_role
+            username = authorization.username
             if authorization.revoke():
                 form.send_message(
                     _('Removed role "${role}" from user "${username}"',
-                      mapping={'role': authorization.local_role,
-                               'username': authorization.username}),
+                      mapping={'role': role,
+                               'username': username}),
                     type="feedback")
             else:
                 form.send_message(
                     _('User "${username}" doesn\'t have any local role',
-                      mapping={'username': authorization.username}),
+                      mapping={'username': username}),
                     type="error")
         except UnauthorizedRoleAssignement, error:
             form.send_message(
@@ -216,10 +223,12 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     fields['role'].mode = silvaforms.INPUT
     fields['role'].ignoreRequest = False
     fields['role'].ignoreContent = True
+    fields['role'].available = lambda form: len(form.lines) != 0
     tableFields = silvaforms.Fields(IUserAuthorization)
     tableFields['username'].mode = 'silva.icon'
     tableActions = silvaforms.TableActions(
-        RevokeAccessAction(), GrantAccessAction())
+        RevokeAccessAction(),
+        GrantAccessAction())
 
     def getItems(self):
         access = IUserAccessSecurity(self.context)
@@ -233,8 +242,11 @@ class LookupUserResultForm(UserAccessForm):
     """
     grok.order(11)
 
-    label = _(u"lookup results")
-    tableActions = silvaforms.TableActions(GrantAccessAction())
+    emptyDescription = _(u"Search for users to assign them roles.")
+    label = _(u"user clipboard")
+    tableActions = silvaforms.TableActions(
+        GrantAccessAction(),
+        LookupUserPopupAction())
 
     @CachedProperty
     def store(self):
@@ -243,19 +255,19 @@ class LookupUserResultForm(UserAccessForm):
     def getUserIds(self):
         return self.store.get(USER_STORE_KEY, set())
 
-    def available(self):
-        return len(self.getUserIds()) != 0
-
     def getItems(self):
         user_ids = self.getUserIds()
-        access = IUserAccessSecurity(self.context)
-        authorizations = access.get_users_authorization(user_ids).items()
-        authorizations.sort(key=operator.itemgetter(0))
-        return map(operator.itemgetter(1), authorizations)
+        if user_ids:
+            access = IUserAccessSecurity(self.context)
+            authorizations = access.get_users_authorization(user_ids).items()
+            authorizations.sort(key=operator.itemgetter(0))
+            return map(operator.itemgetter(1), authorizations)
+        return []
 
     @silvaforms.action(
-        _(u"clear result"),
-        description=_(u"clear user lookup results"))
+        _(u"clear clipboard"),
+        description=_(u"clear user clipboard"),
+        available=lambda form: len(form.lines) != 0)
     def clear(self):
         self.store.set(USER_STORE_KEY, set())
 
@@ -267,7 +279,6 @@ class IGrantRole(interface.Interface):
     acquired = schema.Bool(
         title=_(u"is role acquired ?"),
         description=_(u"acquire the minimum role from the parent content"),
-        readonly=True,
         required=False)
     role = schema.Choice(
         title=_(u"minimum role"),
@@ -291,6 +302,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     ignoreContent = False
     dataManager = silvaforms.makeAdaptiveDataManager(IAccessSecurity)
     fields = silvaforms.Fields(IGrantRole)
+    fields['acquired'].mode = silvaforms.DISPLAY
 
     @silvaforms.action(
         _(u"acquire restriction"),
