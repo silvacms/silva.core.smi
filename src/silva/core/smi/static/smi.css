@@ -767,6 +767,7 @@ select.manipulator {
 background-color:#195A3E;
 }
 
+td.element select.field,
 select.store {
   width:100%;
 }
@@ -1042,6 +1043,7 @@ input[type="radio"] {
 }
 input[type="checkbox"] {
   margin: 0 1px;
+  with: auto;
 }
 
 /* default stylers for classless buttons (either delete or make into shockers):
