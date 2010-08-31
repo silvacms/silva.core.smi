@@ -14,10 +14,7 @@ p { color: #2D374C;}
 /* _________________________________________________________ sectors _______ */
 
 div.workspace,
-div#footerarea {
-  background: #dde5ee;
-}
-
+div#footerarea { background: #dde5ee;}
 
 div.simple-page {
   padding: 50px;
@@ -25,9 +22,7 @@ div.simple-page {
   border-bottom: 1em solid #4C5C6C;
 }
 
-div.simple-page h1 {
-  font-size: 200%;
-}
+div.simple-page h1 { font-size: 200%;}
 
 /* ____________________________________ path bar _______ */
 
@@ -45,9 +40,7 @@ div.pathbar a {
   color: #373e42;
   font-weight: normal;
 }
-div.pathbar a:visited {
-  color: #373e42;
-}
+div.pathbar a:visited { color: #373e42;}
 div.pathbar a:hover {
   color: #60686b;
   text-decoration: underline;
@@ -58,9 +51,7 @@ div.pathbar a.manage {
   color: #757c7f;
 }
 
-div.pathbar a.idea {
-  color: #c2c5c7;
-}
+div.pathbar a.idea { color: #c2c5c7;}
 div.pathbar a.idea:visited {
   color: #c2c5c7;
 }
@@ -148,9 +139,7 @@ div.tabs a.left {
   border-style: solid none solid solid;
 }
 
-div.tabs a.left:hover {
-  border-bottom-color: #c1daf3;
-}
+div.tabs a.left:hover { border-bottom-color: #c1daf3;}
 
 div.tabs a.right {
   /* The right side of the tab. */
@@ -357,13 +346,8 @@ div.personalbar img {
 
 /* _______________________________ columns table _______ */
 
-table {
-  font-size: 100%; /* for IE 5.x */
-}
-
 table th, table td {
   vertical-align: top;
-  /*padding:0;*/
 }
 
 table.columns {
@@ -740,12 +724,14 @@ textarea {
 }
 
 input.store, textarea.store, input.field, textarea.field {
-  width: 99%;
+  width: auto;
 }
 
 /* ie7 valid css hack */
 *:first-child+html input.store,
-*:first-child+html textarea.store {
+*:first-child+html textarea.store,
+*:first-child+html input.field,
+*:first-child+html textarea.field {
   width:97%;
 }
 
@@ -773,7 +759,8 @@ select.store {
 }
 
 /* ie7 valid css hack */
-*:first-child+html select.store {
+*:first-child+html select.store,
+*:first-child+html select.field {
   width:98%;
 }
 
@@ -782,11 +769,6 @@ select.transporter {
   border-color: #283365 #345 #283365;
   color: #d9f3f1;
   background-color: #283365;
-}
-
-/* for forms editor IE6 */
-.fixIE6widget {
-  width: 90%;
 }
 
 /* seems to keep IE7 in check without anything else */
