@@ -278,15 +278,6 @@ div.middleground div.executor input[type="submit"]:active {
   background-color: #64ABC8;
 }
 
-/* --- valid ie6 and ie7 hack --- */
-
-*:first-child+html div.middleground div.executor select,
-* html div.middleground div.executor select,
-*:first-child+html div.middleground div.executor input[type="submit"],
-* html div.middleground div.executor input[type="submit"] {
-  float: right;
-}
-
 /* _______ middleground transporter _______ */
 
 div.middleground div.transporter { float: left;}
@@ -696,7 +687,16 @@ textarea {
 }
 
 input.store, textarea.store, input.field, textarea.field {
-  width: auto;
+  width: 99%;
+}
+
+/* valid ie6 and ie7 hack */
+
+*:first-child+html input.store, *:first-child+html input.field,
+* html input.store, * html input.field,  
+*:first-child+html textarea.store, *:first-child+html textarea.field,
+* html textarea.store, * html textarea.field {
+  width: 97%;
 }
 
 select {
