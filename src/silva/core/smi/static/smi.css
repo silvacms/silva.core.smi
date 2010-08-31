@@ -220,6 +220,11 @@ div.middleground a {
   float: left;
 }
 
+.zeam-form span.footer-fields { 
+  line-height: 1.6em; 
+  float: right; 
+} 
+
 div.middleground select,
 div.middleground input[type="submit"] {
   height: 16px;
