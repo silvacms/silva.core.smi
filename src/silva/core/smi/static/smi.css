@@ -147,9 +147,7 @@ div.tabs a.right {
   border-style: solid solid solid none;
 }
 
-div.tabs a.right:hover {
-  border-bottom-color: #c1daf3;
-}
+div.tabs a.right:hover { border-bottom-color: #c1daf3;}
 
 div.tabs img {
   margin: 0.3em 0 0;
@@ -266,9 +264,7 @@ div.middleground a.selected {
 
 /* _______ middleground executor (action buttons) _______ */
 
-div.middleground div.executor {
-  float: right;
-}
+div.middleground div.executor { float: right;}
 
 div.middleground div.executor a,
 div.middleground div.executor input[type="submit"] {
@@ -297,9 +293,7 @@ div.middleground div.executor input[type="submit"]:active {
 
 /* _______ middleground transporter _______ */
 
-div.middleground div.transporter {
-  float: left;
-}
+div.middleground div.transporter { float: left;}
 
 /* ______________________________________ footer _______ */
 
@@ -319,9 +313,7 @@ div.footer a {
   font-weight: normal;
   text-decoration: none;
 }
-div.footer a:visited {
-  color: #000;
-}
+div.footer a:visited { color: #000;}
 
 /* ________________________________ personal bar _______ */
 
@@ -336,23 +328,15 @@ div.personalbar a {
   color: #b7cee6;
   text-decoration: none;
 }
-div.personalbar a:visited {
-  color: #b7cee6;
-}
+div.personalbar a:visited { color: #b7cee6;}
 
-div.personalbar img {
-  vertical-align: middle;
-}
+div.personalbar img { vertical-align: middle;}
 
 /* _______________________________ columns table _______ */
 
-table th, table td {
-  vertical-align: top;
-}
+table th, table td { vertical-align: top;}
 
-table.columns {
-  width: 100%;
-}
+table.columns { width: 100%;}
 
 /* 3 column table (default) */
 table.columns td.left {
@@ -395,9 +379,7 @@ table.listing {
   font-family:"Lucida Grande", "Lucida Sans Unicode", verdana, arial, helvetica, sans-serif;
 }
 
-table.listing img {
-  vertical-align: middle;
-}
+table.listing img { vertical-align: middle;}
 
 /* ______________ rows ______________ */
 
@@ -429,9 +411,7 @@ table.listing tr.controls td {
 table.listing tr.odd {
   background: #d7e4f0;
 }
-table.listing tr.even td {
-  background: #cfdbe7;
-}
+table.listing tr.even td { background: #cfdbe7;}
 
 /* applies only to mozilla and IE7 */
 table.listing tr.odd:hover td, table.listing tr.even:hover td {
@@ -693,15 +673,11 @@ table.listing a.right:hover {
   text-decoration: none;
 }
 
-div.normal {
-  display: block;
-}
+div.normal { display: block;}
 
 /* ________________________________ focus shapes _______ */
 
-form.sublisting {
-  padding-top: 1em;
-}
+form.sublisting { padding-top: 1em;}
 
 /* ________________________________________________ form definitions _______ */
 
@@ -821,29 +797,19 @@ input.canceler, button.canceler {
 }
 
 /* _______ state coded publishing action buttons _______ */
-input.rejector {
-  background-color: #8f7f01;
-}
-input.revoker {
-  background-color: #008c55;
-}
-input.closer {
-  background-color: #202080;
-}
+input.rejector { background-color: #8f7f01;}
+input.revoker { background-color: #008c55;}
+input.closer { background-color: #202080;}
 
 /* _______ form labels _______ */
 
-label {
-  color: #403f80;
-}
+label { color: #403f80;}
 
 tr.controls label, tr.inter-controls label {
   color: #e0eefc;
 }
 
-th label {
-  color: #e0eefc;
-}
+th label { color: #e0eefc;}
 
 /* _______ field iterators _______ */
 
@@ -957,9 +923,7 @@ input:focus:hover, textarea:focus:hover {
   background-color: #f2fcfc;
 }
 
-select:focus, select:hover {
-  color:#336;
-}
+select:focus, select:hover { color:#336;}
 
 /* _______ controls candy: hover/focus _______ */
 
@@ -1626,6 +1590,4 @@ button.calendar-button {
   width: 720px;
 }
 
-.viewport-clear {
-   clear: both;
-}
+.viewport-clear { clear: both;}
