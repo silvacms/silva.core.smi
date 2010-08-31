@@ -13,13 +13,14 @@ from Products.Silva.Security import UnauthorizedRoleAssignement
 from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
 from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import IAccessSecurity, IUserAccessSecurity
-from silva.core.interfaces import IUserAuthorization, role_vocabulary
+from silva.core.interfaces import IUserAuthorization
+from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
 from silva.core.services.interfaces import IMemberService
 from silva.core.cache.store import SessionStore
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import (
-    IRESTCloseOnSuccessAction, IRESTRefreshAction)
+    IRESTCloseOnSuccessAction, IRESTRefreshAction, IRemoverAction)
 
 USER_STORE_KEY = 'lookup user'
 
@@ -173,6 +174,7 @@ class GrantAccessAction(silvaforms.Action):
 
 
 class RevokeAccessAction(silvaforms.Action):
+    grok.implements(IRemoverAction)
 
     title = _(u"revoke role")
     description=_(u"revoke roles of selected user(s)")
@@ -267,7 +269,8 @@ class LookupUserResultForm(UserAccessForm):
     @silvaforms.action(
         _(u"clear clipboard"),
         description=_(u"clear user clipboard"),
-        available=lambda form: len(form.lines) != 0)
+        available=lambda form: len(form.lines) != 0,
+        implements=IRemoverAction)
     def clear(self):
         self.store.set(USER_STORE_KEY, set())
 
@@ -280,10 +283,10 @@ class IGrantRole(interface.Interface):
         title=_(u"is role acquired ?"),
         description=_(u"acquire the minimum role from the parent content"),
         required=False)
-    role = schema.Choice(
+    minimum_role = schema.Choice(
         title=_(u"minimum role"),
         description=_(u"minimum required role needed to access this content"),
-        source=role_vocabulary,
+        source=authenticated_role_vocabulary,
         required=False)
 
 
@@ -307,7 +310,9 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     @silvaforms.action(
         _(u"acquire restriction"),
         description=_(u"set access restriction to acquire its "
-                      u"settings from the parent"))
+                      u"settings from the parent"),
+        available=lambda form: not form.getContent().is_acquired(),
+        implements=IRemoverAction)
     def acquire(self):
         access = self.getContentData().getContent()
         if access.is_acquired():
@@ -323,15 +328,24 @@ class AccessPermissionForm(silvaforms.SMISubForm):
 
     @silvaforms.action(
         _(u"set restriction"),
-        description=_(u"restrict access to this content to the selected role"))
+        description=_(
+            u"restrict access to this content to the selected role"))
     def restrict(self):
         data, errors = self.extractData()
         if errors:
             return silvaforms.FAILURE
-        role = data['role']
-        access = self.getContentData().getContent()
+        role = data['minimum_role']
+        access = self.getContent()
         if role:
             access.set_minimum_role(role)
+            self.send_message(
+                _(u'minimum required role to access this content '
+                  u'set to "${role}"',
+                  mapping=dict(role=role)),
+                type=u"feedback")
         else:
             access.set_acquired()
+            self.send_message(
+                _(u"minimum required role to access this content acquired"),
+                type=u"feedback")
         return silvaforms.SUCCESS

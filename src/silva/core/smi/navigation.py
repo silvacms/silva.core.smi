@@ -54,10 +54,10 @@ class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
         return IRoot.providedBy(self.tree_root)
 
     def up_url(self):
-        return '%s/../edit/%s' % (self.context_url, self.view.__name__,)
+        return '%s/../edit/%s' % (self.context_url, self.view.tab_name,)
 
     def top_url(self):
-        return '%s/edit/%s' % (self.layout.root_url, self.view.__name__,)
+        return '%s/edit/%s' % (self.layout.root_url, self.view.tab_name,)
 
     def top_image_src(self):
         if IPublication.providedBy(self.tree_root):
@@ -71,8 +71,7 @@ class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):
     grok.baseclass()
 
     def get_item_tab_url(self, item):
-        tab_name = getattr(self.view, 'tab_name', 'tab_edit')
-        return "%s/edit/%s" % (item.absolute_url(), tab_name,)
+        return "%s/edit/%s" % (item.absolute_url(), self.view.tab_name,)
 
     def get_icon_url(self, item):
         return get_icon_url(item, self.request)
