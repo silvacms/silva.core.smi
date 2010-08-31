@@ -703,14 +703,6 @@ input.store, textarea.store, input.field, textarea.field {
   width: auto;
 }
 
-/* ie7 valid css hack */
-*:first-child+html input.store,
-*:first-child+html textarea.store,
-*:first-child+html input.field,
-*:first-child+html textarea.field {
-  width:97%;
-}
-
 select {
   margin: 0 1px 1px 0;
   border: 1px solid #366;
