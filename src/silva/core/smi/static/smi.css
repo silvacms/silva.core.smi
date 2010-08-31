@@ -195,7 +195,7 @@ div.middleground {
   background-position: top left;
   background-repeat: repeat-x;
   line-height: 140%;
-  height: 18px;
+  height: 16px;
 }
 
 div.middleground form.middleground-form { display: inline;}
@@ -204,7 +204,7 @@ a.popup-button,
 div.middleground a,
 div.middleground input[type="submit"] {
   /* The normal, unselected buttons. They are all links */
-  padding: 0em 2em 0.1em;
+  padding: 0 1em 0;
   border: 1px solid #345;
   margin: 0;
   border-style: none solid none;
@@ -212,7 +212,7 @@ div.middleground input[type="submit"] {
   background-position: top left;
   background-repeat: repeat-x;
   font-weight: normal;
-  height: 17px;
+  height: 16px;
 }
 
 div.middleground a {
@@ -222,9 +222,7 @@ div.middleground a {
 
 div.middleground select,
 div.middleground input[type="submit"] {
-  margin:0;
-  padding-bottom: 0;
-  height: 18px;
+  height: 16px;
 }
 
 a.popup-button:link,
@@ -261,6 +259,9 @@ div.middleground a.selected {
 /* _______ middleground executor (action buttons) _______ */
 
 div.middleground div.executor { float: right;}
+
+/* be nice to chrome */
+div.middleground div.executor select { float: left;}
 
 div.middleground div.executor a,
 div.middleground div.executor input[type="submit"] {
@@ -782,6 +783,7 @@ input.remover, input.warning, button.remover, button.warning {
 input.canceler, button.canceler {
   color: #ccd7d6;
   background-color: #444446;
+  float: left;
 }
 
 /* _______ state coded publishing action buttons _______ */
