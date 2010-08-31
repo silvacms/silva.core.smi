@@ -242,7 +242,7 @@ class UserAccessForm(silvaforms.SMISubTableForm):
 class LookupUserResultForm(UserAccessForm):
     """Form to give/revoke access to users.
     """
-    grok.order(11)
+    grok.order(10)
 
     emptyDescription = _(u"Search for users to assign them roles.")
     label = _(u"user clipboard")
@@ -276,7 +276,7 @@ class LookupUserResultForm(UserAccessForm):
 
 
 
-class IGrantRole(interface.Interface):
+class IAccessMinimumRole(interface.Interface):
     """A role for a user.
     """
     acquired = schema.Bool(
@@ -304,7 +304,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     ignoreRequest = True
     ignoreContent = False
     dataManager = silvaforms.makeAdaptiveDataManager(IAccessSecurity)
-    fields = silvaforms.Fields(IGrantRole)
+    fields = silvaforms.Fields(IAccessMinimumRole)
     fields['acquired'].mode = silvaforms.DISPLAY
 
     @silvaforms.action(
