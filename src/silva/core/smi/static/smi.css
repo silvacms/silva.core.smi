@@ -195,7 +195,7 @@ div.middleground {
   background-position: top left;
   background-repeat: repeat-x;
   line-height: 140%;
-  height: 17px;
+  height: 18px;
 }
 
 div.middleground form.middleground-form { display: inline;}
@@ -211,9 +211,8 @@ div.middleground input[type="submit"] {
   background-image: url(reflection.png);
   background-position: top left;
   background-repeat: repeat-x;
-  /* xxx wim needed ? text-align: center; */
   font-weight: normal;
-  height: 16px;
+  height: 17px;
 }
 
 div.middleground a {
@@ -221,10 +220,11 @@ div.middleground a {
   float: left;
 }
 
+div.middleground select,
 div.middleground input[type="submit"] {
   margin:0;
   padding-bottom: 0;
-  height: 17px;
+  height: 18px;
 }
 
 a.popup-button:link,
@@ -707,14 +707,13 @@ select {
   font: normal 100% verdana, helvetica, arial, sans-serif;
   font-size: 95%;
   vertical-align: top;
-  height: 17px;
 }
 
 select.manipulator {
   border: 1px solid #6bb591;
   border-color: #064C29 #345 #064C29;
   color: #d9f3da;
-background-color:#195A3E;
+  background-color:#195A3E;
 }
 
 td.element select.field,
@@ -757,6 +756,7 @@ input.button, input.action, input.canceler, button.button, input.manipulator {
   background-position: top left;
   background-repeat: repeat-x;
   cursor: pointer;
+  height: 18px;
 }
 
 /* used in conflict situations where public view css would win */
