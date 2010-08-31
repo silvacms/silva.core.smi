@@ -971,7 +971,7 @@ input[type="radio"] {
 }
 input[type="checkbox"] {
   margin: 0 1px;
-  with: auto;
+  width: auto;
 }
 
 /* default stylers for classless buttons (either delete or make into shockers):
