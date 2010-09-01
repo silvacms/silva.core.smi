@@ -1,8 +1,7 @@
-/* reset css */
+/* --- reset css --- */
 html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{font-size:100%;}legend{color:#000;}del,ins{text-decoration:none;}
 
-/* --- str Table of contents --- */
-
+/* --- start Table of contents --- */
 /* _________________________________________________________ sectors _______ */
 /* ____________________________________ path bar _______ */
 /* __________________________________ matrix nav _______ */
@@ -71,7 +70,9 @@ html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pr
    kupu */
 /* end reference lookup window styles */
 /* for the calendar button */
-
+/* ______________________________________ Middlespace ____ */
+/* ___ navigation ___ */
+/* ___ viewport ___ */
 /* --- end table of contents */
 
 html { background-color: #9ab;}
@@ -261,11 +262,6 @@ div.flowbar {
 }
 
 /* ________________________________ middleground _______ */
-
-.zeam-form span.footer-fields { 
-  line-height: 1.6em; 
-  float: right; 
-}
 
 div.middleground {
   border-bottom: 1px solid #657;
@@ -1533,7 +1529,7 @@ div.listingbar .previous { margin-right: 5em;}
    kupu */
 button.kupu-button {
  height: 20px;
- padding: 0px;
+ padding:0;
 }
 
 .kupu-link-reference-table { width: 100%;}
@@ -1590,22 +1586,33 @@ button.calendar-button {
   margin-right: 5px;
 }
 
+/* ______________________________________ Middlespace ____ */
+
+.middlespace { padding:0 8px;}
+
+/* ___ navigation ___ */
+
 .navigation {
   width: 250px;
   float: left;
 }
 
-.middlespace { padding: 0px 8px;}
-
-.portlets {
-  width: 250px;
-  float: left;
-}
+/* ___ viewport ___ */
 
 .viewport {
-  padding: 0px 10px 0px 10px;
+  padding: 0 10px 0 10px;
   float: left;
   width: 720px;
 }
 
 .viewport-clear { clear: both;}
+
+.zeam-form span.footer-fields { 
+  line-height: 1.6em; 
+  float: right; 
+}
+
+.portlets {
+  width: 250px;
+  float: left;
+}
