@@ -127,7 +127,7 @@ class UserRole(silvaforms.SMISubFormGroup):
     #description = _(u"find, add and remove roles to users")
 
 
-class IGrantRole(interface.Interface):
+class IGrantRoleSchema(interface.Interface):
     """A role for a user.
     """
     role = schema.Choice(
@@ -221,7 +221,7 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     ignoreContent = False
     ignoreRequest = True
     mode = silvaforms.DISPLAY
-    fields = silvaforms.Fields(IGrantRole)
+    fields = silvaforms.Fields(IGrantRoleSchema)
     fields['role'].mode = silvaforms.INPUT
     fields['role'].ignoreRequest = False
     fields['role'].ignoreContent = True
@@ -254,11 +254,8 @@ class LookupUserResultForm(UserAccessForm):
     def store(self):
         return SessionStore(self.request)
 
-    def getUserIds(self):
-        return self.store.get(USER_STORE_KEY, set())
-
     def getItems(self):
-        user_ids = self.getUserIds()
+        user_ids = self.store.get(USER_STORE_KEY, set())
         if user_ids:
             access = IUserAccessSecurity(self.context)
             authorizations = access.get_users_authorization(user_ids).items()
@@ -276,7 +273,7 @@ class LookupUserResultForm(UserAccessForm):
 
 
 
-class IAccessMinimumRole(interface.Interface):
+class IAccessMinimumRoleSchema(interface.Interface):
     """A role for a user.
     """
     acquired = schema.Bool(
@@ -304,7 +301,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     ignoreRequest = True
     ignoreContent = False
     dataManager = silvaforms.makeAdaptiveDataManager(IAccessSecurity)
-    fields = silvaforms.Fields(IAccessMinimumRole)
+    fields = silvaforms.Fields(IAccessMinimumRoleSchema)
     fields['acquired'].mode = silvaforms.DISPLAY
 
     @silvaforms.action(
