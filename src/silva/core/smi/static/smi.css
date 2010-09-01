@@ -96,11 +96,9 @@ div.simple-page h1 { font-size: 200%;}
 
 /* ____________________________________ path bar _______ */
 div.pathbar {
-  padding: 0em 4px 0.2em 22px;
+  padding: 0 4px 0.2em 22px;
   color: #51585c;
-  background-image: url(skylight.gif);
-  background-repeat: repeat-x;
-  background-color: #b0c4d8;
+  background: #b0c4d8 url(skylight.gif) repeat-x;
   font-size: 90%;
   line-height: 1.4em;
 }
@@ -142,9 +140,7 @@ div.tabs {
   border-width: 1px;
   border-style: none none solid none;
   border-bottom-color: #BCC2CA;
-  background-image: url(skyrise.gif);
-  background-repeat: repeat-x;
-  background-color: #d7e8f0;
+  background: #d7e8f0 url(skyrise.gif) repeat-x;
 }
 
 /* The normal, unselected tabs. They are all links */
@@ -156,10 +152,7 @@ div.tabs a {
   border: 1px solid #3d4b67;
   border-bottom-color: #757c7f;
   color: #e3ecff;
-  background-color: #61738A;
-  background-image: url(reflection.png);
-  background-position: top left;
-  background-repeat: repeat-x;
+  background: #61738A url(reflection.png) repeat-x top left;
   text-align: center;
   font-weight: normal;
 }
@@ -234,8 +227,8 @@ div.tabs div.air {
 /* view public page button */
 div.tabs a.transportlet {
   width: auto;
-  padding-right:1em;
-  padding-left:1.5em;
+  padding-right: 1em;
+  padding-left: 1.5em;
 }
 
 /* help (available as accesskey link) */
@@ -265,7 +258,7 @@ div.middleground {
 div.middleground form.middleground-form { display: inline;}
 
 /* The normal, unselected buttons. They are all links */
-a.popup-button, div.middleground a, div.middleground input[type="submit"] {
+div.middleground a, div.middleground input[type="submit"] {
   padding: 0 0.5em;
   border: 1px solid #345;
   margin: 0;
@@ -434,12 +427,12 @@ table.listing img { vertical-align: middle;}
 table.listing td.top {
   padding: 0;
   color: #c5d4ca;
-  background: #456;
+  background-color: #456;
 }
 
 table.listing tr.top-controls td {
   padding: 0 0.3em 0.2em;
-  background: #567;
+  background-color: #567;
 }
 
 table.listing tr.inter-controls td {
@@ -457,7 +450,7 @@ table.listing tr.controls td {
 
 /* cycle text color in listing rows */
 table.listing tr.odd {
-  background: #d7e4f0;
+  background-color: #d7e4f0;
 }
 table.listing tr.even td { background: #cfdbe7;}
 
@@ -799,17 +792,19 @@ input.action {
 }
 
 /* manipulator button style from which all others derive */
-input.button, input.action, input.canceler, button.button, input.manipulator {
+a.popup-button, input.button, input.action, input.canceler, button.button, input.manipulator {
   margin: 0 1px;
-  padding: 1px 0.5em;
+  padding: 0 5px 10px;
   border: none;
   color: #d9f3da;
-  background-color: #064C29;
-  background-image: url(reflection.png);
-  background-position: top left;
-  background-repeat: repeat-x;
+  background: #064C29 url(reflection.png) top left repeat-x;
   cursor: pointer;
   height: 18px;
+}
+
+a.popup-button {
+  padding: 0 5px 2px;
+  line-height: 16px;
 }
 
 /* used in conflict situations where public view css would win */
@@ -1508,9 +1503,7 @@ button.kupu-link-reference:hover { background-color: #b3d4bf;}
 
 /* for the calendar button */
 button.calendar-button {
-  background-image: url("calendar.gif");
-  background-repeat:no-repeat;
-  background-position:3px -1px;
+  background: url("calendar.gif") no-repeat 3px -1px;
   margin-top:2px;
   border:none;
 }
