@@ -35,14 +35,14 @@ class AccessTab(silvaforms.SMIComposedForm):
 
     tab = 'access'
 
-    label = _(u"manage access to Silva content")
-    description = _(u"This screen let you authorize or cancel access "
-                    u"to this content and content below it.")
+    label = _(u"manage access to content")
+    description = _(u"This screen lets you authorize or revoke access "
+                    u"to this item and all content it contains.")
 
 
 class LookupUserPopupAction(silvaforms.PopupAction):
-    title = _(u"lookup users")
-    description = _(u"look for users to assign roles: alt-l")
+    title = _(u"lookup users...")
+    description = _(u"search for users to assign them roles: alt-l")
     action = 'smi-lookupuser'
     accesskey = u'l'
 
@@ -61,20 +61,20 @@ class LookupUserAction(silvaforms.Action):
     refresh = 'form-userrole'
 
     title = _(u"lookup user")
-    description = _(u"look for users in order to assign them roles")
+    description = _(u"search for users to assign them roles")
 
     def __call__(self, form):
         data, errors = form.extractData()
         if errors:
             form.send_message(
-                _(u"There were errors."),
+                _(u"Sorry, there were errors."),
                 type="error")
             return silvaforms.FAILURE
         username = data['user'].strip()
         if len(username) < 2:
             form.send_message(
-                _(u"Search input is too short. "
-                  u"Please supply more characters"),
+                _(u"The search input is too short. "
+                  u"Please enter two or more characters."),
                 type="error")
             return silvaforms.FAILURE
 
@@ -97,7 +97,7 @@ class LookupUserAction(silvaforms.Action):
                 type="feedback")
         else:
             form.send_message(
-                _(u"No matching users"),
+                _(u"No matching users found."),
                 type="error")
             return silvaforms.FAILURE
         return silvaforms.SUCCESS
@@ -111,7 +111,7 @@ class LookupUserForm(silvaforms.RESTPopupForm):
     grok.context(ISilvaObject)
 
     label = _(u"lookup users")
-    description = _(u"Lookup new user to give them roles.")
+    description = _(u"search for users to assign them roles")
     fields = silvaforms.Fields(ILookupUserSchema)
     actions = silvaforms.Actions(
         LookupUserAction(),
@@ -124,7 +124,7 @@ class UserRole(silvaforms.SMISubFormGroup):
     grok.view(AccessTab)
 
     #label = _(u'manage users roles')
-    #description = _(u"find, add and remove roles to users")
+    #description = _(u"find, add and remove roles for users")
 
 
 class IGrantRoleSchema(interface.Interface):
@@ -139,7 +139,7 @@ class IGrantRoleSchema(interface.Interface):
 class GrantAccessAction(silvaforms.Action):
 
     title = _(u"grant role")
-    description = _(u"grant selected role to selected users(s)")
+    description = _(u"grant the selected role to selected users(s)")
 
     def available(self, form):
         return len(form.lines) != 0
@@ -161,12 +161,12 @@ class GrantAccessAction(silvaforms.Action):
                     type="feedback")
             else:
                 form.send_message(
-                    _('User "${username}" already have role "${role}"',
+                    _('User "${username}" already has the role "${role}"',
                       mapping=mapping),
                     type="error")
         except UnauthorizedRoleAssignement:
             form.send_message(
-                _(u'You are not allowed to remove role "${role}" '
+                _(u'Sorry, you are not allowed to remove the role "${role}" '
                   u'from user "${userid}"',
                   mapping=mapping),
                 type="error")
@@ -177,7 +177,7 @@ class RevokeAccessAction(silvaforms.Action):
     grok.implements(IRemoverAction)
 
     title = _(u"revoke role")
-    description=_(u"revoke roles of selected user(s)")
+    description=_(u"revoke the role of selected user(s)")
 
     def available(self, form):
         return reduce(
@@ -191,18 +191,18 @@ class RevokeAccessAction(silvaforms.Action):
             username = authorization.username
             if authorization.revoke():
                 form.send_message(
-                    _('Removed role "${role}" from user "${username}"',
+                    _(u'Removed role "${role}" from user "${username}"',
                       mapping={'role': role,
                                'username': username}),
                     type="feedback")
             else:
                 form.send_message(
-                    _('User "${username}" doesn\'t have any local role',
+                    _(u'User "${username}" doesn\'t have any local role',
                       mapping={'username': username}),
                     type="error")
         except UnauthorizedRoleAssignement, error:
             form.send_message(
-                _(u'You are not allowed to remove role "${role}" '
+                _(u'Sorry, you are not allowed to remove the role "${role}" '
                   u'from user "${userid}"',
                   mapping={'role': error.args[0],
                            'userid': error.args[1]}),
@@ -218,6 +218,7 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     grok.view(UserRole)
 
     label = _(u"user roles")
+    emptyDescription = _(u'No roles have been assigned.')
     ignoreContent = False
     ignoreRequest = True
     mode = silvaforms.DISPLAY
@@ -244,8 +245,12 @@ class LookupUserResultForm(UserAccessForm):
     """
     grok.order(10)
 
-    emptyDescription = _(u"Search for users to assign them roles.")
     label = _(u"user clipboard")
+    emptyDescription = _(u'In order to assign roles to users, first lookup '
+                         u'users so they\'re listed on this user clipboard. '
+                         u'Then assign the users roles. Any users on the '
+                         u'clipboard will remain when you move to other '
+                         u'areas of the site.')
     tableActions = silvaforms.TableActions(
         GrantAccessAction(),
         LookupUserPopupAction())
@@ -265,7 +270,7 @@ class LookupUserResultForm(UserAccessForm):
 
     @silvaforms.action(
         _(u"clear clipboard"),
-        description=_(u"clear user clipboard"),
+        description=_(u"clear the user clipboard"),
         available=lambda form: len(form.lines) != 0,
         implements=IRemoverAction)
     def clear(self):
@@ -277,7 +282,7 @@ class IAccessMinimumRoleSchema(interface.Interface):
     """A role for a user.
     """
     acquired = schema.Bool(
-        title=_(u"is role acquired ?"),
+        title=_(u"is the role acquired ?"),
         description=_(u"acquire the minimum role from the parent content"),
         required=False)
     minimum_role = schema.Choice(
@@ -297,7 +302,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
 
     label = _(u"public view access restriction")
     description = _(u"Setting an access restriction here affects "
-                    u"contents on this and lower levels.")
+                    u"content on this and lower levels.")
     ignoreRequest = True
     ignoreContent = False
     dataManager = silvaforms.makeAdaptiveDataManager(IAccessSecurity)
@@ -306,20 +311,20 @@ class AccessPermissionForm(silvaforms.SMISubForm):
 
     @silvaforms.action(
         _(u"acquire restriction"),
-        description=_(u"set access restriction to acquire its "
-                      u"settings from the parent"),
+        description=_(u"set the access restriction to acquire its "
+                      u"setting from the parent container"),
         available=lambda form: not form.getContent().is_acquired(),
         implements=IRemoverAction)
     def acquire(self):
         access = self.getContentData().getContent()
         if access.is_acquired():
             self.send_message(
-                _(u"Minimum role setting was already acquired"),
+                _(u"The minimum role setting was already acquired"),
                 type="error")
         else:
             access.set_acquired()
             self.send_message(
-                _(u"Acquiring minimum role setting"),
+                _(u"Now acquiring minimum role setting"),
                 type="feedback")
         return silvaforms.SUCCESS
 
@@ -343,6 +348,6 @@ class AccessPermissionForm(silvaforms.SMISubForm):
         else:
             access.set_acquired()
             self.send_message(
-                _(u"minimum required role to access this content acquired"),
+                _(u"minimum required role to access this content is acquired"),
                 type=u"feedback")
         return silvaforms.SUCCESS
