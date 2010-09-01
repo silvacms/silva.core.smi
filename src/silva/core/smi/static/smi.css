@@ -28,7 +28,7 @@ html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pr
 /* _______ pseudo form button selectors, matches transporter button style _______ */
 /* transport between screens */
 /* _______ subscreen parent links _______ */
-* _____________________________ form control interaction _______ */
+/* _____________________________ form control interaction _______ */
 /* _______ field interaction _______ */
 /* these selectors are also define unclassed submit buttons */
 /* _______ controls candy: hover/focus _______ */
@@ -65,9 +65,7 @@ html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pr
 /* ____________________________________________________ local styles _______ */
 /* definitions for batching */
 /* styles for the elaborate code source */
-/* styles for the dynamic reference lookup window (from
-   kupustyles.css) so that this widget works outside of
-   kupu */
+/* styles for the dynamic reference lookup window */
 /* end reference lookup window styles */
 /* for the calendar button */
 /* ______________________________________ Middlespace ____ */
