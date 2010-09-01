@@ -5,6 +5,7 @@ html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pr
 /* _________________________________________________________ sectors _______ */
 /* ____________________________________ path bar _______ */
 /* __________________________________ matrix nav _______ */
+/* The normal, unselected tabs. They are all links */
 /* ____________________________________ flow bar _______ */
 /* ________________________________ middleground _______ */
 /* The normal, unselected buttons. They are all links */
@@ -272,6 +273,7 @@ div.middleground a, div.middleground input[type="submit"] {
 div.middleground a {
   display: block;
   float: left;
+  margin-right:2px;
 }
 
 a.popup-button:link, div.middleground a:link {
@@ -302,7 +304,11 @@ div.middleground a.selected {
 }
 
 /* _______ middleground executor (action buttons) _______ */
-div.middleground div.executor { float: right;}
+
+div.middleground div.executor { 
+  float: right;
+  margin-right: 8px;
+}
 
 div.middleground div.executor select { 
   float: left;
@@ -336,7 +342,10 @@ div.middleground div.executor a:active, div.middleground div.executor input[type
 }
 
 /* _______ middleground transporter _______ */
-div.middleground div.transporter { float: left;}
+div.middleground div.transporter { 
+  float: left;
+  margin-left: 8px;
+}
 
 /* ______________________________________ footer _______ */
 div.footer {
@@ -1196,7 +1205,7 @@ table.listing div.message {
 
 /* ______________________________________________________ typography _______ */
 h1, h2, h3, h4, h5, h6 {
-  margin:00 1em0;
+  margin: 0 0 1em 0;
   padding: 0;
   border: none;
   font-weight: bold;
