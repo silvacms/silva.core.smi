@@ -7,6 +7,7 @@ html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pr
 /* __________________________________ matrix nav _______ */
 /* ____________________________________ flow bar _______ */
 /* ________________________________ middleground _______ */
+/* The normal, unselected buttons. They are all links */
 /* _______ middleground executor (action buttons) _______ */
 /* _______ middleground transporter _______ */
 /* ______________________________________ footer _______ */
@@ -83,9 +84,7 @@ body {
 p { color: #2D374C;}
 
 /* _________________________________________________________ sectors _______ */
-
-div.workspace,
-div#footerarea { background: #dde5ee;}
+div.workspace, div#footerarea { background: #dde5ee;}
 
 div.simple-page {
   padding: 50px;
@@ -96,7 +95,6 @@ div.simple-page {
 div.simple-page h1 { font-size: 200%;}
 
 /* ____________________________________ path bar _______ */
-
 div.pathbar {
   padding: 0em 4px 0.2em 22px;
   color: #51585c;
@@ -118,7 +116,7 @@ div.pathbar a:hover {
 }
 
 div.pathbar a.manage {
-  margin-left: 0.5em ! important;
+  margin-left: 0.5em !important;
   color: #757c7f;
 }
 
@@ -137,7 +135,6 @@ div.pathbar img {
 }
 
 /* __________________________________ matrix nav _______ */
-
 div.tabs {
   display: block;
   height: 1.2em;
@@ -150,8 +147,8 @@ div.tabs {
   background-color: #d7e8f0;
 }
 
+/* The normal, unselected tabs. They are all links */
 div.tabs a {
-  /* The normal, unselected tabs. They are all links */
   float: left;
   display: block;
   width: 7.5em;
@@ -179,8 +176,8 @@ div.tabs a:hover {
   text-decoration: none;
 }
 
+/* The selected tab. There's only one of these */
 div.tabs a.selected {
-  /* The selected tab. There's only one of these */
   border-bottom-color: #c1daf3;
   color: #444;
   background-color: #c1daf3;
@@ -192,8 +189,8 @@ div.tabs a.selected:visited {
   background-color: #c1daf3;
 }
 
+/* The parent tab of a subscreen. There might be one of these. */
 div.tabs a.recede {
-  /* The parent tab of a subscreen. There might be one of these. */
   border-bottom-color: #61738A;
   color: #444;
   background-color: #9ebad7;
@@ -204,16 +201,16 @@ div.tabs a.recede:hover {
   background-color: #c1daf3;
 }
 
+/* The left side of the tab. */
 div.tabs a.left {
-  /* The left side of the tab. */
   width: 1.5em;
   border-style: solid none solid solid;
 }
 
 div.tabs a.left:hover { border-bottom-color: #c1daf3;}
 
+/* The right side of the tab. */
 div.tabs a.right {
-  /* The right side of the tab. */
   width: 1.5em;
   border-style: solid solid solid none;
 }
@@ -251,7 +248,6 @@ div.tabs a.normal {
 }
 
 /* ____________________________________ flow bar _______ */
-
 div.flowbar {
   border-top: 3px solid #c1daf3;
   border-bottom: 1px solid #6E8094;
@@ -260,32 +256,24 @@ div.flowbar {
 }
 
 /* ________________________________ middleground _______ */
-
 div.middleground {
   border-bottom: 1px solid #657;
-  background-color: #8797ab;
-  background-image: url(reflection.png);
-  background-position: top left;
-  background-repeat: repeat-x;
-  line-height: 140%;
+  background: #8797ab url(reflection.png) repeat-x top left;
   height: 16px;
 }
 
 div.middleground form.middleground-form { display: inline;}
 
-a.popup-button,
-div.middleground a,
-div.middleground input[type="submit"] {
-  /* The normal, unselected buttons. They are all links */
-  padding: 0 1em 0;
+/* The normal, unselected buttons. They are all links */
+a.popup-button, div.middleground a, div.middleground input[type="submit"] {
+  padding: 0 0.5em;
   border: 1px solid #345;
   margin: 0;
   border-style: none solid none;
-  background-image: url(reflection.png);
-  background-position: top left;
-  background-repeat: repeat-x;
+  background: url(reflection.png) repeat-x top left;
   font-weight: normal;
   height: 16px;
+  display: inline-block;
 }
 
 div.middleground a {
@@ -293,39 +281,34 @@ div.middleground a {
   float: left;
 }
 
-a.popup-button:link,
-div.middleground a:link {
+a.popup-button:link, div.middleground a:link {
   color: #d9f3f1;
   background-color: #4d5680;
   text-decoration: none;
 }
-a.popup-button:visited,
-div.middleground a:visited {
+a.popup-button:visited, div.middleground a:visited {
   color: #d9f3f1;
   background-color: #4d5680;
 }
-a.popup-button:hover,
-div.middleground a:hover {
+a.popup-button:hover, div.middleground a:hover {
   border-color: #567;
   color: #e5fffe;
   background-color: #74748b;
   text-decoration: none;
 }
-a.popup-button:active,
-div.middleground a:active {
+a.popup-button:active, div.middleground a:active {
   border-color: #789;
   color: #b3fffb;
   background-color: #8d97c2;
 }
 
+/* A selected, highlighted button. There should only be one of these. */
 div.middleground a.selected {
-  /* A selected, highlighted button. There should only be one of these. */
   color: #424244;
   background-color: #b6d6f3;
 }
 
 /* _______ middleground executor (action buttons) _______ */
-
 div.middleground div.executor { float: right;}
 
 div.middleground div.executor select { 
@@ -340,38 +323,33 @@ div.middleground div.executor select {
   float: right;
 }
 
-*:first-child+html div.middleground input[type="submit"],
-* html div.middleground input[type="submit"] {
-  background-image: none;
-  background-color:#1F626D;
-}
-
-div.middleground div.executor a,
-div.middleground div.executor input[type="submit"] {
+div.middleground div.executor a, div.middleground div.executor input[type="submit"] {
   color: #b3fffb;
   background-color: #1f626d;
 }
-div.middleground div.executor a:hover, 
-div.middleground div.executor input[type="submit"]:hover {
+div.middleground div.executor a:hover, div.middleground div.executor input[type="submit"]:hover {
   color: #e5ffec;
   background-color: #538da3;
 }
-div.middleground div.executor a:active,
-div.middleground div.executor input[type="submit"]:active {
+div.middleground div.executor a:active, div.middleground div.executor input[type="submit"]:active {
   color: #bfffd3;
   background-color: #64ABC8;
 }
 
-/* _______ middleground transporter _______ */
+/* --- valid css hack for ie6 and ie7 that require no border */
+*:first-child+html div.middleground div.executor input[type="submit"],
+* html div.middleground div.executor input[type="submit"] {
+  border: none;
+}
 
+/* _______ middleground transporter _______ */
 div.middleground div.transporter { float: left;}
 
 /* ______________________________________ footer _______ */
-
 div.footer {
   clear: both;
   margin: 0.5em 0 0;
-  padding: 0em 16px 0.1em;
+  padding: 0 16px 0.1em;
   border-top: #909699 1px solid;
   border-bottom: none;
   color: #42484c;
@@ -387,7 +365,6 @@ div.footer a {
 div.footer a:visited { color: #000;}
 
 /* ________________________________ personal bar _______ */
-
 div.personalbar {
   padding: 0.1em 16px 0.2em 16px;
   border-bottom: #42484c 1px solid;
@@ -484,7 +461,6 @@ table.listing tr.odd {
 }
 table.listing tr.even td { background: #cfdbe7;}
 
-/* applies only to mozilla and IE7 */
 table.listing tr.odd:hover td, table.listing tr.even:hover td {
   background-color: #e5f2ff;
 }
@@ -500,9 +476,8 @@ tr.separator td, td.separator {
 }
 
 /* ______________ cells ______________ */
-
 table.listing th {
-  padding: 0em 0.3em 0.1em;
+  padding:0 0.3em 0.1em;
   border-top: none;
   border-bottom: 1px solid #789;
   border-right: 1px solid #789;
@@ -556,12 +531,11 @@ table.listing tr.top-controls h3 {
 }
 
 table.listing tr.inter-controls h3 {
-  margin: 0em 0.3em 0.1em;
+  margin:0 0.3em 0.1em;
   color: #dbe9f7;
 }
 
 /* _______ flanking cells _______ */
-
 table.listing td.listing-left {
   padding: 0 0.3em 0 0.2em;
   white-space: nowrap;
@@ -594,7 +568,6 @@ table.listing a.icon img {
 }
 
 /* __________________________ sidebar navigation _______ */
-
 table.listing th.top {
   padding: 0;
   border: 1px solid #789;
@@ -747,11 +720,9 @@ table.listing a.right:hover {
 div.normal { display: block;}
 
 /* ________________________________ focus shapes _______ */
-
 form.sublisting { padding-top: 1em;}
 
 /* ________________________________________________ form definitions _______ */
-
 input {
   margin: 1px 0;
   padding: 1px 2px;
@@ -775,7 +746,6 @@ input.store, textarea.store, input.field, textarea.field {
 }
 
 /* valid ie6 and ie7 hack */
-
 *:first-child+html input.store, *:first-child+html input.field,
 * html input.store, * html input.field,  
 *:first-child+html textarea.store, *:first-child+html textarea.field,
@@ -1073,7 +1043,6 @@ input[type="submit"]:focus, input[type="button"]:focus {
 
 
 /* ________________________________________________ info + clipboard _______ */
-
 div.info {
   margin: -1px 0 0;
   padding: 0.2em 0.4em 0.3em;
@@ -1146,7 +1115,7 @@ select.clipboard option.disabled {
 /* feedback under the matrix nav */
 div.fixed-feedback {
   border-bottom: 1px solid #789;
-  padding: 0em 9px 0.1em 9px;
+  padding:0 9px 0.1em 9px;
   color: #555;
   background-color: #f3f3d9;
   border-collapse: collapse;
@@ -1154,13 +1123,13 @@ div.fixed-feedback {
 div.fixed-alert {
   height: 1%; /*hack for ie */
   border-bottom: 1px solid #789;
-  padding: 0em 9px 0.1em 9px;
+  padding:0 9px 0.1em 9px;
   color: #3c2d50;
   background-color: #f7d1d1;
   border-collapse: collapse;
 }
 div.fixed-clear {
-  padding: 0em 9px 0.1em 9px;
+  padding:0 9px 0.1em 9px;
   border-bottom: 1px solid #dde5ee;
   background-color: transparent;
   border-collapse: collapse;
@@ -1217,7 +1186,6 @@ table.listing tr.alert, table.listing td.alert {
 
 
 /* _______ message box in content publish screen _______ */
-
 table.listing .message {
   padding: 0;
 }
@@ -1232,9 +1200,8 @@ table.listing div.message {
 }
 
 /* ______________________________________________________ typography _______ */
-
 h1, h2, h3, h4, h5, h6 {
-  margin: 0em 0em 1em 0em;
+  margin:00 1em0;
   padding: 0;
   border: none;
   font-weight: bold;
@@ -1269,7 +1236,6 @@ a {
 i, em { font-style:italic;}
 
 /* ___________________________________________ Silva specific styles _______ */
-
 img { border: none;}
 
 img.icon { margin: 0;}
@@ -1277,11 +1243,8 @@ img.icon { margin: 0;}
 a.icon:hover { text-decoration: none;}
 
 /* _________________________________ align/float _______ */
-
 .image-left { text-align: left;}
-
 .image-center { text-align: center;}
-
 .image-right { text-align: right;}
 
 .float-left {
@@ -1289,7 +1252,6 @@ a.icon:hover { text-decoration: none;}
   clear: none;
   margin-right: 1em;
 }
-
 .float-right {
   float: right;
   clear: none;
@@ -1297,7 +1259,6 @@ a.icon:hover { text-decoration: none;}
 }
 
 /* _______________________________________ lists _______ */
-
 dt { background: transparent;}
 
 dd {
@@ -1314,7 +1275,6 @@ ul {
 ul.tips { list-style-type: square;}
 
 /* ___________________________________________________________ links _______ */
-
 a:link {
   color: #00a;
   text-decoration: none;
@@ -1323,7 +1283,6 @@ a:visited {
   color: #5900b2;
   text-decoration: none;
 }
-
 a:active { color: #39c;}
 a:hover {
   color: #00a;
@@ -1366,24 +1325,16 @@ a.index-element {
 }
 
 /* draft (red) selectors */
-.draft, a.draft {
-  color: #cc0000;
-}
+.draft, a.draft { color: #cc0000;}
 
 /* pending (yellow) selectors */
-.pending, a.pending {
-  color: #8f7f01;
-}
+.pending, a.pending { color: #8f7f01;}
 
 /* approved (green) selectors */
-.approved, a.approved {
-  color: #007746;
-}
+.approved, a.approved { color: #007746;}
 
 /* published (blue) selectors */
-.published, a.published {
-  color: #000080;
-}
+.published, a.published { color: #000080;}
 
 /* closed (gray) selectors */
 .closed, a.closed { color: #666;}
@@ -1459,7 +1410,6 @@ a.closed:hover {
 }
 
 /* ____________________________________________________ local styles _______ */
-
 .hilite { background: #ebecef;}
 
 /* form datetime field punctuation */
@@ -1492,7 +1442,6 @@ span.required {
 
 /* defines the width of the text in help, etc */
 .readable {
-  /* for IE5 */
   width: 512px;
   max-width: 40em;
   line-height: 1.3em;
@@ -1509,7 +1458,6 @@ div.listingbar .next { margin-left: 5em;}
 div.listingbar .previous { margin-right: 5em;}
 
 /* styles for the elaborate code source */
-
 .elaborate fieldset {
   float:left;
   margin-bottom:0.2em;
@@ -1527,9 +1475,10 @@ div.listingbar .previous { margin-right: 5em;}
    kupu */
 button.kupu-button {
  height: 20px;
- padding:0;
+ padding: 0;
 }
 
+/* start reference lookup window styles */
 .kupu-link-reference-table { width: 100%;}
 
 .kupu-link-reference-table td { white-space: nowrap;}
@@ -1598,7 +1547,7 @@ button.calendar-button {
 /* ___ viewport ___ */
 
 .viewport {
-  padding: 0 10px 0 10px;
+  padding: 0 10px;
   float: left;
   width: 720px;
 }
