@@ -1,6 +1,6 @@
-<table class="listing" cellspacing="0"
-    style="border-collapse: separate; margin-top: -1px"
-    i18n:domain="silva">
+<table class="listing" cellspacing="0" 
+       style="margin-top: -1px;" 
+       i18n:domain="silva">
   <thead>
     <tr>
       <th class="top">
