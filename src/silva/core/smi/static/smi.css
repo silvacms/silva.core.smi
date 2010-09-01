@@ -1,4 +1,78 @@
+/* reset css */
 html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{font-size:100%;}legend{color:#000;}del,ins{text-decoration:none;}
+
+/* --- str Table of contents --- */
+
+/* _________________________________________________________ sectors _______ */
+/* ____________________________________ path bar _______ */
+/* __________________________________ matrix nav _______ */
+/* ____________________________________ flow bar _______ */
+/* ________________________________ middleground _______ */
+/* _______ middleground executor (action buttons) _______ */
+/* _______ middleground transporter _______ */
+/* ______________________________________ footer _______ */
+/* ________________________________ personal bar _______ */
+/* _______________________________ columns table _______ */
+/* _______________________________ listing table _______ */
+/* ______________ rows ______________ */
+/* ______________ cells ______________ */
+/* _______ subhead cells _______ */
+/* _______ flanking cells _______ */
+/* __________________________ sidebar navigation _______ */
+/* _______ uplinks _______ */
+/* _______ slidelinks _______ */
+/* ________________________________ focus shapes _______ */
+/* ________________________________________________ form definitions _______ */
+/* _______ state coded publishing action buttons _______ */
+/* _______ form labels _______ */
+/* _______ field iterators _______ */
+/* _______ pseudo form button selectors, matches transporter button style _______ */
+/* transport between screens */
+/* _______ subscreen parent links _______ */
+* _____________________________ form control interaction _______ */
+/* _______ field interaction _______ */
+/* these selectors are also define unclassed submit buttons */
+/* _______ controls candy: hover/focus _______ */
+/* transporter cool glow */
+/* executor eerie glow */
+/* remover hot glow */
+/* state coded button hovers */
+/* _______ form labels _______ */
+/* _______ field iterators _______ */
+/* _______ pseudo form button selectors, matches transporter button style _______ */
+/* transport between screens */
+/* _______ subscreen parent links _______ */
+/* _____________________________ form control interaction _______ */
+/* _______ field interaction _______ */
+/* these selectors are also define unclassed submit buttons */
+/* _______ controls candy: hover/focus _______ */
+/* manipulator warm glow */
+/* transporter cool glow */
+/* executor eerie glow */
+/* remover hot glow */
+/* state coded button hovers */
+/* ________________________________________________ info + clipboard _______ */
+/* ________________________________________________________ feedback _______ */
+/* feedback under the matrix nav */
+/* for notifications in right column */
+/* floating feedback  */
+/* table row/cell feedback  */
+/* _______ message box in content publish screen _______ */
+/* ______________________________________________________ typography _______ */
+/* ___________________________________________ Silva specific styles _______ */
+/* _________________________________ align/float _______ */
+/* _______________________________________ lists _______ */
+/* ___________________________________________________________ links _______ */
+/* ____________________________________________________ local styles _______ */
+/* definitions for batching */
+/* styles for the elaborate code source */
+/* styles for the dynamic reference lookup window (from
+   kupustyles.css) so that this widget works outside of
+   kupu */
+/* end reference lookup window styles */
+/* for the calendar button */
+
+/* --- end table of contents */
 
 html { background-color: #9ab;}
 
@@ -188,6 +262,11 @@ div.flowbar {
 
 /* ________________________________ middleground _______ */
 
+.zeam-form span.footer-fields { 
+  line-height: 1.6em; 
+  float: right; 
+}
+
 div.middleground {
   border-bottom: 1px solid #657;
   background-color: #8797ab;
@@ -218,16 +297,6 @@ div.middleground input[type="submit"] {
 div.middleground a {
   display: block;
   float: left;
-}
-
-.zeam-form span.footer-fields { 
-  line-height: 1.6em; 
-  float: right; 
-} 
-
-div.middleground select,
-div.middleground input[type="submit"] {
-  height: 16px;
 }
 
 a.popup-button:link,
@@ -265,8 +334,23 @@ div.middleground a.selected {
 
 div.middleground div.executor { float: right;}
 
-/* be nice to chrome */
-div.middleground div.executor select { float: left;}
+div.middleground div.executor select { 
+  float: left;
+  height: 16px;
+}
+
+/* --- valid css hack for ie6 and ie7 that require fixed width on select */
+*:first-child+html div.middleground div.executor select,
+* html div.middleground div.executor select {
+  width: 130px;
+  float: right;
+}
+
+*:first-child+html div.middleground input[type="submit"],
+* html div.middleground input[type="submit"] {
+  background-image: none;
+  background-color:#1F626D;
+}
 
 div.middleground div.executor a,
 div.middleground div.executor input[type="submit"] {
@@ -740,7 +824,6 @@ select.transporter {
   background-color: #283365;
 }
 
-/* seems to keep IE7 in check without anything else */
 input[type="submit"] {
   overflow: visible;
   cursor: pointer;
