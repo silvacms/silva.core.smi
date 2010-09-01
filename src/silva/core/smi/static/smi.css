@@ -383,7 +383,7 @@ table.listing td.top {
 }
 
 table.listing tr.top-controls td {
-  padding: 0.1em 0.2em 0;
+  padding: 0 0.3em 0.2em;
   background: #567;
 }
 
@@ -462,7 +462,7 @@ table.listing td {
 
 /* title cell */
 table.listing td.top h2 {
-  margin: 0 0.1em;
+  margin: 0 0.1em 0.1em;
   color: #c5d4ca;
 }
 table.listing td.top img {
@@ -471,7 +471,7 @@ table.listing td.top img {
 
 /* _______ subhead cells _______ */
 table.listing tr.top-controls h3 {
-  margin: 0.1em 0.3em 0.2em;
+  margin: 0 0 0.1em;
   padding: 0;
   color: #ddeee3;
   line-height: 100%;
