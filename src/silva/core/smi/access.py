@@ -61,7 +61,6 @@ class LookupUserAction(silvaforms.Action):
     refresh = 'form-userrole'
 
     title = _(u"lookup user")
-    description = _(u"Search for users to assign them roles.")
 
     def __call__(self, form):
         data, errors = form.extractData()
