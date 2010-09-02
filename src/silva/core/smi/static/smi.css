@@ -137,7 +137,7 @@ div.pathbar img {
 div.tabs {
   display: block;
   height: 1.2em;
-  padding: 0 8px 0 16px;
+  padding: 0 16px;
   border-width: 1px;
   border-style: none none solid none;
   border-bottom-color: #BCC2CA;
@@ -273,7 +273,17 @@ div.middleground a, div.middleground input[type="submit"] {
 div.middleground a {
   display: block;
   float: left;
-  margin-right:2px;
+}
+
+a.popup-button {
+  margin: 0 1px;
+  padding: 0 5px 2px;
+  border: none;
+  color: #d9f3da;
+  background: #064C29 url(reflection.png) top left repeat-x;
+  cursor: pointer;
+  line-height: 16px;
+  display:inline-block;
 }
 
 a.popup-button:link, div.middleground a:link {
@@ -512,6 +522,7 @@ table.listing th.align-right, table.listing td.align-right {
 
 table.listing td {
   padding: 0 0.3em;
+  border-left: 1px solid #789;
   border-right: 1px solid #789;
 }
 
@@ -656,7 +667,7 @@ td.unselected {
   padding-left: 0 ! important;
   padding-right: 0 ! important;
   border-top: 1px solid #c6d2dd;
-  border-bottom:  1px solid #c6d2dd;
+  /* wim: made it look like nav had no border. border-bottom:  1px solid #c6d2dd; */
   background-color: #c6d2dd;
 }
 
@@ -801,18 +812,13 @@ input.action {
 }
 
 /* manipulator button style from which all others derive */
-a.popup-button, input.button, input.action, input.canceler, button.button, input.manipulator {
+input.button, input.action, input.canceler, button.button, input.manipulator {
   margin: 0 1px;
-  padding: 0 5px 10px;
+  padding: 0 5px 2px;
   border: none;
   color: #d9f3da;
   background: #064C29 url(reflection.png) top left repeat-x;
   cursor: pointer;
-  height: 18px;
-}
-
-a.popup-button {
-  padding: 0 5px 2px;
   line-height: 16px;
 }
 
@@ -968,7 +974,7 @@ select:focus, select:hover { color:#336;}
 /* _______ controls candy: hover/focus _______ */
 
 /* manipulator warm glow */
-input.button:hover, button.button:hover, input.manipulator:hover {
+input.action:hover, input.button:hover, button.button:hover, input.manipulator:hover {
   border-color: #567;
   color: #e5fffe;
   background-color: #4a7f67;
@@ -1427,6 +1433,10 @@ span.required {
   font-family: impact, verdana, arial, helvetica, sans-serif;
 }
 
+table.listing tr.controls td span.required {
+  color: #c9dfe2;
+}
+
 .warning { color: #aa0000;}
 
 .error {
@@ -1561,7 +1571,29 @@ button.calendar-button {
   float: right; 
 }
 
+/* --- valid css hack for ie6 and ie7 that require fixed width on select */
+*:first-child+html .zeam-form span.footer-fields select,
+* html .zeam-form span.footer-fields select {
+  width: 130px;
+  float: right;
+}
+
+.zeam-form .footer-fields span.error {
+  background-color: #f7d1d1;
+  padding: 0.1em;
+}
+
 .portlets {
   width: 250px;
   float: left;
 }
+
+/* jq ui widgets */
+
+.ui-widget div.fixed-alert {
+  padding: 0.2em;
+  border: 1px solid #778899;
+  border-bottom: none;
+  height: 16px;
+}
+
