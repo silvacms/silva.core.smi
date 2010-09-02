@@ -111,8 +111,9 @@ class LookupUserForm(silvaforms.RESTPopupForm):
     grok.context(ISilvaObject)
 
     label = _(u"lookup users")
-    description = _(u"Search for users to assign them roles. Enter entire "
-                    u"names to limit the amount of results.")
+    description = _(u"Search for users to assign them roles. Enter as least '
+                    u'two characters. Looukup entire "
+                    u"names to limit the number of results.")
     fields = silvaforms.Fields(ILookupUserSchema)
     actions = silvaforms.Actions(
         LookupUserAction(),
