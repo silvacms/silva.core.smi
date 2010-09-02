@@ -1,10 +1,10 @@
 <div class="add-new-content-listing"
      tal:define="here_url context/@@absolute_url"
      i18n:domain="silva">
-  <h2>
+  <h2 class="top">
     &#xab;<span tal:replace="context/get_title_or_id"/>&#xbb;
   </h2>
-  <h3 i18n:translate="">
+  <h3 class="top-controls" i18n:translate="">
     create an object
   </h3>
   <p class="readable" i18n:translate="">
