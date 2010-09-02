@@ -24,12 +24,12 @@ class SMIAction(silvaforms.Action):
     grok.view(IPublicationAwareTab)
 
     def can_approve_content(self, form):
-        return getSecurityManager().checkPermission(
-            'Approve Silva content', form.context)
+        sm = getSecurityManager()
+        return sm.checkPermission('Approve Silva content', form.context)
 
     def redirect(self, form):
         url_parts = [absoluteURL(form.context, form.request), 'edit']
-        tab_name = self.form_tab_name(form)
+        tab_name = getattr(form, 'tab_name', None)
         if tab_name:
             url_parts.append(tab_name)
         return form.redirect("/".join(url_parts))
