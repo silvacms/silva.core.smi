@@ -1,80 +1,6 @@
 /* --- reset css --- */
 html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{font-size:100%;}legend{color:#000;}del,ins{text-decoration:none;}
 
-/* --- start Table of contents --- */
-/* _________________________________________________________ sectors _______ */
-/* ____________________________________ path bar _______ */
-/* __________________________________ matrix nav _______ */
-/* The normal, unselected tabs. They are all links */
-/* ____________________________________ flow bar _______ */
-/* ________________________________ middleground _______ */
-/* The normal, unselected buttons. They are all links */
-/* _______ middleground executor (action buttons) _______ */
-/* _______ middleground transporter _______ */
-/* ______________________________________ footer _______ */
-/* ________________________________ personal bar _______ */
-/* _______________________________ columns table _______ */
-/* _______________________________ listing table _______ */
-/* ______________ rows ______________ */
-/* ______________ cells ______________ */
-/* _______ subhead cells _______ */
-/* _______ flanking cells _______ */
-/* __________________________ sidebar navigation _______ */
-/* _______ uplinks _______ */
-/* _______ slidelinks _______ */
-/* ________________________________ focus shapes _______ */
-/* ________________________________________________ form definitions _______ */
-/* _______ state coded publishing action buttons _______ */
-/* _______ form labels _______ */
-/* _______ field iterators _______ */
-/* _______ pseudo form button selectors, matches transporter button style _______ */
-/* transport between screens */
-/* _______ subscreen parent links _______ */
-/* _____________________________ form control interaction _______ */
-/* _______ field interaction _______ */
-/* these selectors are also define unclassed submit buttons */
-/* _______ controls candy: hover/focus _______ */
-/* transporter cool glow */
-/* executor eerie glow */
-/* remover hot glow */
-/* state coded button hovers */
-/* _______ form labels _______ */
-/* _______ field iterators _______ */
-/* _______ pseudo form button selectors, matches transporter button style _______ */
-/* transport between screens */
-/* _______ subscreen parent links _______ */
-/* _____________________________ form control interaction _______ */
-/* _______ field interaction _______ */
-/* these selectors are also define unclassed submit buttons */
-/* _______ controls candy: hover/focus _______ */
-/* manipulator warm glow */
-/* transporter cool glow */
-/* executor eerie glow */
-/* remover hot glow */
-/* state coded button hovers */
-/* ________________________________________________ info + clipboard _______ */
-/* ________________________________________________________ feedback _______ */
-/* feedback under the matrix nav */
-/* for notifications in right column */
-/* floating feedback  */
-/* table row/cell feedback  */
-/* _______ message box in content publish screen _______ */
-/* ______________________________________________________ typography _______ */
-/* ___________________________________________ Silva specific styles _______ */
-/* _________________________________ align/float _______ */
-/* _______________________________________ lists _______ */
-/* ___________________________________________________________ links _______ */
-/* ____________________________________________________ local styles _______ */
-/* definitions for batching */
-/* styles for the elaborate code source */
-/* styles for the dynamic reference lookup window */
-/* end reference lookup window styles */
-/* for the calendar button */
-/* ______________________________________ Middlespace ____ */
-/* ___ navigation ___ */
-/* ___ viewport ___ */
-/* --- end table of contents */
-
 html { background-color: #9ab;}
 
 body {
@@ -1595,5 +1521,38 @@ button.calendar-button {
   border: 1px solid #778899;
   border-bottom: none;
   height: 16px;
+}
+
+.add-new-content-listing {
+  border: 1px solid #778899;
+  background: #CFDBE7;
+  color: #444444;
+  margin: 0 0 1em;
+}
+
+.new-content-listing a {
+  font-weight: bold;
+}
+
+.new-content-listing img {
+  float: left;
+  padding-right: 0.4em;
+}
+
+/* table less styling like tables */
+
+h2.top {
+  margin: 0;
+  padding: 0 0.3em 0.2em;
+  color: #c5d4ca;
+  background-color: #456;
+}
+
+h3.top-controls {
+  padding: 0 0.3em 0.2em;
+  background-color: #567;
+  margin: 0 0 0.1em;
+  color: #ddeee3;
+  line-height: 100%;
 }
 
