@@ -2,6 +2,9 @@
      tal:define="here_url context/@@absolute_url"
      i18n:domain="silva">
   <h2 class="top">
+    <img src="#" alt="#"
+         tal:attributes="src string:${layout/root_url}/${view/icon};
+                         alt context/meta_type" />
     &#xab;<span tal:replace="context/get_title_or_id"/>&#xbb;
   </h2>
   <h3 class="top-controls" i18n:translate="">

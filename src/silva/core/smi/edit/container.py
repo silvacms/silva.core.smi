@@ -132,6 +132,7 @@ class AddingView(silvasmi.SMIPage):
 
     def update(self):
         self.addables = []
+        self.icon = get_meta_type_icon(self.context.meta_type)
         add_url = [absoluteURL(self.context, self.request), 'edit', '+']
         for addable in self.context.get_silva_addables():
             meta_type = addable['name']
