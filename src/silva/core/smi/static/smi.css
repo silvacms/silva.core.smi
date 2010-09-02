@@ -1530,6 +1530,10 @@ button.calendar-button {
   margin: 0 0 1em;
 }
 
+.add-new-content-listing p {
+  padding: 0.2em;
+}
+
 .new-content-listing a {
   font-weight: bold;
 }
@@ -1543,9 +1547,15 @@ button.calendar-button {
 
 h2.top {
   margin: 0;
-  padding: 0 0.3em 0.2em;
+  padding: 0 0.3em 0.3em;
   color: #c5d4ca;
   background-color: #456;
+}
+
+h2.top img {
+  float: left;
+  padding-top: 0.2em; 
+  padding-right: 0.4em;
 }
 
 h3.top-controls {
