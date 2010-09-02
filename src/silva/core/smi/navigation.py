@@ -1,14 +1,17 @@
 from five import grok
 
 from zope.interface import Interface
+from zope.component import getUtility
+from zope.traversing.browser import absoluteURL
+from zope.intid.interfaces import IIntIds
 
 from silva.core.interfaces import (IRoot, IPublication, IContainer,
-    IVersionedContent)
+    IVersionedContent, IInvalidateSidebarEvent, ISilvaObject)
 from silva.core.smi import interfaces
-
+from silva.core.cache.interfaces import ICacheManager
 from silva.core.views import views as silvaviews
-from Products.Silva.adapters.virtualhosting import getVirtualHostingAdapter
 from Products.Silva.icon import get_icon_url
+from string import Template
 
 
 class SMINavCommon(object):
@@ -18,9 +21,6 @@ class SMINavCommon(object):
     def tree_root(self):
         if not hasattr(self, '_tree_root'):
             self._tree_root = self.context.get_publication()
-            adapter = getVirtualHostingAdapter(self._tree_root)
-            if adapter.containsVirtualRoot():
-                self._tree_root = adapter.getVirtualRoot()
         return self._tree_root
 
 
@@ -47,7 +47,7 @@ class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
     @property
     def context_url(self):
         if not hasattr(self, '_context_url'):
-            self._context_url = self.context.absolute_url()
+            self._context_url = absoluteURL(self.context, self.request)
         return self._context_url
 
     def is_root(self):
@@ -77,7 +77,7 @@ class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):
         return get_icon_url(item, self.request)
 
     def get_item_title(self, item):
-        return item.title or item.id
+        return item.get_title() or item.id
 
     def get_item_class(self, item):
         if item == self.context:
@@ -89,6 +89,10 @@ class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):
             IContainer.providedBy(item)
 
 
+class MyTemplate(Template):
+    delimiter = '%'
+
+
 class SMINavigationListingForContainer(SMINavigationListing):
     """ Content Provider for listing of container
     """
@@ -96,8 +100,59 @@ class SMINavigationListingForContainer(SMINavigationListing):
     grok.name('navigation_listing')
     grok.layer(interfaces.ISMILayer)
 
+    _template = grok.PageTemplate(
+        filename="navigation_templates/sminavigationlistingforcontainer.tmp.pt")
+
+    def update(self):
+        self.intids = getUtility(IIntIds)
+
+    def get_item_tab_url(self, item):
+        return "%s/edit/%%{tabname}" % self.get_macro_url(item)
+
+    def get_macro_url(self, ob):
+        root_path = self.tree_root.getPhysicalPath()
+        path = ob.getPhysicalPath()
+        return "%{root_url}/" + "/".join(path[len(root_path):])
+
+    def get_item_class(self, item):
+        id = self.intids.register(item)
+        return "%%item_select_%d" % id
+
+    def __post_process_template(self, content):
+        repl = {'root_url': absoluteURL(self.tree_root,
+                                        self.request),
+                'tabname': self.view.tab_name,
+                'item_select_%d' % \
+                    self.intids.register(self.context.get_container()):
+                    'selected'}
+        tpl = MyTemplate(content)
+        return tpl.safe_substitute(repl)
+
     def items(self):
-        return self.tree_root.get_container_tree()
+        return [(-1, self.tree_root)] + self.tree_root.get_container_tree()
+
+    def render(self):
+        def render_template():
+            return self._template.render(self)
+
+        cache = get_sidebar_cache()
+        content = cache.get(sidebar_cache_key(self.context),
+                            createfunc=render_template)
+        return self.__post_process_template(content)
+
+
+def get_sidebar_cache():
+    return getUtility(ICacheManager).get_cache('sidebar', 'shared')
+
+def sidebar_cache_key(content):
+    return "/".join(content.get_publication().getPhysicalPath())
+
+@grok.subscribe(ISilvaObject, IInvalidateSidebarEvent)
+def invalidate_sidebar_cache(obj, event):
+    cache = get_sidebar_cache()
+    if IPublication.providedBy(obj) and not IRoot.providedBy(obj):
+        cache.invalidate(sidebar_cache_key(obj.aq_parent))
+    cache.invalidate(sidebar_cache_key(obj))
 
 
 class SMINavigationListingForNonContainer(SMINavigationListing):
