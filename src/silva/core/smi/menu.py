@@ -8,7 +8,7 @@ from zope.traversing.browser import absoluteURL
 from Acquisition import aq_parent
 
 from silva.core.interfaces import IRoot, IPublication, IContainer
-from silva.core.interfaces import IVersionedContent
+from silva.core.interfaces import IVersionedContent, IContent, IAsset
 from silva.core.smi import interfaces
 from silva.core.smi.interfaces import ISMIMenu, ISMIMenuItem, ISMITabIndex
 from silva.core.views import views as silvaviews
@@ -151,10 +151,24 @@ class SMIEditMenuItem(SMITopMenuItem):
 class SMIEditEditMenuItem(SMIEditMenuItem):
     """ Edit tab of the edit menu
     """
+    grok.context(IContent)
+    grok.order(10)
     name = _(u'edit')
     path = u'tab_edit'
     tab = interfaces.IEditTab
-    grok.order(10)
+
+
+class SMIEditAssetMenuItem(SMIEditEditMenuItem):
+    """Asset tab of the edit menu
+    """
+    grok.context(IAsset)
+
+
+class SMIEditContentMenuItem(SMIEditEditMenuItem):
+    """Content tab of the edit menu
+    """
+    grok.context(IContainer)
+    name = _(u'contents')
 
 
 class SMIEditPreviewMenuItem(SMIEditMenuItem):
