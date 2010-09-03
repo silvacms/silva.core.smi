@@ -11,13 +11,6 @@
      i18n:translate="">
     view...
   </a>
-  <span tal:replace="nothing"><!-- _______ help link _______ --></span>
-  <a class="normal"
-     title="Silva access keys: alt-?"
-     accesskey="?"
-     tal:condition="exists:view/help_url"
-     tal:attributes="href view/help_url"
-     i18n:attributes="title"></a>
   <tal:menu tal:repeat="viewlet provider/viewlets">
     <tal:menuitem tal:content="structure viewlet/render" />
   </tal:menu>

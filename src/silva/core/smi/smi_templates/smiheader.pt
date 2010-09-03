@@ -1,4 +1,10 @@
 <tal:block>
+  <a class="normal"
+     title="Silva access keys: alt-?"
+     accesskey="?"
+     tal:condition="exists:view/help_url"
+     tal:attributes="href view/help_url"
+     i18n:attributes="title"></a>
   <tal:pathbar tal:content="structure provider:smipathbar" />
   <tal:menu tal:content="structure provider:smimenutabs" />
   <div class="flowbar">
