@@ -151,8 +151,8 @@ def sidebar_cache_key(content):
 def invalidate_sidebar_cache(obj, event):
     cache = get_sidebar_cache()
     if IPublication.providedBy(obj) and not IRoot.providedBy(obj):
-        cache.invalidate(sidebar_cache_key(obj.aq_parent))
-    cache.invalidate(sidebar_cache_key(obj))
+        cache.remove(sidebar_cache_key(obj.aq_parent))
+    cache.remove(sidebar_cache_key(obj))
 
 
 class SMINavigationListingForNonContainer(SMINavigationListing):
