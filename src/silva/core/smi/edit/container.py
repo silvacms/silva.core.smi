@@ -5,13 +5,14 @@
 
 from Products.Silva.icon import get_meta_type_icon
 from Products.Silva.ExtensionRegistry import extensionRegistry as registry
+from zExceptions import Redirect
 
 from five import grok
 from silva.core.interfaces import IContainer
 from silva.core.views import views as silvaviews
 from silva.core.smi import smi as silvasmi
 from silva.core.smi.interfaces import ISMILayer
-from silva.core.smi.interfaces import IAddingTab, IPublicationAwareTab
+from silva.core.smi.interfaces import IAddingTab, IEditTab, IPublicationAwareTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zope import schema, interface
@@ -115,6 +116,7 @@ class AddingView(silvasmi.SMIPage):
     grok.context(Interface)
     grok.require('silva.ChangeSilvaContent')
     grok.layer(Interface)
+    grok.implements(IEditTab)
 
     def __init__(self, context, request):
         # Due to bugs in traversing, 'edit' is not called. so set back
@@ -124,11 +126,12 @@ class AddingView(silvasmi.SMIPage):
         super(AddingView, self).__init__(context, request)
 
     def publishTraverse(self, request, name):
-        # XXX validate name
-        factory = queryUtility(IFactory, name=name)
-        if factory is not None:
-            return factory(self.context, request)
-        return super(AddingView, self).publishTraverse(request, name)
+        if name in self.context.get_silva_addables_allowed_in_container():
+            factory = queryUtility(IFactory, name=name)
+            if factory is not None:
+                return factory(self.context, request)
+        raise Redirect(
+            '/'.join([absoluteURL(self.context, request), 'edit', '+']))
 
     def update(self):
         self.addables = []
