@@ -36,5 +36,8 @@
     <tal:footer tal:content="structure provider:footer" />
     <div id="remote-form-dialog">
     </div>
+    <div id="remote-request-loading">
+      <p i18n:translate="">loading ...</p>
+    </div>
   </body>
 </html>

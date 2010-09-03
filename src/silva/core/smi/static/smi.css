@@ -1567,3 +1567,16 @@ h3.top-controls {
   line-height: 100%;
 }
 
+/* loading message */
+div#remote-request-loading {
+  display:none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  color: #3c2d50;
+  padding: 0.1em 1.5em;
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+  background-color: #f7d1d1;
+  z-index: 2000;
+}

@@ -1,7 +1,7 @@
 // SMI Javascript
 
 $(document).ready(function() {
-    var baseurl = $('#smi-content-url').attr('href');
+    var base_url = $('#smi-content-url').attr('href');
 
     // Add new content auto submit
     $('#md-container-field-content').bind('change', function() {
@@ -17,9 +17,27 @@ $(document).ready(function() {
         }
         $('#md-container-action-new').trigger('click');
     });
+    // Update status on popup close
     $(document).bind('zeam-popup-closed', function() {
-        $.getJSON(baseurl + '/++rest++smi-feedback', function(data) {
+        $.getJSON(base_url + '/++rest++smi-feedback', function(data) {
             $('#feedback').replaceWith(data['messages']);
         });
     });
+    // Add a loading message on server request
+    var request_count = 0;
+    var load_message = $('div#remote-request-loading');
+    if (load_message) {
+        $(document).ajaxSend(function() {
+            if (!request_count) {
+                load_message.fadeIn('fast');
+            };
+            request_count += 1;
+        });
+        $(document).ajaxComplete(function() {
+            request_count -= 1;
+            if (!request_count) {
+                load_message.fadeOut('fast');
+            };
+        });
+    };
 });
