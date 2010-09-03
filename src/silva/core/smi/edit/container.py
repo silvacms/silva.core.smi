@@ -3,6 +3,8 @@
 # See also LICENSE.txt
 # $Id$
 
+import urllib
+
 from Products.Silva.icon import get_meta_type_icon
 from Products.Silva.ExtensionRegistry import extensionRegistry as registry
 from zExceptions import Redirect
@@ -53,6 +55,7 @@ def silva_content_types(context):
 class INewContent(interface.Interface):
     position = schema.Int(
         title=_(u"Content position"),
+        default=0,
         required=False)
     content = schema.Choice(
         title=_(u"Content type"),
@@ -84,6 +87,15 @@ class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
             return self.view.__name__
         return None
 
+    @property
+    def position(self):
+        if 'add.position' in self.request.form:
+            try:
+                return int(self.request.form['add.position'])
+            except ValueError:
+                pass
+        return None
+
     @silvaforms.action(
         _(u"new..."),
         identifier="new",
@@ -95,7 +107,11 @@ class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
         url = [absoluteURL(self.context, self.request), 'edit', '+']
         if data['content']:
             url.append(data['content'])
-        self.redirect('/'.join(url))
+        url = '/'.join(url)
+        if data.getDefault('position'):
+            url += '?' + urllib.urlencode(
+                {'add.position': str(data['position'])})
+        self.redirect(url)
         return silvaforms.SUCCESS
 
 
