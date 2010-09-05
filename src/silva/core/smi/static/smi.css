@@ -180,21 +180,21 @@ div.middleground {
   border-bottom: 1px solid #657;
   background: #8797ab url(reflection.png) repeat-x top left;
   height: 16px;
-  padding: 0 7px;
+  padding: 0 6px;
 }
 
 div.middleground form.middleground-form { display: inline;}
 
 /* The normal, unselected buttons. They are all links */
 div.middleground a, div.middleground input[type="submit"] {
+  height: 16px;
+  display: inline-block;
+  margin: 0 1px;
   padding: 0 0.5em;
   border: 1px solid #345;
-  margin: 0;
   border-style: none solid none;
   background: url(reflection.png) repeat-x top left;
   font-weight: normal;
-  height: 16px;
-  display: inline-block;
 }
 
 div.middleground a {
@@ -240,6 +240,11 @@ div.middleground a.selected {
   background-color: #b6d6f3;
 }
 
+/* _______ middleground transporter (movement buttons) _______ */
+div.middleground div.transporter { 
+  float: left;
+}
+
 /* _______ middleground executor (action buttons) _______ */
 
 div.middleground div.executor { 
@@ -275,11 +280,6 @@ div.middleground div.executor a:active, div.middleground div.executor input[type
 *:first-child+html div.middleground div.executor input[type="submit"],
 * html div.middleground div.executor input[type="submit"] {
   border: none;
-}
-
-/* _______ middleground transporter _______ */
-div.middleground div.transporter { 
-  float: left;
 }
 
 /* ______________________________________ footer _______ */
