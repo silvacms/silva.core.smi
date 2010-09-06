@@ -14,7 +14,7 @@ from infrae import rest
 from megrok import pagetemplate as pt
 from megrok.chameleon.components import ChameleonPageTemplate
 from silva.core.conf.utils import getSilvaViewFor
-from silva.core.interfaces import ISilvaObject, IUserAccessSecurity
+from silva.core.interfaces import ISilvaObject, IAuthorizationManager
 from silva.core.layout.interfaces import IMetadata
 from silva.core.messages.interfaces import IMessageService
 from silva.core.messages.service import Message
@@ -134,9 +134,8 @@ class SMIFooter(silvaviews.ContentProvider):
         if self.contact_email:
             self.contact_email_url = "mailto:%s" % quote(self.contact_email)
 
-        authorization = IUserAccessSecurity(
-            self.context).get_user_authorization()
-        self.username = authorization.username
+        authorization = IAuthorizationManager(self.context).get_authorization()
+        self.username = authorization.identifier
         self.role = authorization.role
 
     def logout_url(self):

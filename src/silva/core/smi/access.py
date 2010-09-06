@@ -12,8 +12,7 @@ from Products.Silva.Security import UnauthorizedRoleAssignement
 
 from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
 from silva.core.interfaces import ISilvaObject
-from silva.core.interfaces import IAccessSecurity, IUserAccessSecurity
-from silva.core.interfaces import IUserAuthorization
+from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
 from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
 from silva.core.services.interfaces import IMemberService
 from silva.core.cache.store import SessionStore
@@ -153,7 +152,7 @@ class GrantAccessAction(silvaforms.Action):
         if not role:
             return form.revoke(authorization, line)
         mapping = {'role': role,
-                   'username': authorization.username}
+                   'username': authorization.identifier}
         try:
             if authorization.grant(role):
                 form.send_message(
@@ -189,7 +188,7 @@ class RevokeAccessAction(silvaforms.Action):
     def __call__(self, form, authorization, line):
         try:
             role = authorization.local_role
-            username = authorization.username
+            username = authorization.identifier
             if authorization.revoke():
                 form.send_message(
                     _(u'Removed role "${role}" from user "${username}".',
@@ -211,6 +210,20 @@ class RevokeAccessAction(silvaforms.Action):
         return silvaforms.SUCCESS
 
 
+class IUserAuthorization(interface.Interface):
+
+    identifier = schema.TextLine(
+        title=_(u"username"))
+    acquired_role = schema.Choice(
+        title=_(u"role defined above"),
+        source=role_vocabulary,
+        required=False)
+    local_role = schema.Choice(
+        title=_(u"role defined here"),
+        source=role_vocabulary,
+        required=False)
+
+
 class UserAccessForm(silvaforms.SMISubTableForm):
     """Form to give/revoke access to users.
     """
@@ -229,16 +242,17 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     fields['role'].ignoreContent = True
     fields['role'].available = lambda form: len(form.lines) != 0
     tableFields = silvaforms.Fields(IUserAuthorization)
-    tableFields['username'].mode = 'silva.icon'
+    tableFields['identifier'].mode = 'silva.icon'
     tableActions = silvaforms.TableActions(
         RevokeAccessAction(),
         GrantAccessAction())
 
     def getItems(self):
-        access = IUserAccessSecurity(self.context)
+        access = IAuthorizationManager(self.context)
         authorizations = access.get_defined_authorizations().items()
         authorizations.sort(key=operator.itemgetter(0))
-        return map(operator.itemgetter(1), authorizations)
+        return filter(lambda auth: auth.type == 'user',
+                      map(operator.itemgetter(1), authorizations))
 
 
 class LookupUserResultForm(UserAccessForm):
@@ -263,10 +277,11 @@ class LookupUserResultForm(UserAccessForm):
     def getItems(self):
         user_ids = self.store.get(USER_STORE_KEY, set())
         if user_ids:
-            access = IUserAccessSecurity(self.context)
-            authorizations = access.get_users_authorization(user_ids).items()
+            access = IAuthorizationManager(self.context)
+            authorizations = access.get_authorizations(user_ids).items()
             authorizations.sort(key=operator.itemgetter(0))
-            return map(operator.itemgetter(1), authorizations)
+            return filter(lambda auth: auth.type == 'user',
+                          map(operator.itemgetter(1), authorizations))
         return []
 
     @silvaforms.action(
