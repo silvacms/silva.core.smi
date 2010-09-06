@@ -266,9 +266,8 @@ class LookupUserResultForm(UserAccessForm):
                          u'Then assign the users roles. Any users on the '
                          u'clipboard will remain here when you move to other '
                          u'areas of the site.')
-    tableActions = silvaforms.TableActions(
-        GrantAccessAction(),
-        LookupUserPopupAction())
+    actions = silvaforms.Actions(LookupUserPopupAction())
+    tableActions = silvaforms.TableActions(GrantAccessAction())
 
     @CachedProperty
     def store(self):
