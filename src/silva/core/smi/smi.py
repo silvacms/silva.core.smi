@@ -26,6 +26,7 @@ from zeam.form import silva as silvaforms
 from zope.cachedescriptors.property import CachedProperty
 from zope.component import getUtility, getMultiAdapter
 from zope.i18n import translate
+from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.interface import Interface
 from zope.traversing.browser import absoluteURL
 
@@ -110,6 +111,8 @@ class SMILayout(silvaviews.Layout):
     grok.layer(interfaces.ISMILayer)
 
     def update(self):
+        langs = IUserPreferredLanguages(self.request).getPreferredLanguages()
+        self.lang = langs[0] if langs else 'en'
         self.metadata = IMetadata(self.context)
         self.root_url = IVirtualSite(self.request).get_root_url()
         self.tab_name = getattr(self.view, 'tab_name', self.view.__name__)

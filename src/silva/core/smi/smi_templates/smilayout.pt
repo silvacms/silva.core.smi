@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html tal:attributes="lang layout/lang | nothing;
+                      xml:lang layout/lang | nothing">
   <head>
     <title tal:content="context/get_title_or_id">Silva SMI</title>
     <meta name="generator" content="Silva" />
