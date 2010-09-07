@@ -17,8 +17,8 @@ $(document).ready(function() {
         }
         $('#md-container-action-new').trigger('click');
     });
-    // Update status on popup close
-    $(document).bind('zeam-popup-closed', function() {
+    // Update feedback status
+    $(document).bind('smi-refresh-feedback', function() {
         $.getJSON(base_url + '/++rest++smi-feedback', function(data) {
             $('#feedback').replaceWith(data['messages']);
         });
