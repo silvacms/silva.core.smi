@@ -241,17 +241,17 @@ div.middleground a.selected {
 }
 
 /* _______ middleground transporter (movement buttons) _______ */
-div.middleground div.transporter { 
+div.middleground div.transporter {
   float: left;
 }
 
 /* _______ middleground executor (action buttons) _______ */
 
-div.middleground div.executor { 
+div.middleground div.executor {
   float: right;
 }
 
-div.middleground div.executor select { 
+div.middleground div.executor select {
   float: left;
   height: 16px;
 }
@@ -685,14 +685,14 @@ input.store, textarea.store, input.field, textarea.field {
 
 /* valid ie6 and ie7 hack */
 *:first-child+html input.store, *:first-child+html input.field,
-* html input.store, * html input.field,  
+* html input.store, * html input.field,
 *:first-child+html textarea.store, *:first-child+html textarea.field,
 * html textarea.store, * html textarea.field {
   width: 97%;
 }
 
 select {
-  margin: 0 1px 1px 0;
+  margin: 0 1px;
   border: 1px solid #366;
   color: #444;
   background-color: #d5e7e7;
@@ -744,7 +744,6 @@ input.button, input.action, input.canceler, button.button, input.manipulator {
   color: #d9f3da;
   background: #064C29 url(reflection.png) top left repeat-x;
   cursor: pointer;
-  line-height: 16px;
 }
 
 /* used in conflict situations where public view css would win */
@@ -1491,9 +1490,9 @@ button.calendar-button {
 
 .viewport-clear { clear: both;}
 
-.zeam-form span.footer-fields { 
-  line-height: 1.6em; 
-  float: right; 
+.zeam-form span.footer-fields {
+  line-height: 1.6em;
+  float: right;
 }
 
 /* --- valid css hack for ie6 and ie7 that require fixed width on select */
@@ -1554,7 +1553,7 @@ h2.top {
 
 h2.top img {
   float: left;
-  padding-top: 0.2em; 
+  padding-top: 0.2em;
   padding-right: 0.4em;
 }
 
