@@ -29,7 +29,7 @@ class SMIMenu(silvaviews.ContentProvider):
 
     def filter(self, viewlets):
         results = []
-        for name, viewlet in viewlets:
+        for name, viewlet in super(SMIMenu, self).filter(viewlets):
             if not viewlet.available():
                 continue
             results.append((name, viewlet,))
@@ -196,6 +196,7 @@ class SMIEditAccessMenuItem(SMIEditMenuItem):
     path = u'tab_access'
     tab = interfaces.IAccessTab
     grok.order(40)
+    grok.require('silva.ChangeSilvaAccess')
 
 
 class SMIEditPublishMenuItem(SMIEditMenuItem):
