@@ -16,7 +16,7 @@
           tal:attributes="href layout/static/silvacon.ico" />
   </head>
   <body>
-    <tal:pathbar tal:content="structure provider:path_bar" />
+    <tal:pathbar tal:content="structure provider:smipathbar" />
     <div class="workspace simple-page">
       <tal:content tal:content="structure view/content" />
     </div>
