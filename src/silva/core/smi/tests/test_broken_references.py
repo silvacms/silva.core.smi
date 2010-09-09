@@ -1,3 +1,4 @@
+
 import unittest
 from zope.component import getUtility
 from BeautifulSoup import BeautifulSoup
@@ -7,7 +8,6 @@ from silva.core.references.interfaces import IReferenceService
 
 
 class TestBreakReference(unittest.TestCase):
-
     layer = FunctionalLayer
 
     def setUp(self):

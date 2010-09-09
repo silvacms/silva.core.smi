@@ -5,12 +5,12 @@
 from Acquisition import aq_parent
 
 from five import grok
-from zope.interface import Interface
-
-from silva.core.smi.smi import SMILayout
-from silva.core.smi import interfaces
-from silva.core.views.httpheaders import HTTPResponseHeaders
 from infrae.layout import ILayout, layout
+from silva.core.interfaces import ISilvaObject
+from silva.core.smi import interfaces
+from silva.core.smi.smi import SMILayout
+from silva.core.views.httpheaders import HTTPResponseHeaders
+from zope.interface import Interface
 
 
 class ISimpleSMILayout(ILayout):
@@ -30,7 +30,9 @@ class ErrorSMILayout(SimpleSMILayout):
     grok.context(Exception)
 
     def __init__(self, request, context):
-        super(ErrorSMILayout, self).__init__(request, aq_parent(context))
+        while not ISilvaObject.providedBy(context):
+            context = aq_parent(context)
+        super(ErrorSMILayout, self).__init__(request, context)
 
 
 class SMIHTTPHeaders(HTTPResponseHeaders):
