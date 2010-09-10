@@ -59,8 +59,8 @@ class WithdrawApprovalRequest(SMIAction):
     accesskey = u'w'
 
     def available(self, form):
-        return (not self.can_approve_content(form) and
-                bool(form.context.is_version_approval_requested()))
+        return bool(not self.can_approve_content(form) and
+                    form.context.is_version_approval_requested())
 
     def __call__(self, form):
         if form.context.get_unapproved_version() is None:
@@ -87,8 +87,8 @@ class RejectApprovalRequest(SMIAction):
     accesskey = u'w'
 
     def available(self, form):
-        return (self.can_approve_content(form) and
-                bool(form.context.is_version_approval_requested()))
+        return bool(self.can_approve_content(form) and
+                    form.context.is_version_approval_requested())
 
     def __call__(self, form):
         if form.context.get_unapproved_version() is None:
@@ -132,8 +132,8 @@ class Publish(SMIAction):
     accesskey = u'p'
 
     def available(self, form):
-        return (self.can_approve_content(form) and
-                bool(form.context.get_unapproved_version()))
+        return bool(self.can_approve_content(form) and
+                    form.context.get_unapproved_version())
 
     def __call__(self, form):
         if not form.context.get_unapproved_version():
