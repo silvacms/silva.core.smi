@@ -14,6 +14,7 @@ grok.view(IPropertiesTab)
 
 class AddablesButton(smi.SMIMiddleGroundButton):
     grok.context(interfaces.IContainer)
+    grok.require('silva.ManageSilvaContentSettings')
     grok.order(50)
 
     tab = 'tab_addables'
@@ -24,6 +25,7 @@ class AddablesButton(smi.SMIMiddleGroundButton):
 
 class SettingsButton(smi.SMIMiddleGroundButton):
     grok.order(10)
+    grok.require('silva.ManageSilvaContent')
 
     tab = 'tab_settings'
     label = _(u"settings")
@@ -33,8 +35,8 @@ class SettingsButton(smi.SMIMiddleGroundButton):
 
 class LocalSiteButton(smi.SMIMiddleGroundButton):
     grok.context(interfaces.IPublication)
-    grok.require('zope2.ViewManagementScreens')
     grok.order(70)
+    grok.require('zope2.ViewManagementScreens')
 
     tab = 'tab_localsite'
     label = _(u"local site")
@@ -46,6 +48,7 @@ class LocalSiteButton(smi.SMIMiddleGroundButton):
 
 class SubscriptionButton(smi.SMIMiddleGroundButton):
     grok.order(110)
+    grok.require('silva.ManageSilvaContent')
 
     tab = 'tab_subscriptions'
     label = _(u"subscriptions")
