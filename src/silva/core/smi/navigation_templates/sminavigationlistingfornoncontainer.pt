@@ -1,81 +1,68 @@
-<tal:define>
+<tal:listing i18n:domain="silva">
   <tr>
-    <th class="subth">
-      <tal:block i18n:translate="">
-        <tal:block replace="provider/gentype" i18n:name="" />
-      </tal:block>
-      <tal:block i18n:translate="">siblings</tal:block>
+    <th class="subth" i18n:translate="">
+      <tal:type tal:replace="provider/content_type" i18n:name="type" />
+      siblings
     </th>
   </tr>
   <tr>
     <td class="unselected"
-      style="border-top:none; padding-left:1px ! important;">
+        style="border-top:none; padding-left:1px ! important;">
       <div class="normal">
         <a class="right"
-          title="slide to the publish screen"
-          tal:attributes="href string:${provider/container_url}/edit/tab_status"
-          i18n:attributes="title">
+           title="slide to the publish screen"
+           tal:attributes="href string:${provider/container_url}/edit/tab_status"
+           i18n:attributes="title">
           &nbsp;
         </a>
         <a class="navicon"
-          title="slide to the contents screen"
-          tal:attributes="href string:${provider/container_url}/edit;"
-          i18n:attributes="title">
-          <img tal:attributes="
-            src provider/container_icon_url;
-            alt provider/container/meta_type" />
+           title="slide to the contents screen"
+           tal:attributes="href string:${provider/container_url}/edit;"
+           i18n:attributes="title">
+          <img tal:attributes="src provider/container_icon_url;
+                               alt provider/container/meta_type" />
         </a>
         <a class="blacklink"
-          href="top"
-          tal:content="provider/container_title"
-          i18n:attributes="title"
-          tal:attributes="
-            href  provider/container_tab_url;
-            title string:id: ${provider/container/id};
-          ">
+           href="top"
+           tal:content="provider/container_title"
+           i18n:attributes="title"
+           tal:attributes="href  provider/container_tab_url;
+                           title string:id: ${provider/container/id};">
           container
         </a>
       </div>
     </td>
   </tr>
   <tal:repeat repeat="item provider/items">
-    <tal:define define="
-      is_default    python: item == provider.default_document();
-      status_style  python: item.get_object_status()[1];
-      location      python: context.id == item.id and 'selected' or 'unselected';
-    ">
-      <tr>
+    <tal:define define="is_default    python: item == provider.default_document();
+                        status_style  python: item.get_object_status()[1];
+                        location      python: context.id == item.id and 'selected' or 'unselected';">
+      <tr class="unselected">
         <td tal:attributes="class location">
           <a class="right"
-            title="slide to the publish screen"
-            tal:condition="python: provider.should_link_to_tab_status(item)"
-            tal:attributes="href string:${item/absolute_url}/edit/tab_status"
-            i18n:attributes="title">
+             title="slide to the publish screen"
+             tal:condition="python: provider.should_link_to_tab_status(item)"
+             tal:attributes="href string:${item/absolute_url}/edit/tab_status"
+             i18n:attributes="title">
             &nbsp;
           </a>
           <a class="left"
-            title="slide to the contents screen"
-            tal:attributes="href string:${item/absolute_url}/edit"
-            i18n:attributes="title">
+             title="slide to the contents screen"
+             tal:attributes="href string:${item/absolute_url}/edit"
+             i18n:attributes="title">
             &nbsp;
           </a>
           <a class="navicon"
-            tal:attributes="
-              href  python: provider.get_item_tab_url(item);
-              title item/meta_type;
-            ">
-            <img tal:attributes="
-              src python:provider.get_icon_url(item);
-              alt item/meta_type" />
+             tal:attributes="href  python: provider.get_item_tab_url(item);
+                             title item/meta_type">
+            <img tal:attributes="src python:provider.get_icon_url(item);
+                                 alt item/meta_type" />
           </a>
           <div class="normal"
-            tal:attributes="
-              style   string:padding-left:8px;">
-            <a tal:attributes="
-              href  python: provider.get_item_tab_url(item);
-              class status_style;
-              title string:id: ${item/id};
-            ">
+               tal:attributes="style   string:padding-left:8px;">
+            <a tal:attributes="href  python: provider.get_item_tab_url(item);
+                               class status_style;
+                               title string:id: ${item/id};">
               <em tal:condition="is_default" i18n:translate="">index:</em>
               <span tal:replace="python: provider.get_item_title(item)">
                 title
@@ -85,10 +72,10 @@
         </td>
       </tr>
       <tr class="controls"
-        tal:condition="repeat/item/end">
+          tal:condition="repeat/item/end">
         <td style="border-top:1px solid #abc">
         </td>
       </tr>
     </tal:define>
   </tal:repeat>
-</tal:define>
+</tal:listing>

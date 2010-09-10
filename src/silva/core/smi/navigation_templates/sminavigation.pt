@@ -1,39 +1,32 @@
-<table class="listing" cellspacing="0" i18n:domain="silva">
+<table class="navigation listing" i18n:domain="silva">
   <thead>
     <tr>
       <th class="top">
         <a class="up"
-          title="up one level: alt-]"
-          accesskey="]"
-          tal:condition="not: provider/is_root"
-          tal:attributes="href provider/up_url"
-          i18n:attributes="title">
-          <img width="9"
-            height="9"
-            border="0"
-            alt="up one level: alt-]"
-            i18n:attributes="alt"
-            tal:attributes="src layout/static/up_level.gif" />
+           title="up one level: alt-]" accesskey="]"
+           tal:condition="not: provider/is_root"
+           tal:attributes="href provider/up_url"
+           i18n:attributes="title">
+          <img width="9" height="9" border="0"
+               alt="up one level: alt-]"
+               i18n:attributes="alt"
+               tal:attributes="src layout/static/up_level.gif" />
         </a>
         <a class="top"
-          title="up to containing publication: alt-["
-          accesskey="["
-          i18n:attributes="title"
-          tal:condition="not: provider/is_root"
-          tal:attributes="href provider/top_url">
-          <img width="9"
-            height="9"
-            border="0"
-            alt="up to containing publication: alt-["
-            i18n:attributes="alt"
-            tal:attributes="src provider/top_image_src" />
+           title="up to containing publication: alt-[" accesskey="["
+           i18n:attributes="title"
+           tal:condition="not: provider/is_root"
+           tal:attributes="href provider/top_url">
+          <img width="9" height="9" border="0"
+               alt="up to containing publication: alt-["
+               i18n:attributes="alt"
+               tal:attributes="src provider/top_image_src" />
         </a>
-        <a class="normal"
-          title="reload screen"
-          tal:content="view/tab | nothing"
-          href="#"
-          i18n:translate=""
-          i18n:attributes="title">
+        <a class="normal" href="#"
+           title="reload screen"
+           tal:content="view/tab | nothing"
+           i18n:translate=""
+           i18n:attributes="title">
           tab
         </a>
       </th>

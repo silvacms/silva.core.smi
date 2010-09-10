@@ -44,14 +44,9 @@ class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
     grok.layer(interfaces.ISMILayer)
     grok.view(Interface)
 
-    @property
-    def context_url(self):
-        if not hasattr(self, '_context_url'):
-            self._context_url = absoluteURL(self.context, self.request)
-        return self._context_url
-
-    def is_root(self):
-        return IRoot.providedBy(self.tree_root)
+    def update(self):
+        self.context_url = absoluteURL(self.context, self.request)
+        self.is_root = IRoot.providedBy(self.tree_root)
 
     def up_url(self):
         return '%s/../edit/%s' % (self.context_url, self.view.tab_name,)
@@ -119,8 +114,7 @@ class SMINavigationListingForContainer(SMINavigationListing):
         return "%%item_select_%d" % id
 
     def __post_process_template(self, content):
-        repl = {'root_url': absoluteURL(self.tree_root,
-                                        self.request),
+        repl = {'root_url': absoluteURL(self.tree_root, self.request),
                 'tabname': self.view.tab_name,
                 'item_select_%d' % \
                     self.intids.register(self.context.get_container()):
@@ -161,6 +155,11 @@ class SMINavigationListingForNonContainer(SMINavigationListing):
     grok.name('navigation_listing')
     grok.layer(interfaces.ISMILayer)
 
+    def update(self):
+        self.content_type = self.context.meta_type.startswith('Silva ') and \
+            self.context.meta_type[6:].lower() or \
+            self.context.meta_type
+
     def items(self):
         default_doc_list = self.default_document() and \
             [self.default_document()] or []
@@ -186,11 +185,6 @@ class SMINavigationListingForNonContainer(SMINavigationListing):
     def container_tab_url(self):
         tab_name = getattr(self.view, 'tab_name', 'tab_edit')
         return u"%s/edit/%s" % (self.container_url(), tab_name,)
-
-    def gentype(self):
-        return self.context.meta_type.startswith('Silva ') and \
-            self.context.meta_type[6:].lower() or \
-            self.context.meta_type
 
     def default_document(self):
         if not hasattr(self, '_default_document'):
