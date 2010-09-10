@@ -14,7 +14,7 @@ from infrae import rest
 from megrok import pagetemplate as pt
 from megrok.chameleon.components import ChameleonPageTemplate
 from silva.core.conf.utils import getSilvaViewFor
-from silva.core.interfaces import ISilvaObject, IAuthorizationManager
+from silva.core.interfaces import ISilvaObject, IAsset, IAuthorizationManager
 from silva.core.layout.interfaces import IMetadata
 from silva.core.messages.interfaces import IMessageService
 from silva.core.messages.service import Message
@@ -199,6 +199,11 @@ class PreviewTab(SMITab):
 class DummyPreviewTab(PreviewTab):
     grok.template('smitab')
     grok.name('tab_preview_extra')
+    tab_name = 'tab_preview_frame_top'
+
+
+class DummyPreviewAssetTab(DummyPreviewTab):
+    grok.context(IAsset)
     tab_name = 'tab_preview'
 
 
