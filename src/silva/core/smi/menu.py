@@ -99,9 +99,10 @@ class SMITopMenuItem(SMIMenuItem):
 
     @property
     def css_class(self):
-        return self.selected and \
-            (self.active and 'selected' or 'recede') \
-            or ''
+        css_class = ['tab']
+        if self.selected:
+            css_class.append(self.active and 'selected' or 'recede')
+        return ' '.join(css_class)
 
     @property
     def up_image_src(self):
