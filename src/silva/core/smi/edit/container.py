@@ -29,18 +29,6 @@ from zope.traversing.browser import absoluteURL
 grok.layer(ISMILayer)
 
 
-class ImportButton(silvasmi.SMIMiddleGroundButton):
-    grok.context(IContainer)
-    grok.order(200)
-    grok.require('silva.ChangeSilvaContent')
-    grok.view(IPublicationAwareTab)
-
-    tab = 'tab_edit_import'
-    label = _(u"import")
-    help = _(u"import xml data or a zip file: alt-i")
-    accesskey = 'i'
-
-
 @grok.provider(IContextSourceBinder)
 def silva_content_types(context):
     contents = [SimpleTerm(value=None, token='none', title=_('select:'))]
