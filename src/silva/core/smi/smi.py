@@ -181,6 +181,13 @@ class DummyPropertiesTab(SMITab):
     tab_name = 'tab_metadata'
 
 
+class DummyPublishTab(SMITab):
+    grok.implements(interfaces.IPublishTab)
+    grok.template('smitab')
+    grok.name('tab_publish_extra')
+    tab_name = 'tab_publish'
+
+
 class PreviewTab(SMITab):
     """Preview
     """
@@ -190,7 +197,6 @@ class PreviewTab(SMITab):
 
 
 class DummyPreviewTab(PreviewTab):
-
     grok.template('smitab')
     grok.name('tab_preview_extra')
     tab_name = 'tab_preview'
