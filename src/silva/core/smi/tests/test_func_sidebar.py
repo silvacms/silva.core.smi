@@ -1,25 +1,17 @@
+
 import unittest
-from Products.Silva.testing import FunctionalLayer
-from infrae.testbrowser.browser import Browser
+from Products.Silva.testing import FunctionalLayer, smi_settings
 from silva.core.smi.navigation import get_sidebar_cache, sidebar_cache_key
+
 
 class SidebarTest(unittest.TestCase):
     layer = FunctionalLayer
 
     def setUp(self):
         self.root = self.layer.get_application()
-        self.browser = Browser(self.layer._test_wsgi_application)
-        self.setup_content()
+        self.browser = self.layer.get_browser(smi_settings)
         self.browser.login('manager', 'manager')
-        self.browser.inspect.add('sidebar_root',
-            '(//div[@class="navigation"]/table[@class="listing"]'
-            '//td)[1]')
-        self.browser.inspect.add('sidebar_elements',
-            '//div[@class="navigation"]/table[@class="listing"]//td')
-        self.browser.inspect.add('feedback',
-            '//div[@class="fixed-feedback"]/span')
 
-    def setup_content(self):
         self.layer.login('manager')
         factory = self.root.manage_addProduct['Silva']
         factory.manage_addFolder('folder', 'Folder')
@@ -30,13 +22,14 @@ class SidebarTest(unittest.TestCase):
         factory.manage_addFolder('third_folder', 'Folder 3')
         self.layer.logout()
 
+
     def test_sidebar_display(self):
         status = self.browser.open('/root/edit/tab_access')
         self.assertEquals(200, status)
 
-        self.assertEquals([u'root'], self.browser.inspect.sidebar_root)
+        self.assertEquals([u'root'], self.browser.inspect.navigation_root)
         self.assertEquals([u'root', u'Folder', u'Publication'],
-                          self.browser.inspect.sidebar_elements)
+                          self.browser.inspect.navigation)
 
     def test_simple_sidebar_cache(self):
         cache = get_sidebar_cache()
@@ -76,7 +69,7 @@ class SidebarTest(unittest.TestCase):
         status = self.browser.open('root/edit/tab_access')
         self.assertEquals(200, status)
         self.assertEquals([u'root', u'New Folder Title', u'Publication'],
-                          self.browser.inspect.sidebar_elements)
+                          self.browser.inspect.navigation)
 
     def test_invalidation_on_publication(self):
         status = self.browser.open(
@@ -84,7 +77,6 @@ class SidebarTest(unittest.TestCase):
         self.assertEquals(200, status)
 
         status = self.browser.open('/root/publication/edit/tab_metadata')
-        self.browser.html.resolve_base_href()
         form = self.browser.get_form('form')
         title_field = form.get_control('silva-content.maintitle:record')
         title_field.value = u'New Publication Title'
@@ -96,10 +88,10 @@ class SidebarTest(unittest.TestCase):
             '/root/publication/first_folder/edit/tab_access')
         self.assertEquals(200, status)
         self.assertEquals([u'New Publication Title'],
-                          self.browser.inspect.sidebar_root)
+                          self.browser.inspect.navigation_root)
 
         # check publication upper level
         status = self.browser.open('/root/edit/tab_access')
         self.assertEquals(200, status)
         self.assertEquals([u'root', u'Folder', u'New Publication Title'],
-                          self.browser.inspect.sidebar_elements)
+                          self.browser.inspect.navigation)
