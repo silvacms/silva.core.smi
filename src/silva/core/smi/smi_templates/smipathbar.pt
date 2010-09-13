@@ -9,6 +9,12 @@
        i18n:attributes="title">
       Silva
     </a>
+    <a class="idea"
+       title="Silva access keys: alt-?"
+       accesskey="?"
+       tal:condition="exists:view/help_url"
+       tal:attributes="href view/help_url"
+       i18n:attributes="title"></a>
   </div>
   <a class="normal"
      title="Silva top: alt-/"
@@ -20,7 +26,8 @@
   </a>
   <a name="top"> </a>
   <tal:block tal:repeat="breadcrumb model/@@absolute_url/breadcrumbs">
-    <a tal:content="breadcrumb/name"
+    <a class="breadcrumb"
+       tal:content="breadcrumb/name"
        tal:attributes="href string:${breadcrumb/url}/edit/${layout/tab_name}">
       name
     </a>
