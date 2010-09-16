@@ -1,5 +1,5 @@
 <tal:error i18n:domain="silva">
-  <h1 i18n:label="">Potential broken reference</h1>
+  <h1 i18n:translate="">Potential broken reference</h1>
   <p i18n:translate="">
     The action could not perform because it would break a reference from :
     <a href="#"
