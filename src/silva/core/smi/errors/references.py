@@ -39,6 +39,8 @@ class BrokenReferenceErrorPage(silvaviews.Page):
     grok.name('error.html')
     grok.template('error')
 
+    tab_name = 'tab_edit'
+
     def update(self):
         allowed_to_break = getSecurityManager().checkPermission(
             'Break silva references', self.context)

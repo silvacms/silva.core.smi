@@ -22,6 +22,8 @@ class OverQuotaErrorPage(silvaviews.Page):
     grok.name('error.html')
     grok.template('error')
 
+    tab_name = 'tab_edit'
+
     def update(self):
         self.exceeding_size = Bytes(self.context.error.args[0])
         self.next_url = absoluteURL(aq_parent(self.context), self.request) + '/edit'
