@@ -10,7 +10,7 @@ from silva.core.conf import schema as silvaschema
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
 from silva.core.smi import smi as silvasmi
-from silva.core.smi.interfaces import IEditTab, IPublicationAwareTab
+from silva.core.smi.interfaces import IPublishTab, IPublicationAwareTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zeam.form.silva.form import ExtractedDecoratedAction
@@ -53,7 +53,7 @@ class ImportForm(silvaforms.SMIForm):
     grok.name('tab_edit_import')
     grok.require('silva.ManageSilvaContentSettings')
     grok.context(IContainer)
-    grok.implements(IEditTab)
+    grok.implements(IPublishTab)
 
     tab = 'edit'
 
@@ -106,3 +106,15 @@ class ImportButton(silvasmi.SMIMiddleGroundButton):
     label = _(u"import")
     help = _(u"import xml data or a zip file: alt-i")
     accesskey = 'i'
+
+
+class ExportButton(silvasmi.SMIMiddleGroundButton):
+    grok.context(IContainer)
+    grok.order(210)
+    grok.require('silva.ManageSilvaContentSettings')
+    grok.view(IPublicationAwareTab)
+
+    tab = 'tab_status_export'
+    label = _(u"export")
+    help = _(u"export to xml or other: alt-e")
+    accesskey = 'e'
