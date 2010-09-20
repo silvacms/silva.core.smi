@@ -7,14 +7,15 @@ from AccessControl import getSecurityManager
 
 from five import grok
 from silva.core.interfaces import ISilvaObject
+from silva.core.interfaces.adapters import ILanguageProvider
 from silva.core.services.interfaces import IMemberService
 from silva.translations import translate as _
+from z3c.schema.email import RFC822MailAddress
 from zeam.form import silva as silvaforms
 from zope import schema, interface
 from zope.component import getUtility
-from silva.core.interfaces.adapters import ILanguageProvider
-from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.schema.interfaces import IContextSourceBinder
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 
 @grok.provider(IContextSourceBinder)
@@ -48,7 +49,7 @@ class IUserInfo(interface.Interface):
         title=_(u"fullname"),
         description=_(u"user full name"),
         required=True)
-    email = schema.TextLine(
+    email = RFC822MailAddress(
         title=_(u"email address"),
         description=_(u"contact email address"),
         required=True)
