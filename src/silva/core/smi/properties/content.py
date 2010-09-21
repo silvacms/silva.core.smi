@@ -45,16 +45,3 @@ class LocalSiteButton(smi.SMIMiddleGroundButton):
     def available(self):
         return not interfaces.IRoot.providedBy(self.context)
 
-
-class SubscriptionButton(smi.SMIMiddleGroundButton):
-    grok.order(110)
-    grok.require('silva.ManageSilvaContent')
-
-    tab = 'tab_subscriptions'
-    label = _(u"subscriptions")
-    help = _(u"manage subscriptions: alt-u")
-    accesskey = "u"
-
-    def available(self):
-        return (interfaces.ISubscribable(self.context, None) is not None and
-                self.context.service_subscriptions.subscriptionsEnabled())
