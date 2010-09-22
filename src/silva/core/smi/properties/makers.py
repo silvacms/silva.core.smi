@@ -147,7 +147,7 @@ class AddCustomizationMarker(silvaforms.SMISubForm):
         manager = IMarkManager(self.context)
         for value in values['availablesMarkers']:
             manager.addMarker(value)
-        self.status = _(u"Marker added.")
+        self.send_message(_(u"Marker added."), type=u"feedback")
         return silvaforms.SUCCESS
 
 
@@ -176,7 +176,7 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
         manager = IMarkManager(self.context)
         for value in values['usedMarkers']:
             manager.removeMarker(value)
-        self.status = _(u"Marker removed.")
+        self.send_message(_(u"Marker removed."), type=u"feedback")
         return silvaforms.SUCCESS
 
 
