@@ -93,7 +93,7 @@ class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
         if errors:
             return silvaforms.FAILURE
         url = [absoluteURL(self.context, self.request), 'edit', '+']
-        if data['content'] is not silvaforms.NO_VALUE:
+        if data['content'] is not silvaforms.NO_VALUE and data['content']:
             url.append(data['content'])
         url = '/'.join(url)
         if data.getDefault('position'):
