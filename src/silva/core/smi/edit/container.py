@@ -77,9 +77,9 @@ class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
 
     @property
     def position(self):
-        if 'add.position' in self.request.form:
+        if 'addform.options.position' in self.request.form:
             try:
-                return int(self.request.form['add.position'])
+                return int(self.request.form['addform.options.position'])
             except ValueError:
                 pass
         return None
@@ -98,7 +98,7 @@ class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
         url = '/'.join(url)
         if data.getDefault('position'):
             url += '?' + urllib.urlencode(
-                {'add.position': str(data['position'])})
+                {'addform.options.position': str(data['position'])})
         self.redirect(url)
         return silvaforms.SUCCESS
 
