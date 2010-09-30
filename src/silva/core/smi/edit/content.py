@@ -52,6 +52,36 @@ class NewVersion(SMIAction):
         return self.redirect(form)
 
 
+class RequestApproval(SMIAction):
+    """Request approval for immediate publication.
+    """
+    description = _(u"request approval for immediate publication: alt-r")
+    accesskey = u'r'
+
+    def available(self, form):
+        return bool(not self.can_approve_content(form) and
+                    form.context.get_unapproved_version() is not None and
+                    not form.context.is_version_approval_requested())
+
+    def __call__(self, form):
+        message = None
+        if form.context.get_unapproved_version() is None:
+            message = _(u"There is no unapproved version.")
+        if form.context.is_version_approval_requested():
+            message= _(u"Approval has already been requested.")
+        if message is not None:
+            form.send_message(message, type="error")
+            return self.redirect(form)
+
+        form.context.set_unapproved_version_publication_datetime(DateTime())
+        form.context.request_version_approval(
+            u"Request immediate publication of this content. ")
+        form.send_message(
+            _(u"Approval requested for immediate publication."),
+            type="feedback")
+        return self.redirect(form)
+
+
 class WithdrawApprovalRequest(SMIAction):
     """Withdraw approval request.
     """
@@ -162,6 +192,7 @@ class SMIVersionActionForm(silvasmi.SMIMiddleGroundActionForm):
 
     prefix = 'md.version'
     actions = silvaforms.Actions(
+        RequestApproval(_(u"request approval")),
         Publish(_(u'publish now')),
         WithdrawApprovalRequest(_(u'withdraw request')),
         RejectApprovalRequest(_(u'reject request')),
