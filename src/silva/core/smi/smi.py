@@ -185,7 +185,7 @@ class DummyPublishTab(SMITab):
     grok.implements(interfaces.IPublishTab)
     grok.template('smitab')
     grok.name('tab_publish_extra')
-    tab_name = 'tab_publish'
+    tab_name = 'tab_status'
 
 
 class PreviewTab(SMITab):
