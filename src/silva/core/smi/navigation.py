@@ -136,7 +136,7 @@ class SMINavigationListingForContainer(SMINavigationListing):
 
 
 def get_sidebar_cache():
-    return getUtility(ICacheManager).get_cache('sidebar', 'shared')
+    return getUtility(ICacheManager).get_cache_from_region('sidebar', 'shared')
 
 def sidebar_cache_key(content):
     return "/".join(content.get_publication().getPhysicalPath())
