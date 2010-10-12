@@ -975,7 +975,6 @@ input[type="submit"]:focus, input[type="button"]:focus {
 }
 */
 
-
 /* ________________________________________________ info + clipboard _______ */
 div.info {
   margin: -1px 0 0;
@@ -1478,12 +1477,13 @@ button.calendar-button {
 .navigation {
   width: 250px;
   float: left;
+  margin: 0 10px 0 0;
 }
 
 /* ___ viewport ___ */
 
 .viewport {
-  padding: 0 10px;
+  margin: 0 10px 0 0;
   float: left;
   width: 720px;
 }
