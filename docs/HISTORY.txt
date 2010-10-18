@@ -1,12 +1,20 @@
 Changelog
 =========
 
-2.3 (unreleased)
+2.3 (2010/10/18)
 ----------------
 
-* ...
+* The access tab is now implemented in here.
 
-2.3b1 (2010-07-15)
+* Middleground actions, navigation, error pages and layout have been
+  improved.
+
+* Review permissions on buttons and tabs.
+
+* Implement a working Over quota error page.
+
+
+2.3b1 (2010/07/15)
 ------------------
 
 * A SMI layout defined using ``silva.core.layout`` has been added. It
@@ -20,7 +28,7 @@ Changelog
   ``silva.core.smi``, and not rely anymore on old Silva Views macros.
 
 
-2.2b1 (2010-01-25)
+2.2b1 (2010/01/25)
 ------------------
 
 * Various improvements on buttons.
@@ -35,7 +43,7 @@ Changelog
   IDocument types that don't support a particular editor
   (e.g. SilvaNews News Items don't support the forms-based editor)
 
-2.2a2 (2009-01-12)
+2.2a2 (2009/01/12)
 ------------------
 
 * Fixed editor buttons on publised documents.
@@ -45,8 +53,7 @@ Changelog
 * Remove deprecation warnings.
 
 
-2.2a1 (2008-11-18)
+2.2a1 (2008/11/18)
 ------------------
 
 * Initial release
-
