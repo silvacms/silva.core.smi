@@ -959,12 +959,13 @@ input[type="radio"] {
   border: none;
 }
 input[type="checkbox"] {
-  margin: 0 1px;
+  margin: 0 0.4em 0 0;
   width: auto;
   border: none;
 }
 
-/* default stylers for classless buttons (either delete or make into shockers):
+/* default stylers for classless buttons (either delete or make into shockers):*/
+
 input[type="submit"]:hover, input[type="button"]:hover {
   color: #bfffd3;
   background-color: #69878c;
@@ -973,7 +974,14 @@ input[type="submit"]:focus, input[type="button"]:focus {
   color: #bfffd3;
   background-color: #008a8a;
 }
-*/
+
+table.listing input.field-textline {
+  width: 94%;
+}
+
+table.listing td.element input[type="radio"] {
+  margin: 0.2em 0.2em 0.2em 0;
+}
 
 /* ________________________________________________ info + clipboard _______ */
 div.info {
