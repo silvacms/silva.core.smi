@@ -1,0 +1,2 @@
+<div id="container-listing-main"
+     tal:content="structure path:context/@@containerlisting" />

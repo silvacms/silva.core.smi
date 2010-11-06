@@ -40,4 +40,19 @@ $(document).ready(function() {
             };
         });
     };
+
 });
+
+function browse() {
+    var hash = window.location.hash;
+    var path = hash.replace('#browse/', '');
+    var main = $('#container-listing-main');
+    var url = document.baseURI.replace(/edit#?.*$/, '') +
+        '/' + path + '/edit/containerlisting?browse=' + path;
+    console.log(url);
+    main.load(url);
+}
+
+$(window).hashchange(browse);
+if (window.location.hash.match(/^#browse\//))
+    $(document).ready(browse);

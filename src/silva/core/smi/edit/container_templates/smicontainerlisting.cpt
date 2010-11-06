@@ -1,0 +1,6 @@
+<table class="container-listing">
+  <tal:iter tal:repeat="item view.items">
+  <tr class="container-listing-row ${view.get_item_class(item)}"
+      tal:content="structure path:item/@@containerlistingitem" />
+  </tal:iter>
+</table>
