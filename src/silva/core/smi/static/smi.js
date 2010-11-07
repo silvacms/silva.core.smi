@@ -43,16 +43,83 @@ $(document).ready(function() {
 
 });
 
-function browse() {
-    var hash = window.location.hash;
-    var path = hash.replace('#browse/', '');
-    var main = $('#container-listing-main');
-    var url = document.baseURI.replace(/edit#?.*$/, '') +
-        '/' + path + '/edit/containerlisting?browse=' + path;
-    console.log(url);
-    main.load(url);
+if ($.browser.msie) {
+    // hack to prevent ie from reloading
+    window.location.hash = window.location.hash;
 }
 
-$(window).hashchange(browse);
-if (window.location.hash.match(/^#browse\//))
-    $(document).ready(browse);
+function HashDispatcher(name) {
+    this.name = name;
+    this._matchRegexp = new RegExp("^#" + this.name + '/?');
+
+    this.registerHooks = function() {
+        // register as handler for hash changed
+        var self = this;
+        $(window).hashchange(function(){
+            self.hashChanged()
+        });
+    };
+
+    this.extractPath = function() {
+        var hash = window.location.hash;
+        if (hash.match(this._matchRegexp)) {
+            return hash.replace(this._matchRegexp, '');
+        }
+        return '';
+    };
+};
+
+function Browser(options){
+    this.options = options || {};
+    this.baseURL = window.location.href.replace(/\/edit.*/, '');
+    this.browserURL = this.baseURL;
+
+    this.getElement = function() {
+        return $('#container-listing-main');
+    };
+
+    this.hashChanged = function() {
+        this.path = this.extractPath();
+        this.browserURL = this.baseURL + '/' + this.path;
+        this.update();
+    };
+
+    this.update = function() {
+        var self = this;
+        var url = this.browserURL +
+            '/edit/containerlisting?browse=' + this.path;
+        $.ajax({settings: {ajaxSend: function(){}},
+                url: url,
+                dataType: 'html',
+                success: function(data){
+                    self.getElement().html(data);
+                }
+               });
+    };
+
+    this.rewriteURL = function(event) {
+        var url = $(event.target).attr('href');
+        var new_url = url.replace(this.baseURL, this.browserURL);
+        window.location.href = new_url;
+        return false;
+    };
+
+};
+
+Browser.prototype = new HashDispatcher('browse');
+
+if (window.location.href.match(/\/edit(#.*)?$/)) {
+    var browser = new Browser();
+
+    $(document).ready(function(){
+        browser.registerHooks();
+        browser.hashChanged();
+    });
+
+    $('.tabs a').live('click', function(event){
+        return browser.rewriteURL(event);
+    });
+    $('.middleground a').live('click', function(event){
+        return browser.rewriteURL(event);
+    });
+}

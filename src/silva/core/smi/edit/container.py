@@ -7,13 +7,15 @@ import urllib
 
 from Products.Silva.icon import get_meta_type_icon, get_icon_url
 from Products.Silva.ExtensionRegistry import extensionRegistry as registry
-from zExceptions import Redirect
+from zExceptions import Redirect, BadRequest
 
 from five import grok
-from silva.core.interfaces import IContainer, ISilvaObject
+from silva.core.interfaces import (IContainer,
+    ISilvaObject, IRoot)
+from silva.core.smi.interfaces import (ISMILayer,
+    ISMITabIndex, ISMINavigationOff)
 from silva.core.views import views as silvaviews
 from silva.core.smi import smi as silvasmi
-from silva.core.smi.interfaces import ISMILayer, ISMITabIndex, ISMINavigationOff
 from silva.core.smi.interfaces import IAddingTab, IEditTab, IPublicationAwareTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
@@ -160,8 +162,21 @@ class SMIContainerEditTab(silvasmi.SMIPage):
     grok.name('tab_edit')
     tab = 'edit'
 
+    def update(self):
+        if not IRoot.providedBy(self.context):
+            # redirect to root url with browser hash tag
+            # http://silva/folder/edit -> http://silva/edit#browser/folder
+            root = self.context.get_root()
+            root_path = root.getPhysicalPath()
+            context_path = self.context.getPhysicalPath()
+            if context_path[:len(root_path)] == root_path:
+                root_url = absoluteURL(root, self.request)
+                path = "/".join(context_path[len(root_path):])
+                url = "%s/edit#browse/%s" % (root_url,
+                                             path)
+                raise Redirect(url)
+            raise BadRequest('invalid path')
 
-# XXX grok.View as no security (SMI)
 
 class SMIContainerListing(silvasmi.SMIView):
     """ Container listing view
