@@ -5,17 +5,15 @@
 
 import urllib
 
-from Products.Silva.icon import get_meta_type_icon, get_icon_url
+from Products.Silva.icon import get_meta_type_icon
 from Products.Silva.ExtensionRegistry import extensionRegistry as registry
-from zExceptions import Redirect, BadRequest
+from zExceptions import Redirect
 
 from five import grok
-from silva.core.interfaces import (IContainer,
-    ISilvaObject, IRoot)
-from silva.core.smi.interfaces import (ISMILayer,
-    ISMITabIndex, ISMINavigationOff)
+from silva.core.interfaces import IContainer
 from silva.core.views import views as silvaviews
 from silva.core.smi import smi as silvasmi
+from silva.core.smi.interfaces import ISMILayer
 from silva.core.smi.interfaces import IAddingTab, IEditTab, IPublicationAwareTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
@@ -152,94 +150,3 @@ class AddingView(silvasmi.SMIPage):
                             mapping={'addable_name': meta_type}),
                  'url': '/'.join(add_url + [meta_type]),
                  'description': addable['doc']})
-
-
-class SMIContainerEditTab(silvasmi.SMIPage):
-    """ Container listing for the smi
-    """
-    grok.context(IContainer)
-    grok.implements(IEditTab, ISMITabIndex, ISMINavigationOff)
-    grok.name('tab_edit')
-    tab = 'edit'
-
-    def update(self):
-        if not IRoot.providedBy(self.context):
-            # redirect to root url with browser hash tag
-            # http://silva/folder/edit -> http://silva/edit#browser/folder
-            root = self.context.get_root()
-            root_path = root.getPhysicalPath()
-            context_path = self.context.getPhysicalPath()
-            if context_path[:len(root_path)] == root_path:
-                root_url = absoluteURL(root, self.request)
-                path = "/".join(context_path[len(root_path):])
-                url = "%s/edit#browse/%s" % (root_url,
-                                             path)
-                raise Redirect(url)
-            raise BadRequest('invalid path')
-
-
-class SMIContainerListing(silvasmi.SMIView):
-    """ Container listing view
-    """
-    grok.context(IContainer)
-    grok.name('containerlisting')
-
-    def update(self):
-        self.items = self._get_items()
-
-    def get_item_class(self, item):
-        html_classes = ['container-listing-item',
-                        self._get_meta_type_class(item)]
-        if IContainer.providedBy(item):
-            html_classes.append('container-listing-item-is-container')
-        return " ".join(html_classes)
-
-    def _get_items(self):
-        default = self.context.get_default()
-        if default is not None:
-            yield default
-        for item in self.context.get_ordered_publishables():
-            yield item
-
-    def _get_meta_type_class(self, item):
-        return 'container-listing-item-' + \
-            item.meta_type.lower().replace(' ', '-')
-
-
-class SMIContainerListingItem(silvasmi.SMIView):
-    """ List item view for container listings
-    """
-    grok.context(ISilvaObject)
-    grok.name('containerlistingitem')
-
-    @property
-    def icon_url(self):
-        return get_icon_url(self.context, self.request)
-
-    @property
-    def title_link_url(self):
-        base = self._normalize_path(self.request.get('browse', None))
-        return "#browse%s%s" % (base, self.context.id)
-
-    def _normalize_path(self, path):
-        if not path:
-            return '/'
-        if path.startswith('/'):
-            path = path[1:]
-        if path.endswith('/'):
-            path = path[:-1]
-
-        components = path.split('/')
-        result = []
-
-        for component in components:
-            if component == '..' and len(result) > 0:
-                result.pop()
-            else:
-                result.append(component)
-
-        return '/' + '/'.join(result) + '/'
-
-    @property
-    def id_link_url(self):
-        return "#"

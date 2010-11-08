@@ -24,7 +24,6 @@ class ISMIView(IGrokView):
 class ISMILayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources):
     """Layer for SMI.
     """
-    silvaconf.resource('jquery.observehashchange.min.js')
     silvaconf.resource('smi.js')
     silvaconf.resource('smi.css')
 

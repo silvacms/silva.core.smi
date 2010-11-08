@@ -1,9 +1,0 @@
-<td class="container-listing-item-icon">
-  <img src="${view.icon_url}" alt="${context.meta_type}" />
-</td>
-<td class="container-listing-item-title">
-  <a href="${view.title_link_url}" tal:content="context.get_title()" />
-</td>
-<td class="container-listing-item-id">
-  <a href="${view.id_link_url}" tal:content="context.id" />
-</td>

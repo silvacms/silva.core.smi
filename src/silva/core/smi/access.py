@@ -362,7 +362,6 @@ class AccessPermissionForm(silvaforms.SMISubForm):
         else:
             access.set_acquired()
             self.send_message(
-                _(u"The minimum required role to access this"
-                  "content is acquired."),
+                _(u"The minimum required role to access this content is acquired."),
                 type=u"feedback")
         return silvaforms.SUCCESS
