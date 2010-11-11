@@ -59,8 +59,9 @@ class SubscriptionButton(smi.SMIButton):
     accesskey = "u"
 
     def available(self):
+        # XXX Later on there is a permission. There is no such thing here. Improvise.
         user = getSecurityManager().getUser()
-        if not user.has_role('Editor'):
+        if not (user.has_role('Editor') or user.has_role('ChiefEditor') or user.has_role('Manager')):
             return False
         return (interfaces.ISubscribable(self.context, None) is not None and
                 self.context.service_subscriptions.subscriptionsEnabled())
