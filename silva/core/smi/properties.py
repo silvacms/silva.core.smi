@@ -1,6 +1,9 @@
 # $Id$
 # Copyright (c) 2008-2010 Infrae. All rights reserved.
 # See also LICENSE.txt
+
+from AccessControl import getSecurityManager
+
 from five import grok
 
 from silva.core import interfaces
@@ -56,6 +59,9 @@ class SubscriptionButton(smi.SMIButton):
     accesskey = "u"
 
     def available(self):
+        user = getSecurityManager().getUser()
+        if not user.has_role('Editor'):
+            return False
         return (interfaces.ISubscribable(self.context, None) is not None and
                 self.context.service_subscriptions.subscriptionsEnabled())
 
