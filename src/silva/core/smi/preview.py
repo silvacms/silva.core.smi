@@ -15,6 +15,7 @@ class PreviewTab(SMIPage):
     """
     grok.context(IDirectlyRendered)
     grok.name('tab_preview')
+    grok.require('silva.ReadSilvaContent')
 
     tab = _('preview')
 
