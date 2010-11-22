@@ -10,6 +10,7 @@ from zope.contentprovider.interfaces import ITALNamespaceData
 from grokcore.view.interfaces import IGrokView
 
 from silva.core import conf as silvaconf
+from silva.core.interfaces import IContent
 from silva.core.layout.interfaces import ICustomizableLayer
 from silva.core.layout.jquery.interfaces import IJQueryUIResources
 from silva.core.views.interfaces import INonCachedLayer
@@ -21,11 +22,18 @@ class ISMIView(IGrokView):
     """
 
 
-class ISMILayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources):
-    """Layer for SMI.
+class ISMIDefaultLayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources):
+    """Default SMI Layer.
     """
     silvaconf.resource('smi.js')
     silvaconf.resource('smi.css')
+
+
+class ISMILayer(ISMIDefaultLayer):
+    """Layer for SMI.
+    """
+    silvaconf.only_for(IContent)
+    silvaconf.resource('content.css')
 
 
 class ISMIButtonManager(IViewletManager):
