@@ -22,15 +22,20 @@ class ISMIView(IGrokView):
     """
 
 
-class ISMIDefaultLayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources):
-    """Default SMI Layer.
+class ISMILayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources):
+    """SMI Layer.
+    """
+
+
+class ISMIDefaultLayer(ISMILayer):
+    """Default Layer for SMI.
     """
     silvaconf.resource('smi.js')
     silvaconf.resource('smi.css')
 
 
-class ISMILayer(ISMIDefaultLayer):
-    """Layer for SMI.
+class ISMISilvaLayer(ISMIDefaultLayer):
+    """Content customization layer for SMI.
     """
     silvaconf.only_for(IContent)
     silvaconf.resource('content.css')
