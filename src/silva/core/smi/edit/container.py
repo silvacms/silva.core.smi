@@ -18,7 +18,7 @@ from silva.core.smi.interfaces import IAddingTab, IEditTab, IPublicationAwareTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zope import schema, interface
-from zope.component import queryUtility
+from zope.component import queryUtility, getUtility
 from zope.component.interfaces import IFactory
 from zope.interface import Interface
 from zope.publisher.browser import applySkin
@@ -125,8 +125,11 @@ class AddingView(silvasmi.SMIPage):
     def __init__(self, context, request):
         # Due to bugs in traversing, 'edit' is not called. so set back
         # what is done there.
+        root = context.get_root()
+        smi_skin = getUtility(Interface, root._smi_skin)
+        applySkin(request, smi_skin)
+
         context = context.get_container()
-        applySkin(request, ISMILayer)
         super(AddingView, self).__init__(context, request)
 
     def publishTraverse(self, request, name):
