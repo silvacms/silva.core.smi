@@ -28,14 +28,14 @@ class ISMILayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources):
     """
 
 
-class ISMISilvaContainerLayer(IDefaultBrowserLayer):
+class ISMISilvaBlueLayer(ISMILayer):
     """Default Layer for SMI.
     """
     silvaconf.resource('smi.js')
     silvaconf.resource('smi.css')
 
 
-class ISMISilvaLayer(ISMILayer, ISMISilvaContainerLayer):
+class ISMISilvaLayer(ISMISilvaBlueLayer):
     """Content customization layer for SMI.
     """
     silvaconf.only_for(IContent)
