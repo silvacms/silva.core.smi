@@ -15,6 +15,7 @@ class TestBreakReference(unittest.TestCase):
         factory = self.root.manage_addProduct['Silva']
         factory.manage_addFile('file', 'File')
         factory.manage_addLink('link', 'Link', target=self.root.file)
+        factory.manage_addLink('link1', 'Link', target=self.root.file)
 
     def test_setup(self):
         self.assertEquals(self.root.file,
@@ -115,7 +116,8 @@ class TestBreakReference(unittest.TestCase):
 
         service = getUtility(IReferenceService)
         refs = service.get_references_to(self.root.file)
-        self.assertEquals([getattr(self.root.link, '0')],
+        self.assertEquals([getattr(self.root.link, '0'),
+                           getattr(self.root.link1, '0')],
                           map(lambda x: x.source, refs),
                           'references should not have been removed')
 
