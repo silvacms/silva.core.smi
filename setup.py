@@ -6,7 +6,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.2'
+version = '2.2.1dev'
 
 setup(name='silva.core.smi',
       version=version,
