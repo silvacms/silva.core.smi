@@ -1,10 +1,14 @@
 Changelog
 =========
 
-2.3.1 (unreleased)
+2.3.1 (2010/12/20)
 ------------------
 
-* ...
+* Add support to skin the SMI: you can now provide your own CSS for the SMI.
+  All hardcoded CSS have been removed.
+
+* Tab preview for File and Image have been modernized.
+
 
 2.3 (2010/10/18)
 ----------------
