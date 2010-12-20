@@ -975,8 +975,17 @@ input[type="submit"]:focus, input[type="button"]:focus {
   background-color: #008a8a;
 }
 
-table.listing input.field-textline {
-  width: 94%;
+/* for sub-fielded fields */
+div.multi-field input.field-textline {
+width: 94%;
+}
+div.multi-actions input[value="Add"] {
+  color: #d9f3f1;
+  background-color: #283365;
+}
+div.multi-actions input[value="Remove"] {
+  color: #fdeaea;
+  background-color: #752e2f;
 }
 
 table.listing td.element input[type="radio"] {
