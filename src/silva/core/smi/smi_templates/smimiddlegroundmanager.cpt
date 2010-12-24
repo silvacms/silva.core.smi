@@ -4,6 +4,7 @@
                 tal:replace="structure button.render()" />
   </div>
   <div class="executor" tal:condition="viewletmanager.executors">
+    &nbsp;
     <tal:button tal:repeat="button viewletmanager.executors"
                 tal:replace="structure button.render()" />
   </div>

@@ -55,8 +55,6 @@ class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
         return '%s/edit/%s' % (self.layout.root_url, self.view.tab_name,)
 
     def top_image_src(self):
-        if IPublication.providedBy(self.tree_root):
-            return self.layout.static['up_tree.gif']()
         return self.layout.static['up_publication.gif']()
 
 

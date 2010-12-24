@@ -23,7 +23,7 @@
   <a class="navicon"
     tal:attributes="
       href  string:${item_tab_url};
-      style python:'padding-left:'+str(indent * 10 + 4)+'px';
+      style python:'padding-left:'+str((indent + 1) * 10)+'px';
       title item/meta_type;
     "
     i18n:attributes="title">
