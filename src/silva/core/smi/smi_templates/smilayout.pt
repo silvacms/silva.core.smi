@@ -34,5 +34,7 @@
     <div id="remote-request-loading">
       <p i18n:translate="">loading ...</p>
     </div>
+    <a href="#" id="content-url" style="display: none"
+       tal:attributes="href context/@@absolute_url"></a>
   </body>
 </html>
