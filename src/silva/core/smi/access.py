@@ -166,8 +166,8 @@ class GrantAccessAction(silvaforms.Action):
                     type="error")
         except UnauthorizedRoleAssignement:
             form.send_message(
-                _(u'Sorry, you are not allowed to remove the role "${role}" '
-                  u'from user "${userid}".',
+                _(u'Sorry, you are not allowed to grant the role "${role}" '
+                  u'to user "${username}".',
                   mapping=mapping),
                 type="error")
         return silvaforms.SUCCESS
