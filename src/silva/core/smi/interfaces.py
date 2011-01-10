@@ -6,7 +6,6 @@
 from zope import schema
 from zope.interface import Attribute, Interface, directlyProvides
 from zope.contentprovider.interfaces import ITALNamespaceData
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from grokcore.view.interfaces import IGrokView
 
@@ -26,12 +25,12 @@ class ISMIView(IGrokView):
 class ISMILayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources):
     """SMI Layer.
     """
+    silvaconf.resource('smi.js')
 
 
 class ISMISilvaBlueLayer(ISMILayer):
     """Default Layer for SMI.
     """
-    silvaconf.resource('smi.js')
     silvaconf.resource('smi.css')
 
 
