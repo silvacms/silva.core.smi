@@ -176,3 +176,4 @@ class IAddingTab(IEditTab, ISMINavigationOff):
     """Adding tab.
     """
     __name__ = Attribute("Content type of the added content")
+
