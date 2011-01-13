@@ -175,7 +175,7 @@ class Publish(SMIAction):
                 form.send_message(
                     _("There is no unapproved version to approve."),
                     type=u'error')
-                return form.redirect(self.next_url(form))
+                return self.redirect(form)
             form.context.create_copy()
 
         form.context.set_unapproved_version_publication_datetime(DateTime())
