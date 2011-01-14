@@ -100,3 +100,7 @@ class TestAddablesForm(unittest.TestCase):
             self.browser.inspect.feedback)
 
 
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestAddablesForm))
+    return suite

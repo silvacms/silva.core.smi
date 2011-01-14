@@ -4,7 +4,7 @@ from Products.Silva.testing import FunctionalLayer, smi_settings
 from silva.core.smi.navigation import get_sidebar_cache, sidebar_cache_key
 
 
-class SidebarTest(unittest.TestCase):
+class TestSidebar(unittest.TestCase):
     layer = FunctionalLayer
 
     def setUp(self):
@@ -95,3 +95,9 @@ class SidebarTest(unittest.TestCase):
         self.assertEquals(200, status)
         self.assertEquals([u'root', u'Folder', u'New Publication Title'],
                           self.browser.inspect.navigation)
+
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestSidebar))
+    return suite
