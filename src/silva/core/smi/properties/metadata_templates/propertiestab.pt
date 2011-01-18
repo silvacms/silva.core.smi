@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html note="this is the properties screen"
+  tal:omit-tag=""
+  lang="en"
+  xml:lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  tal:define="
+    global vein string:properties;"
+  i18n:domain="silva">
+
+<!-- <metal:block metal:fill-slot="middleground">
+  <tal:buttons tal:replace="structure model/@@tab_metadata_extra" />
+</metal:block> -->
+
+<table class="columns columns2 tab_properties">
+  <tbody>
+    <tr>
+      <tal:block replace="structure context/@@additional_metadata" />
+      <td class="main">
+        <tal:block replace="structure provider:metadatainfo" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+</html>
