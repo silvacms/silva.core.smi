@@ -25,17 +25,20 @@
          tal:attributes="src provider/static/silva_emblem.png" />
   </a>
   <a name="top"> </a>
-  <tal:block tal:repeat="breadcrumb model/@@absolute_url/breadcrumbs">
-    <a class=""
-       tal:content="breadcrumb/name"
-       tal:attributes="href string:${breadcrumb/url}/edit/${layout/tab_name};
-        class python: repeat['breadcrumb'].end and 'breadcrumb breadcrumb-last' or 'breadcrumb'">
-      name
-    </a>
-    <tal:block tal:condition="not:repeat/breadcrumb/end">
-      &rsaquo;
+    <tal:block tal:repeat="breadcrumb model/@@absolute_url/breadcrumbs">
+      <span class="breadcrumb-item">
+      <span class="breadcrumb-sep" title="display direct-tab access for breadcrumb item"
+         i18n:translate="title">
+         &raquo;
+      </span>
+      <a tal:define="roles python:breadcrumb['obj'].sec_get_all_roles()"
+        tal:attributes="href string:${breadcrumb/url}/edit/${layout/tab_name}"
+        tal:omit-tag="python: not provider.can_access_object(breadcrumb['obj'])"
+        tal:content="breadcrumb/name">
+        <!--<span tal:replace="python:'%s%s'%(breadcrumb['name'],item.id=='index' and ' (index)' or '')" />-->
+      </a>
+      </span>
     </tal:block>
-  </tal:block>
   <tal:block condition="provider/is_manager">
     <a class="manage"
        title="Zope manage_main: alt-."
@@ -43,7 +46,7 @@
        tal:attributes="href provider/zmi_url"
        i18n:attributes="title"
        i18n:translate="">
-      &rsaquo; manage...
+      manage...
     </a>
   </tal:block>
 </div>
