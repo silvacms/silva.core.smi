@@ -3,6 +3,7 @@
                       xml:lang layout/lang | nothing">
   <head>
     <title tal:content="context/get_title_or_id">Silva SMI</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="generator" content="Silva" />
     <tal:resource tal:replace="structure provider:resources" />
     <base href="#" target="_parent"
