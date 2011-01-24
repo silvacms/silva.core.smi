@@ -8,8 +8,7 @@
     <tal:resource tal:replace="structure provider:resources" />
     <base href="#" target="_parent"
           tal:attributes="href string:${context/@@absolute_url}/edit" />
-    <link rel="shortcut icon"
-          tal:attributes="href layout/static/silvacon.ico" />
+    <tal:favicon tal:replace="structure provider:favicon" />
   </head>
   <body>
     <tal:header tal:content="structure provider:header" />

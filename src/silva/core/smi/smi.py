@@ -119,6 +119,16 @@ class SMILayout(silvaviews.Layout):
         self.tab_name = getattr(self.view, 'tab_name', self.view.__name__)
 
 
+class SMIFavicon(silvaviews.ContentProvider):
+    grok.context(Interface)
+    grok.name('favicon')
+    grok.layer(interfaces.ISMILayer)
+
+    @property
+    def favicon_url(self):
+        return self.static['silvacon.ico']
+
+
 class SMIHeader(silvaviews.ContentProvider):
     grok.context(Interface)
     grok.name('header')
