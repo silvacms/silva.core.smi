@@ -2,5 +2,5 @@
  <frame id="preview_frame_top" scrolling="no"
    tal:attributes="src string:${context/@@absolute_url}/edit/tab_preview_frame_top" />
  <frame id="preview_frame_bottom"
-   tal:attributes="src string:${context/@@absolute_url}/++preview++" />
+   tal:attributes="src view/preview_url" />
 </frameset>

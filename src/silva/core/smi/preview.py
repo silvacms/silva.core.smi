@@ -3,12 +3,15 @@
 # See also LICENSE.txt
 
 from five import grok
+from zope.component import getMultiAdapter
 
+from silva.core.views.interfaces import ISilvaURL
 from silva.core.smi.smi import SMIPage
 from silva.core.interfaces import IDirectlyRendered, ISilvaObject
 from silva.translations import translate as _
 
 from silva.core.smi.interfaces import ISMILayer
+
 
 grok.templatedir('smi_templates')
 grok.layer(ISMILayer)
@@ -32,3 +35,8 @@ class PreviewFrameset(grok.View):
     grok.name('previewframeset')
 
     rows = '52px,*'
+
+    @property
+    def preview_url(self):
+        url = getMultiAdapter((self.context, self.request), ISilvaURL)
+        return url.preview()
