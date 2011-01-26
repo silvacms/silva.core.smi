@@ -10,10 +10,13 @@ from zope import schema
 from zeam.form import silva as silvaforms
 from silva.core import interfaces as silvainterfaces
 from silva.core.smi import interfaces
+from silva.core.smi.properties.metadata import MetadataFormGroup
 from silva.translations import translate as _
 from Products.Silva.transform.interfaces import IRendererRegistry
 from Products.Silva import mangle
 
+grok.layer(interfaces.ISMILayer)
+# XXX Check permissions on every component
 
 class TabSettings(silvaforms.SMIComposedForm):
     """Settings tab.
@@ -168,6 +171,7 @@ class ActivateFeedsForm(silvaforms.SMISubForm):
         self.send_message(_('Feed settings saved.'), type='feedback')
         return silvaforms.SUCCESS
 
+
 class IQuotaSchema(Interface):
     size = schema.TextLine(title=_('space used in this folder'))
 
@@ -202,12 +206,19 @@ class QuotaForm(silvaforms.SMISubForm):
                 mapping={'quota': self.context.get_current_quota()})
 
 
-class MetadataForm(silvaforms.SMISubForm):
+class LayoutMetadataForm(MetadataFormGroup):
     grok.context(silvainterfaces.ISilvaObject)
     grok.order(50)
+    grok.view(TabSettings)
+    category = 'layout'
+    title = _('layout settings of')
 
-    def available(self):
-        pass
 
+class SettingsMetadataForm(MetadataFormGroup):
+    grok.context(silvainterfaces.ISilvaObject)
+    grok.order(50)
+    grok.view(TabSettings)
+    category = 'settings'
+    title = _('settings of')
 
 

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html tal:omit-tag=""
   lang="en"
   xml:lang="en"
@@ -10,38 +9,36 @@
 <tal:block>
   <form method="post"
     action="."
-    name="form"
-    tal:attributes="action request.URL;
-                    name viewlet.form_name"
-    tal:condition="view.content and viewlet.set_names">
+    tal:attributes="action request.URL"
+    tal:condition="content and view.set_names">
     <!-- tal:attributes="class python: template.id != 'tab_metadata' and 'sublisting' or nothing" -->
     <input type="hidden" name="returntotab" tal:attributes="value string:XXX"/>
     <table class="listing"
-      tal:attributes="class viewlet.is_container and 'listing listing-metadata' or 'listing listing-metadata-container'">
+      tal:attributes="class view.is_container and 'listing listing-metadata' or 'listing listing-metadata-container'">
       <thead>
         <tr>
           <td class="top" colspan="4">
             <h2 metal:define-slot="table_title">
-              <img tal:attributes="src viewlet.get_icon_url()" />
-              <tal:block content="viewlet.title" i18n:name="title" />
-              &#xab;<span tal:replace="viewlet.content.get_title()" />&#xbb;
+              <img tal:attributes="src view.get_icon_url()" />
+              <tal:block content="view.title" i18n:name="title" />
+              &#xab;<span tal:replace="content.get_title()" />&#xbb;
             </h2>
           </td>
         </tr>
       </thead>
       <tbody>
-        <tal:block repeat="set_name viewlet.set_names">
-          <tal:block define="set_errors path:viewlet/errors/?set_name | nothing">
+        <tal:block repeat="set_name view.set_names">
+          <tal:block define="set_errors path:view/errors/?set_name | nothing">
             <tr class="divider"
               tal:condition="not:repeat['set_name'].start">
               <td colspan="3"
-                tal:attributes="class viewlet.is_container and 'separator separator-container' or 'separator'">
+                tal:attributes="class view.is_container and 'separator separator-container' or 'separator'">
               </td>
             </tr>
             <tr class="top-controls">
               <td colspan="3">
                 <h3 tal:define="
-                  set viewlet.get_set_title(set_name);
+                  set view.get_set_title(set_name);
                   label set == 'silva-extra' and 'silva-meta' or set;
                   ">
                   <tal:i18n i18n:translate="">metadata set</tal:i18n> &#xab;<tal:block replace="label" />&#xbb;
@@ -61,33 +58,33 @@
                 acquired content
               </th>
             </tr>
-            <tal:block repeat="element_name viewlet.get_element_names(set_name)">
+            <tal:block repeat="element_name view.get_element_names(set_name)">
               <tal:block define="
-                element_error path:viewlet/errors/?set_name/?element_name | nothing;
+                element_error path:view/errors/?set_name/?element_name | nothing;
                 iterate repeat['element_name'].odd;
                 identifier (set_name, element_name)
                 ">
                 <tal:block
-                  condition="viewlet.is_element_hidden(*identifier)"
-                  replace="structure python: viewlet.render_element(*identifier)"
+                  condition="view.is_element_hidden(*identifier)"
+                  replace="structure python: view.render_element(*identifier)"
                 />
-                <tr tal:condition="not viewlet.is_element_hidden(*identifier)"
+                <tr tal:condition="not view.is_element_hidden(*identifier)"
                   tal:attributes="class element_error and 'alert' or iterate and 'odd' or 'even';">
                   <tal:block replace="nothing">
                     ___ element designator column ___
                   </tal:block>
                   <td class="designator">
                     <span class="matchlabel"
-                          tal:omit-tag="viewlet.is_element_editable(*identifier)">
-                      <label tal:content="viewlet.get_element_title(*identifier)"
-                        tal:attributes="for viewlet.html_id(*identifier)"
-                         tal:omit-tag="python:not (viewlet.is_element_editable(*identifier) and viewlet.html_id(*identifier))"
+                          tal:omit-tag="view.is_element_editable(*identifier)">
+                      <label tal:content="view.get_element_title(*identifier)"
+                        tal:attributes="for view.html_id(*identifier)"
+                         tal:omit-tag="python:not (view.is_element_editable(*identifier) and view.html_id(*identifier))"
                         i18n:translate="">
                         Element name
                       </label><span class="required"
-                        tal:condition="viewlet.is_element_required(*identifier)"> * </span>
+                        tal:condition="view.is_element_required(*identifier)"> * </span>
                     </span>
-                    <p tal:content="structure viewlet.get_element_description(*identifier)"
+                    <p tal:content="structure view.get_element_description(*identifier)"
                       i18n:translate="">
                       Element description
                     </p>
@@ -102,8 +99,8 @@
                       Error message
                     </span>
                     <tal:input  
-                      tal:condition="viewlet.is_element_editable(*identifier) or not viewlet.is_element_acquired(*identifier)"
-                      tal:content="structure viewlet.render_element(*identifier)">
+                      tal:condition="view.is_element_editable(*identifier) or not view.is_element_acquired(*identifier)"
+                      tal:content="structure view.render_element(*identifier)">
                       element edit widget
                     </tal:input>
                   </td>
@@ -112,12 +109,12 @@
                   </tal:block>
                   <td>
                     <tal:block
-                      condition="viewlet.is_element_acquired(*identifier)"
-                      replace="structure viewlet.render_element_view(*identifier)" />
-                    <sup tal:condition="viewlet.is_element_acquireable(*identifier)">
+                      condition="view.is_element_acquired(*identifier)"
+                      replace="structure view.render_element_view(*identifier)" />
+                    <sup tal:condition="view.is_element_acquireable(*identifier)">
                       &#8224;
                     </sup>
-                    <tal:block condition="not: viewlet.is_element_acquired(*identifier)">
+                    <tal:block condition="not: view.is_element_acquired(*identifier)">
                       &nbsp;
                     </tal:block>
                   </td>
@@ -139,16 +136,14 @@
               &#8224; acquireable
             </th>
           </tr>
-          <tr class="controls" tal:condition="viewlet.edit">
+          <tr class="controls" tal:condition="view.edit">
             <td class="align-right" colspan="3">
-              <input class="button"
-                type="submit"
-                value="save"
-                title="access key: alt-s"
-                accesskey="s"
-                name="save_metadata"
-                i18n:attributes="value;title"
-              />
+              <div class="actions"
+                   tal:condition="view.actionWidgets">
+                <div class="action" tal:repeat="widget view.actionWidgets">
+                  <tal:widget tal:content="structure widget.render()" />
+                </div>
+              </div>
             </td>
           </tr>
         </tal:block>
