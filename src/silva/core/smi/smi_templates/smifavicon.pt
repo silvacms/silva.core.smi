@@ -1,0 +1,2 @@
+<link rel="shortcut icon"
+      tal:attributes="href provider/favicon_url" />
