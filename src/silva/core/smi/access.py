@@ -74,10 +74,10 @@ class LookupUserAction(silvaforms.Action):
         users = set()
         new_users = set()
         try:
-        for member in service.find_members(username, location=form.context):
-            userid = member.userid()
-            users.add(userid)
-            new_users.add(userid)
+            for member in service.find_members(username, location=form.context):
+                userid = member.userid()
+                users.add(userid)
+                new_users.add(userid)
         except MemberLookupError as error:
             form.send_message(error.args[0], type="error")
             return silvaforms.FAILURE
