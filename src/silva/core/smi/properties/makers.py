@@ -30,8 +30,8 @@ class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     tab = 'properties'
 
     label = _(u"customization markers")
-    description = _(u"This screen lets you tag content with markers. "
-                    u"Those markers can alter how content is displayed.")
+    description = _(u"This screen lets you tag content with markers "
+                    u"which can alter how content is displayed.")
 
 # Forms to mark objects
 
