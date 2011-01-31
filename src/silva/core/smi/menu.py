@@ -8,7 +8,8 @@ from zope.traversing.browser import absoluteURL
 from Acquisition import aq_parent
 
 from silva.core.interfaces import IRoot, IPublication, IContainer
-from silva.core.interfaces import IVersionedContent, IContent, IAsset
+from silva.core.interfaces import (IVersionedContent, IContent, IAsset,
+                                   IVersionedAsset)
 from silva.core.smi import interfaces
 from silva.core.smi.interfaces import ISMIMenu, ISMIMenuItem, ISMITabIndex
 from silva.core.views import views as silvaviews
@@ -208,6 +209,11 @@ class SMIEditPublishMenuItem(SMIEditMenuItem):
     path = u'tab_status'
     tab = interfaces.IPublishTab
     grok.order(50)
+
+class SMIEditPublishAssetMenuItem(SMIEditPublishMenuItem):
+    """ Publish tab menu item for versioned assets
+    """
+    grok.context(IVersionedAsset)
 
 
 class SMIEditContainerPublishMenuItem(SMIEditPublishMenuItem):
