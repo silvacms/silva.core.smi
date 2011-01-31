@@ -74,6 +74,10 @@ class ConvertToForm(silvaforms.SMISubForm):
         ConvertToFolderAction())
     label = _('container type')
 
+    def available(self):
+        if silvainterfaces.IRoot.providedBy(self.context):
+            return False
+
     def update(self):
         if silvainterfaces.IGhostFolder.providedBy(self.context):
             self.description = _('This Ghost Folder can be converted'
