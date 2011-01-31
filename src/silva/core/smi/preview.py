@@ -33,6 +33,7 @@ class PreviewTab(SMIPage):
 class PreviewFrameset(grok.View):
     grok.context(ISilvaObject)
     grok.name('previewframeset')
+    grok.require('silva.ReadSilvaContent')
 
     rows = '52px,*'
 
