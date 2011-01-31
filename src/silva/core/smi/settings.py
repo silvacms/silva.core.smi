@@ -77,6 +77,7 @@ class ConvertToForm(silvaforms.SMISubForm):
     def available(self):
         if silvainterfaces.IRoot.providedBy(self.context):
             return False
+        return super(ConvertToForm, self).available()
 
     def update(self):
         if silvainterfaces.IGhostFolder.providedBy(self.context):
