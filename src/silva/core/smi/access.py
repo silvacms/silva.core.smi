@@ -14,7 +14,7 @@ from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
 from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
 from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
-from silva.core.services.interfaces import IMemberService, MemberLookupError
+from silva.core.services.interfaces import IMemberService
 from silva.core.cache.store import SessionStore
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
