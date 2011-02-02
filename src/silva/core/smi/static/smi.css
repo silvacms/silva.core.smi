@@ -735,6 +735,16 @@ input.action {
   float: right;
 }
 
+div.multi-actions {
+  margin: 0.5em 0 0 1.7em;
+}
+div.multi-actions input {
+  text-transform: lowercase;
+}
+input[type="checkbox"] + input[type="hidden"] + input.field-textline {
+  width: 94%; /* shortens field-textline when in a multi-actioned field */
+}
+
 /* manipulator button style from which all others derive */
 input.button, input.action, input.canceler, button.button, input.manipulator {
   margin: 0 1px;
@@ -1056,6 +1066,15 @@ select.clipboard, select.clipboard:focus, select.clipboard:hover {
 select.clipboard option.disabled {
   color: #dbf3f6;
   background: #678;
+}
+
+/* references listing box */
+div.info div.refitem img.icon {
+  float: left;
+}
+div.info div.refitem p {
+  margin-left: 20px;
+  margin-right: 18px;
 }
 
 
