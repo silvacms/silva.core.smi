@@ -8,7 +8,7 @@ from DateTime import DateTime
 from AccessControl import getSecurityManager
 
 from five import grok
-from silva.core.interfaces import IVersionedContent, IVersionedAsset
+from silva.core.interfaces import IVersionable
 from silva.core.smi import smi as silvasmi
 from silva.core.smi.interfaces import ISMILayer, IPublicationAwareTab
 from silva.translations import translate as _
@@ -187,7 +187,7 @@ class Publish(SMIAction):
 class SMIVersionActionForm(silvasmi.SMIMiddleGroundActionForm):
     """ Button form to create a new Version
     """
-    grok.context(IVersionedContent)
+    grok.context(IVersionable)
     grok.order(20)
 
     prefix = 'md.version'
@@ -203,8 +203,3 @@ class SMIVersionActionForm(silvasmi.SMIMiddleGroundActionForm):
         return reduce(
             operator.or_,
             [False] + map(lambda a: a.available(self), self.actions))
-
-class SMIVersionAssetActionForm(SMIVersionActionForm):
-    """  Button form to create a new version for versioned assets
-    """
-    grok.context(IVersionedAsset)
