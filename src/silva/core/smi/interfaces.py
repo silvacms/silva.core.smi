@@ -132,12 +132,17 @@ class ISMITabIndex(IGrokView):
     """
 
 
-class IPublicationAwareTab(ISMITab):
+class IContentAwareTab(ISMITab):
+    """Tabs where content matters (editon / publication) tabs.
+    """
+
+
+class IPublicationAwareTab(IContentAwareTab):
     """Tabs where publication like tasks are done.
     """
 
 
-class IEditionAwareTab(ISMITab):
+class IEditionAwareTab(IContentAwareTab):
     """Tabs where edition like tasks are done.
     """
 
