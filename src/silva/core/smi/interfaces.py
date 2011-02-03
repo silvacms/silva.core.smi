@@ -137,7 +137,7 @@ class IPublicationAwareTab(ISMITab):
     """
 
 
-class IEditionAwareTab(IPublicationAwareTab):
+class IEditionAwareTab(ISMITab):
     """Tabs where edition like tasks are done.
     """
 
@@ -162,7 +162,7 @@ class IPublishTab(IPublicationAwareTab):
     """
 
 
-class IEditTab(IEditionAwareTab):
+class IEditTab(IEditionAwareTab, IPublicationAwareTab):
     """Edit tab.
     """
 
