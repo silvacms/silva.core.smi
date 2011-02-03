@@ -14,7 +14,7 @@ from silva.core.interfaces import IContainer
 from silva.core.views import views as silvaviews
 from silva.core.smi import smi as silvasmi
 from silva.core.smi.interfaces import ISMILayer
-from silva.core.smi.interfaces import IAddingTab, IEditTab, IPublicationAwareTab
+from silva.core.smi.interfaces import IAddingTab, IEditTab, IContentAwareTab
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zope import schema, interface
@@ -55,7 +55,7 @@ class INewContent(interface.Interface):
 class SMIContainerActionForm(silvasmi.SMIMiddleGroundActionForm):
     """ Button form to create a new Version
     """
-    grok.view(IPublicationAwareTab)
+    grok.view(IContentAwareTab)
     grok.context(IContainer)
     grok.order(20)
 
