@@ -19,6 +19,7 @@ from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zeam.form.base import Fields, Field
+from zeam.form.silva.interfaces import ICancelerAction
 
 
 class BreakReferencePermission(grok.Permission):
@@ -82,11 +83,12 @@ class BreakReferencesForm(silvaforms.SMIForm):
         service = getUtility(IReferenceService)
         self.references = service.get_references_to(self.context)
 
-    @silvaforms.action(u'cancel')
-    def cancel(self):
-        self.next_url()
+    def next_url(self):
+        data, errors = self.extractData()
+        self.redirect(data['redirect_to'] or self.url(name="edit"))
 
-    @silvaforms.action(u'break references')
+    @silvaforms.action(
+        _(u'break references'))
     def break_references(self):
         for reference in list(self.references):
             reference.set_target_id(0)
@@ -94,6 +96,8 @@ class BreakReferencesForm(silvaforms.SMIForm):
                           "/".join(self.context.getPhysicalPath()))
         self.next_url()
 
-    def next_url(self):
-        data, errors = self.extractData()
-        self.redirect(data['redirect_to'] or self.url(name="edit"))
+    @silvaforms.action(
+        _(u'cancel'),
+        implements=ICancelerAction)
+    def cancel(self):
+        self.next_url()

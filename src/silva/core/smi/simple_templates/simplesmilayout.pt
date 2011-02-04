@@ -20,6 +20,7 @@
     <div class="workspace simple-page">
       <div class="notification">
         <tal:content tal:content="structure view/content" />
+        <br clear="both" />
       </div>
     </div>
   </body>
