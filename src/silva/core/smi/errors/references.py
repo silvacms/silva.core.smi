@@ -88,16 +88,16 @@ class BreakReferencesForm(silvaforms.SMIForm):
         self.redirect(data['redirect_to'] or self.url(name="edit"))
 
     @silvaforms.action(
+        _(u'cancel'),
+        implements=ICancelerAction)
+    def cancel(self):
+        self.next_url()
+
+    @silvaforms.action(
         _(u'break references'))
     def break_references(self):
         for reference in list(self.references):
             reference.set_target_id(0)
         self.send_message(_("References to %s have been broken.") %
                           "/".join(self.context.getPhysicalPath()))
-        self.next_url()
-
-    @silvaforms.action(
-        _(u'cancel'),
-        implements=ICancelerAction)
-    def cancel(self):
         self.next_url()
