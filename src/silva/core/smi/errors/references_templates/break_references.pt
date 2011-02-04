@@ -2,19 +2,19 @@
       enctype="multipart/form-data"
       tal:define="here_url context/@@absolute_url"
       i18n:domain="silva">
-  <div>
-    <h1 tal:content="view/label">Label</h1>
+  <div class="explanation">
+    <h1 tal:content="view/label">label</h1>
     <p class="disclaimer" i18n:translate="">
-      You can break the references to the content
+      If you wish you can break the references to
       <a href="#"
-         i18n:name="content_link"
-         tal:attributes="href here_url"
-         tal:content="context/get_title_or_id">
+        i18n:name="content_link"
+        tal:attributes="href here_url"
+        tal:content="context/get_title_or_id">
         Content</a>.
     </p>
     <p class="disclaimer" i18n:translate="">
-      If you break references you will alter the following contents
-      that maintain a reference to it:
+      Please confirm you would like to break these references. If you do so
+      you will alter the following content that contains a reference:
     </p>
     <ul>
       <tal:repeat repeat="ref view/references">
@@ -22,13 +22,17 @@
           <a tal:attributes="href string:${source/@@absolute_url}/edit">
             <span tal:replace="source/get_title"/>
           </a>
-          (<span tal:replace="python: '/'.join(source.getPhysicalPath())" />)
+          (<span i18n:translate="">version:</span>
+           <a tal:content="python: '/'.join(source.getPhysicalPath())"
+             tal:attributes="href string:${source/@@absolute_url}/edit/tab_status">
+             path to status/versions
+           </a>)
         </li>
       </tal:repeat>
     </ul>
     <p class="disclaimer" i18n:translate="">
-      You cannot undo this operation, and you might break those
-      (potentially published) contents.
+      You cannot undo this operation, and you can damage the (potentially
+      published) content.
     </p>
   </div>
 

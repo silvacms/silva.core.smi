@@ -10,17 +10,11 @@ body {
 p { color: #2D374C;}
 
 /* _________________________________________________________ sectors _______ */
+
 div.workspace, div#footerarea { background: #dde5ee;}
 
-div.simple-page {
-  padding: 50px;
-  color: black;
-  border-bottom: 1em solid #4C5C6C;
-}
-
-div.simple-page h1 { font-size: 200%;}
-
 /* ____________________________________ path bar _______ */
+
 div.pathbar {
   padding: 0 4px 0.2em 22px;
   color: #51585c;
@@ -1612,4 +1606,53 @@ div#remote-request-loading {
   border-bottom: 1px solid black;
   background-color: #f7d1d1;
   z-index: 2000;
+}
+
+/* _______ simple-page layout selectors _______ */
+
+div.simple-page {
+  padding: 50px;
+  color: black;
+  border-bottom: 1em solid #4C5C6C;
+}
+div.simple-page div.pathbar {
+  border-bottom: 1px solid #aaa;
+}
+div.simple-page h1 { font-size: 170%;}
+div.notification {
+  position: relative;
+  top: 16px;
+  width: 50em;
+  margin: 2.5em auto 5em;
+  padding: 20px;
+  border-bottom: 1px solid #aaa;
+  -moz-box-shadow: 0px 0px 15px white;
+  -webkit-box-shadow: 0px 0px 15px white;
+  box-shadow: 0px 0px 15px white;
+}
+div.notification h1 {
+  margin: 0 0 0.5em;
+}
+div.notification p {
+  margin: 0.5em 0;
+}
+div.notification li {
+  list-style: disc outside none;
+}
+div.notification a:link, div.notification a:visited {
+  color: blue;
+}
+div.notification div.actions {
+  height: 2em;
+  margin-top: 1em;
+  padding: 1em 0 0;
+  border-top: 1px solid #555;
+}
+div.notification input#form-action-cancel { /* cancel button */
+  float: left;
+  background-color: #444446;
+  color: #CCD7D6;
+}
+div.notification input#form-action-break-references { /* confirm button */
+  float:right;
 }
