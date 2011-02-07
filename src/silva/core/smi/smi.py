@@ -298,6 +298,10 @@ class SMIMiddleGroundActionForm(silvaforms.SMIViewletForm):
 
     postOnly = True
 
+    @property
+    def tab_name(self):
+        return getattr(self.view, 'tab_name', None)
+
     def available(self):
         return True
 
