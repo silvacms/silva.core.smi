@@ -1,5 +1,5 @@
 # $Id$
-# Copyright (c) 2008-2010 Infrae. All rights reserved.
+# Copyright (c) 2008-2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 from five import grok
 
