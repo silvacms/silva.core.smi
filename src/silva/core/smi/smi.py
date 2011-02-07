@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2010 Infrae. All rights reserved.
+# Copyright (c) 2008-2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Id$
 
@@ -297,6 +297,10 @@ class SMIMiddleGroundActionForm(silvaforms.SMIViewletForm):
     grok.viewletmanager(SMIMiddleGroundManager)
 
     postOnly = True
+
+    @property
+    def tab_name(self):
+        return getattr(self.view, 'tab_name', None)
 
     def available(self):
         return True

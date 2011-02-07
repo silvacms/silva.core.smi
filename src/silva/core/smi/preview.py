@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2010 Infrae. All rights reserved.
+# Copyright (c) 2010-2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 
 from five import grok
@@ -33,6 +33,7 @@ class PreviewTab(SMIPage):
 class PreviewFrameset(grok.View):
     grok.context(ISilvaObject)
     grok.name('previewframeset')
+    grok.require('silva.ReadSilvaContent')
 
     rows = '52px,*'
 

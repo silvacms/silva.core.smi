@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2010 Infrae. All rights reserved.
+# Copyright (c) 2008-2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Id$
 
@@ -14,7 +14,7 @@ from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
 from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
 from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
-from silva.core.services.interfaces import IMemberService
+from silva.core.services.interfaces import IMemberService, MemberLookupError
 from silva.core.cache.store import SessionStore
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
@@ -69,22 +69,20 @@ class LookupUserAction(silvaforms.Action):
                 type="error")
             return silvaforms.FAILURE
         username = data['user'].strip()
-        if len(username) < 2:
-            form.send_message(
-                _(u"The search input is too short. "
-                  u"Please enter two or more characters."),
-                type="error")
-            return silvaforms.FAILURE
 
         service = component.getUtility(IMemberService)
-
-        store = SessionStore(form.request)
         users = set()
         new_users = set()
-        for member in service.find_members(username, location=form.context):
-            userid = member.userid()
-            users.add(userid)
-            new_users.add(userid)
+        try:
+            for member in service.find_members(username, location=form.context):
+                userid = member.userid()
+                users.add(userid)
+                new_users.add(userid)
+        except MemberLookupError as error:
+            form.send_message(error.args[0], type="error")
+            return silvaforms.FAILURE
+
+        store = SessionStore(form.request)
         if new_users:
             users = store.get(USER_STORE_KEY, set()).union(users)
             store.set(USER_STORE_KEY, users)
