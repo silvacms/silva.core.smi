@@ -4,7 +4,17 @@ Changelog
 2.3.2 (unreleased)
 ------------------
 
-* ...
+* Improve CSS.
+
+* Review and improve error pages and theirs CSS.
+
+* Review tab interfaces (introduce a new grouping interfaces).
+
+* Add more support for INonPublishable content object.
+
+* Add more support to skin the SMI.
+
+* Fix various small bugs.
 
 2.3.1 (2010/12/20)
 ------------------
