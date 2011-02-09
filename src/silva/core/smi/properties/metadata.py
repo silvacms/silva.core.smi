@@ -59,6 +59,7 @@ class MetadataForm(silvaforms.SMISubForm):
     grok.context(ISilvaObject)
     grok.view(MetadataFormGroup)
     grok.template('metadataform')
+    grok.require('zope2.ManageProperties')
 
     title = ''
 

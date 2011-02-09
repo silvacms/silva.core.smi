@@ -18,12 +18,14 @@ from Products.Silva import mangle
 grok.layer(interfaces.ISMILayer)
 # XXX Check permissions on every component
 
+
 class TabSettings(silvaforms.SMIComposedForm):
     """Settings tab.
     """
     grok.context(silvainterfaces.ISilvaObject)
     grok.name('tab_settings')
     grok.implements(interfaces.IPropertiesTab)
+    grok.require('silva.ManageSilvaContent')
     tab = 'settings'
     label = _("settings")
     description = _("")
@@ -65,12 +67,17 @@ class ConvertToPublicationAction(silvaforms.Action):
 class ConvertToForm(silvaforms.SMISubForm):
     grok.context(silvainterfaces.IContainer)
     # XXX set it for real
-    grok.require('silva.ChangeSilvaContent')
+    grok.require('silva.ManageSilvaContent')
     grok.view(TabSettings)
     grok.order(10)
     actions = silvaforms.Actions(ConvertToPublicationAction(),
         ConvertToFolderAction())
     label = _('container type')
+
+    def available(self):
+        if silvainterfaces.IRoot.providedBy(self.context):
+            return False
+        return super(ConvertToForm, self).available()
 
     def update(self):
         if silvainterfaces.IGhostFolder.providedBy(self.context):
@@ -113,6 +120,7 @@ class RendererForm(silvaforms.SMISubForm):
     grok.context(silvainterfaces.ISilvaObject)
     grok.view(TabSettings)
     grok.order(20)
+    grok.require('silva.ManageSilvaContent')
     fields = silvaforms.Fields(IRendererShema)
     fields['renderer'].defaultValue = selected_renderer
     ignoreContent = True
@@ -150,6 +158,7 @@ class ActivateFeedsForm(silvaforms.SMISubForm):
     grok.context(silvainterfaces.IContainer)
     grok.view(TabSettings)
     grok.order(30)
+    grok.require('silva.ManageSilvaContent')
 
     fields = silvaforms.Fields(IActivateFeedsSchema)
     fields['feeds'].defaultValue = get_feeds_status
@@ -184,6 +193,7 @@ class QuotaForm(silvaforms.SMISubForm):
     grok.context(silvainterfaces.IContainer)
     grok.view(TabSettings)
     grok.order(40)
+    grok.require('silva.ManageSilvaContentSettings')
 
     fields = silvaforms.Fields(IQuotaSchema)
     fields['size'].defaultValue = get_used_space
