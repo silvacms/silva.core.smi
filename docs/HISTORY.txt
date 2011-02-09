@@ -1,12 +1,27 @@
 Changelog
 =========
 
-2.3.2 (unreleased)
+2.3.3 (unreleased)
 ------------------
 
 * ...
 
-2.3.1 (2010/12/20)
+2.3.2 (2010-02-07)
+------------------
+
+* Improve CSS.
+
+* Review and improve error pages and theirs CSS.
+
+* Review tab interfaces (introduce a new grouping interfaces).
+
+* Add more support for INonPublishable content object.
+
+* Add more support to skin the SMI.
+
+* Fix various small bugs.
+
+2.3.1 (2010-12-20)
 ------------------
 
 * Add support to skin the SMI: you can now provide your own CSS for the SMI.
@@ -15,7 +30,7 @@ Changelog
 * Tab preview for File and Image have been modernized.
 
 
-2.3 (2010/10/18)
+2.3 (2010-10-18)
 ----------------
 
 * The access tab is now implemented in here.
@@ -28,7 +43,7 @@ Changelog
 * Implement a working Over quota error page.
 
 
-2.3b1 (2010/07/15)
+2.3b1 (2010-07-15)
 ------------------
 
 * A SMI layout defined using ``silva.core.layout`` has been added. It
