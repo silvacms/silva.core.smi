@@ -10,7 +10,8 @@ from AccessControl import getSecurityManager
 from five import grok
 from silva.core.interfaces import IVersionedContent
 from silva.core.smi import smi as silvasmi
-from silva.core.smi.interfaces import ISMILayer, IPublicationAwareTab
+from silva.core.smi.interfaces import (ISMILayer,
+    IPublicationAwareTab, IPreviewTab)
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zope.traversing.browser import absoluteURL
@@ -30,6 +31,12 @@ class SMIAction(silvaforms.Action):
     def redirect(self, form):
         url_parts = [absoluteURL(form.context, form.request), 'edit']
         tab_name = getattr(form, 'tab_name', None)
+
+        # XXX workaround problem with preview frames.
+        view = getattr(form, 'view', form)
+        if IPreviewTab.providedBy(view):
+            tab_name = 'tab_preview'
+
         if tab_name:
             url_parts.append(tab_name)
         return form.redirect("/".join(url_parts))
