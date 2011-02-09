@@ -40,4 +40,14 @@
      allowed_interface="silva.core.views.interfaces.ISilvaURL"
      />
 
+  <!-- To use those interfaces with the FakeView(c)(r)(tm) system of
+       FileSystemSite -->
+
+  <utility component="silva.core.smi.interfaces.IPropertiesTabIndex"
+           provides="zope.interface.interfaces.IInterface"
+           name="silva.core.smi.interfaces.IPropertiesTabIndex" />
+  <utility component="silva.core.smi.interfaces.IEditTabIndex"
+           provides="zope.interface.interfaces.IInterface"
+           name="silva.core.smi.interfaces.IEditTabIndex" />
+
 </configure>

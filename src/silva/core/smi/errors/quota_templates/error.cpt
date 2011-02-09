@@ -1,13 +1,12 @@
 <tal:error i18n:domain="silva">
   <h1 i18n:translate="">Over Quota</h1>
-  <p i18n:translate="">
-    A quota is applied on the container you are working on, and the
-    current operation would require <span i18n:name="exceeding_size"
-    tal:replace="view.exceeding_size" /> more space.
+  <p class="disclaimer" i18n:translate="">
+    Sorry, a quota is applied to the container you are working in, and the
+    current operation would require <b i18n:name="exceeding_size"
+    tal:content="view.exceeding_size">1.2MB</b> more space.
   </p>
-  <p i18n:translate="">
-    Hit the back button of your navigator or
+  <p class="disclaimer">
     <a tal:attributes="href view.next_url"
-       i18n:translate="">click here to continue</a>.
+      i18n:translate="">Return to the previous screen...</a>
   </p>
 </tal:error>

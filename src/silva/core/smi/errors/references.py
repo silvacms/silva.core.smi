@@ -19,6 +19,7 @@ from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zeam.form.base import Fields, Field
+from zeam.form.silva.interfaces import ICancelerAction
 
 
 class BreakReferencePermission(grok.Permission):
@@ -32,8 +33,8 @@ grok.layer(ISMILayer)
 class BrokenReferenceErrorPage(silvaviews.Page):
     """ Page to render broken references errors.
 
-    It redirects to break references form if the user as the necessary rights to
-    break references.
+    Redirects to the break references form if the user has the necessary rights
+    to break references.
     """
     grok.context(BrokenReferenceError)
     grok.name('error.html')
@@ -75,25 +76,28 @@ class BreakReferencesForm(silvaforms.SMIForm):
     grok.template('break_references')
     layout(ISimpleSMILayout)
 
-    label = _(u"Break references")
+    label = _(u"Break references?")
     fields = Fields(RedirectField('redirect_to'))
 
     def update(self):
         service = getUtility(IReferenceService)
         self.references = service.get_references_to(self.context)
 
-    @silvaforms.action(u'break references')
+    def next_url(self):
+        data, errors = self.extractData()
+        self.redirect(data['redirect_to'] or self.url(name="edit"))
+
+    @silvaforms.action(
+        _(u'cancel'),
+        implements=ICancelerAction)
+    def cancel(self):
+        self.next_url()
+
+    @silvaforms.action(
+        _(u'break references'))
     def break_references(self):
         for reference in list(self.references):
             reference.set_target_id(0)
         self.send_message(_("References to %s have been broken.") %
                           "/".join(self.context.getPhysicalPath()))
         self.next_url()
-
-    @silvaforms.action(u'cancel')
-    def cancel(self):
-        self.next_url()
-
-    def next_url(self):
-        data, errors = self.extractData()
-        self.redirect(data['redirect_to'] or self.url(name="edit"))

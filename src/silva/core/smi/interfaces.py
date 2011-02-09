@@ -177,6 +177,11 @@ class IEditTabIndex(IEditTab, ISMITabIndex):
     """
 
 
+class IPropertiesTabIndex(IPropertiesTab, ISMITabIndex):
+    """Properties tab index: metadata form.
+    """
+
+
 class IAddingTab(IEditTab, ISMINavigationOff):
     """Adding tab.
     """
