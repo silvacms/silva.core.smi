@@ -1,8 +1,9 @@
 from five import grok
 from zope.interface import Interface
 from zope import schema
-
-from AccessControl import getSecurityManager
+from DateTime import DateTime
+from datetime import datetime
+from AccessControl.security import checkPermission
 
 from silva.core.smi import interfaces
 from silva.core import interfaces as silvainterfaces
@@ -75,6 +76,7 @@ class IPublicationMessage(Interface):
     message = schema.Text(title=_('message'),
             description=_('This message will remain visible in the status'
                           ' screen for other authors and editors.'),
+            default=u'',
             required=False)
 
 
@@ -87,14 +89,14 @@ class VersionPublication(grok.Adapter):
 
     def set_expiration_datetime(self, datetime):
         self.context.set_unapproved_version_expiration_datetime(
-            datetime)
+            DateTime(datetime))
 
     def get_publication_datetime(self):
         return self.context.get_unapproved_version_publication_datetime()
 
     def set_publication_datetime(self, datetime):
         self.context.set_unapproved_version_publication_datetime(
-            datetime)
+            DateTime(datetime))
 
     expiration_datetime = property(
         get_expiration_datetime, set_expiration_datetime)
@@ -186,9 +188,8 @@ class RequestApprovalAction(PublicationAction):
 
 class RequestApprovalForm(silvaforms.SMISubForm):
     grok.context(silvainterfaces.IVersionedContent)
-    grok.require('silva.ChangeSilvaContent')
     grok.view(PublishTab)
-    grok.order(10)
+    grok.order(20)
     fields = autofields.FieldsCollector(IRequestApprovalFields)
     actions = silvaforms.Actions(RequestApprovalAction())
 
@@ -198,9 +199,7 @@ class RequestApprovalForm(silvaforms.SMISubForm):
         """ This form do not show if there is no unapproved version or if
         the current user can directly approve the content
         """
-        security_manager = getSecurityManager()
-        if security_manager.checkPermission(
-                'Approve Silva content', self.context):
+        if checkPermission('silva.ApproveSilvaContent', self.context):
             return False
         return bool(self.context.get_unapproved_version()) and \
             not self.context.is_version_approval_requested()
@@ -213,5 +212,88 @@ class DefaultRequestApprovalFields(autofields.AutoFields):
     # zope.browser.interfaces.IBrowserView which is default requirement
     grok.view(RequestApprovalForm)
     fields = silvaforms.Fields(IPublicationInformation, IPublicationMessage)
+    fields['publication_datetime'].defaultValue = lambda d: datetime.now()
+
+
+class PendingApprovalRequestForm(silvaforms.SMISubForm):
+    grok.baseclass()
+    grok.context(silvainterfaces.IVersionedContent)
+    grok.view(PublishTab)
+    grok.order(20)
+
+    def available(self):
+        """ This form do not show if there is no pending approval version or if
+        the current user can directly approve the content
+        """
+        return bool(self.context.get_unapproved_version()) and \
+            self.context.is_version_approval_requested()
+
+
+class IWithdrawalMessage(Interface):
+    message = schema.Text(title=_('add message on withdrawal'),
+            description=_('The message may be viewed by local users.'),
+            default=u'',
+            required=False)
+
+
+class WithdrawApprovalRequestForm(PendingApprovalRequestForm):
+    fields = silvaforms.Fields(IWithdrawalMessage)
+    label = _('withdraw request')
+
+    def available(self):
+        if checkPermission('silva.ApproveSilvaContent', self.context):
+            return False
+        return super(WithdrawApprovalRequestForm, self).available()
+
+    @silvaforms.action(_('withdraw approval request'),
+        identifier='withdraw',
+        description=_('access key: alt-r'),
+        accesskey='r')
+    def withdraw(self):
+        data, errors = self.extractData()
+        if errors:
+            return silvaforms.FAILURE
+        message = data.getWithDefault('message')
+        try:
+            IPublicationWorkflow(self.context).withdraw_request(message)
+        except PublicationWorkflowError as e:
+            self.send_message(e.message, type='error')
+            return silvaforms.FAILURE
+        self.send_message('Withdrew request for approval', type='feedback')
+        return silvaforms.SUCCESS
+
+
+class IRejectionMessage(Interface):
+    message = schema.Text(title=_('add message on rejection'),
+            description=_('The message may be viewed by local users.'),
+            default=u'',
+            required=False)
+
+
+class RejectApprovalRequestForm(PendingApprovalRequestForm):
+    fields = silvaforms.Fields(IRejectionMessage)
+    label = _('reject request')
+
+    def available(self):
+        if checkPermission('silva.ApproveSilvaContent', self.context):
+            return super(RejectApprovalRequestForm, self).available()
+        return False
+
+    @silvaforms.action(_('reject approval request'),
+        identifier='reject',
+        description=_('access key: alt-j'),
+        accesskey='j')
+    def reject(self):
+        data, errors = self.extractData()
+        if errors:
+            return silvaforms.FAILURE
+        message = data.getWithDefault('message')
+        try:
+            IPublicationWorkflow(self.context).reject_request(message)
+        except PublicationWorkflowError as e:
+            self.send_message(e.message, type='error')
+            return silvaforms.FAILURE
+        self.send_message('Rejected request for approval', type='feedback')
+        return silvaforms.SUCCESS
 
 
