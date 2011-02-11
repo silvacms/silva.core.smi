@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2010 Infrae. All rights reserved.
+# Copyright (c) 2008-2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Id$
 
@@ -132,12 +132,17 @@ class ISMITabIndex(IGrokView):
     """
 
 
-class IPublicationAwareTab(ISMITab):
+class IContentAwareTab(ISMITab):
+    """Tabs where content matters (editon / publication) tabs.
+    """
+
+
+class IPublicationAwareTab(IContentAwareTab):
     """Tabs where publication like tasks are done.
     """
 
 
-class IEditionAwareTab(IPublicationAwareTab):
+class IEditionAwareTab(IContentAwareTab):
     """Tabs where edition like tasks are done.
     """
 
@@ -162,13 +167,18 @@ class IPublishTab(IPublicationAwareTab):
     """
 
 
-class IEditTab(IEditionAwareTab):
+class IEditTab(IEditionAwareTab, IPublicationAwareTab):
     """Edit tab.
     """
 
 
 class IEditTabIndex(IEditTab, ISMITabIndex):
     """Edit tab index: edit form.
+    """
+
+
+class IPropertiesTabIndex(IPropertiesTab, ISMITabIndex):
+    """Properties tab index: metadata form.
     """
 
 

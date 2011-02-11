@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2010 Infrae. All rights reserved.
+# Copyright (c) 2008-2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Id$
 
@@ -119,6 +119,16 @@ class SMILayout(silvaviews.Layout):
         self.metadata = IMetadata(self.context)
         self.root_url = IVirtualSite(self.request).get_root_url()
         self.tab_name = getattr(self.view, 'tab_name', self.view.__name__)
+
+
+class SMIFavicon(silvaviews.ContentProvider):
+    grok.context(Interface)
+    grok.name('favicon')
+    grok.layer(interfaces.ISMILayer)
+
+    @property
+    def favicon_url(self):
+        return self.static['silvacon.ico']
 
 
 class SMIHeader(silvaviews.ContentProvider):
@@ -297,6 +307,10 @@ class SMIMiddleGroundActionForm(silvaforms.SMIViewletForm):
     grok.viewletmanager(SMIMiddleGroundManager)
 
     postOnly = True
+
+    @property
+    def tab_name(self):
+        return getattr(self.view, 'tab_name', None)
 
     def available(self):
         return True

@@ -1,27 +1,20 @@
 /* --- reset css --- */
-html{color:#000;background:#fff;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{font-size:100%;}legend{color:#000;}del,ins{text-decoration:none;}
-
-html { background-color: #9ab;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{font-size:100%;}legend{color:#000;}del,ins{text-decoration:none;}
 
 body {
   color: red;
   font: 70% Verdana, Arial, Helvetica, sans-serif;
+  background-color: #9ab;
 }
 
 p { color: #2D374C;}
 
 /* _________________________________________________________ sectors _______ */
+
 div.workspace, div#footerarea { background: #dde5ee;}
 
-div.simple-page {
-  padding: 50px;
-  color: black;
-  border-bottom: 1em solid #4C5C6C;
-}
-
-div.simple-page h1 { font-size: 200%;}
-
 /* ____________________________________ path bar _______ */
+
 div.pathbar {
   padding: 0 4px 0.2em 22px;
   color: #51585c;
@@ -736,6 +729,16 @@ input.action {
   float: right;
 }
 
+div.multi-actions {
+  margin: 0.5em 0 0 1.7em;
+}
+div.multi-actions input {
+  text-transform: lowercase;
+}
+input[type="checkbox"] + input[type="hidden"] + input.field-textline {
+  width: 94%; /* shortens field-textline when in a multi-actioned field */
+}
+
 /* manipulator button style from which all others derive */
 input.button, input.action, input.canceler, button.button, input.manipulator {
   margin: 0 1px;
@@ -994,7 +997,7 @@ table.listing td.element input[type="radio"] {
 
 /* ________________________________________________ info + clipboard _______ */
 div.info {
-  margin: -1px 0 0;
+  margin: -1px 0 1em 0;
   padding: 0.2em 0.4em 0.3em;
   border: 1px solid #789;
   color: #336;
@@ -1057,6 +1060,15 @@ select.clipboard, select.clipboard:focus, select.clipboard:hover {
 select.clipboard option.disabled {
   color: #dbf3f6;
   background: #678;
+}
+
+/* references listing box */
+div.info div.refitem img.icon {
+  float: left;
+}
+div.info div.refitem p {
+  margin-left: 20px;
+  margin-right: 18px;
 }
 
 
@@ -1594,4 +1606,46 @@ div#remote-request-loading {
   border-bottom: 1px solid black;
   background-color: #f7d1d1;
   z-index: 2000;
+}
+
+/* _______ simple-page layout selectors _______ */
+
+div.simple-page {
+  padding: 50px;
+  color: black;
+  border-bottom: 1em solid #4C5C6C;
+}
+div.simple-page div.pathbar {
+  border-bottom: 1px solid #aaa;
+}
+div.simple-page h1 { font-size: 170%;}
+div.simple-page div.notification {
+  position: relative;
+  top: 16px;
+  width: 50em;
+  margin: 2.5em auto 5em;
+  padding: 20px;
+  border-bottom: 1px solid #aaa;
+  -moz-box-shadow: 0px 0px 15px white;
+  -webkit-box-shadow: 0px 0px 15px white;
+  box-shadow: 0px 0px 15px white;
+}
+div.simple-page  div.notification h1 {
+  margin: 0 0 0.5em;
+}
+div.simple-page div.notification p {
+  margin: 0.5em 0;
+}
+div.simple-page div.notification li {
+  list-style: disc outside none;
+}
+div.simple-page div.notification a:link,
+div.simple-page div.notification a:visited {
+  color: blue;
+}
+div.simple-page div.notification div.controls {
+  height: 2em;
+  margin-top: 1em;
+  padding: 1em 0 0;
+  border-top: 1px solid #555;
 }
