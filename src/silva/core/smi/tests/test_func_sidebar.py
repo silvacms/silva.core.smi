@@ -10,6 +10,7 @@ class TestSidebar(unittest.TestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.browser = self.layer.get_browser(smi_settings)
+        self.browser.options.handle_errors = False
         self.browser.login('manager', 'manager')
 
         self.layer.login('manager')

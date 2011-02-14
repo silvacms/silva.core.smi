@@ -18,34 +18,6 @@ grok.layer(interfaces.ISMILayer)
 
 # XXX move this somewhere else
 
-class PublicationWorkflowError(StandardError):
-    """Base class for allow workflow errors.
-    """
-
-
-class IPublicationWorkflow(Interface):
-    """ Define api to manage publication of silva objects.
-
-    All the following methods may raise a PublicationWorkflowError.
-    They all return True/False on Success/Failure.
-    """
-
-    def request_approval(message,
-            publication_datetime,
-            expiration_datetime=None,
-            **extras):
-        """Issue a request for approval from an author.
-        """
-
-    def withdraw_request(message, **extras):
-        """ Withdraw a previous request for approval.
-        """
-
-    def reject_request(message, **extras):
-        """ Reject a request for approval.
-        """
-
-
 class PublishTab(silvaforms.SMIComposedForm):
     """Publish tab.
     """
@@ -119,15 +91,15 @@ class MessagePublication(object):
 
 class VersionedContentPublicationWorkflow(grok.Adapter):
     grok.context(silvainterfaces.IVersionedContent)
-    grok.implements(IPublicationWorkflow)
+    grok.implements(silvainterfaces.IPublicationWorkflow)
 
     def request_approval(self, message):
         # XXX add checkout publication datetime
         if self.context.get_unapproved_version() is None:
-            raise PublicationWorkflowError(
+            raise silvainterfaces.PublicationWorkflowError(
                 _('There is no unapproved version.'))
         if self.context.is_version_approval_requested():
-            raise PublicationWorkflowError(
+            raise silvainterfaces.PublicationWorkflowError(
                 _('Approval has already been requested.'))
         self.context.request_version_approval(message)
         return True
@@ -135,13 +107,13 @@ class VersionedContentPublicationWorkflow(grok.Adapter):
     def _check_withdraw_or_reject(self):
         if self.context.get_unapproved_version() is None:
             if self.context.get_public_version() is not None:
-                raise PublicationWorkflowError(
+                raise silvainterfaces.PublicationWorkflowError(
                     _("This content is already public."))
             else:
-                raise PublicationWorkflowError(
+                raise silvainterfaces.PublicationWorkflowError(
                     _("This content is already approved."))
         if not self.context.is_version_approval_requested():
-            raise PublicationWorkflowError(
+            raise silvainterfaces.PublicationWorkflowError(
                 _("No request for approval is pending for this content."))
 
     def withdraw_request(self, message):
@@ -153,6 +125,24 @@ class VersionedContentPublicationWorkflow(grok.Adapter):
         self._check_withdraw_or_reject()
         self.context.reject_version_approval(message)
         return True
+
+    def close(self):
+        if self.context.get_public_version() is None:
+            raise silvainterfaces.PublicationWorkflowError(
+                _("There is no public version to close"))
+        self.context.close_version()
+        return True
+
+    def approve(self, time=None):
+        if time is None:
+            time = DateTime()
+        elif isinstance(time, datetime):
+            time = DateTime(time)
+        if self.context.get_unapproved_version() is None:
+            raise silvainterfaces.PublicationWorkflowError(
+                _("There is no unapproved version to approve."))
+        self.context.set_unapproved_version_publication_datetime(time)
+        self.context.approve_version()
 
 
 class PublicationAction(EditAction):
@@ -178,8 +168,8 @@ class RequestApprovalAction(PublicationAction):
     def execute(self, form, content, data):
         message = data.getWithDefault('message')
         try:
-            IPublicationWorkflow(content).request_approval(message)
-        except PublicationWorkflowError as e:
+            silvainterfaces.IPublicationWorkflow(content).request_approval(message)
+        except silvainterfaces.PublicationWorkflowError as e:
             form.send_message(e.message, type='error')
             return silvaforms.FAILURE
         form.send_message(_("Approval requested."), type='feedback')
@@ -255,8 +245,8 @@ class WithdrawApprovalRequestForm(PendingApprovalRequestForm):
             return silvaforms.FAILURE
         message = data.getWithDefault('message')
         try:
-            IPublicationWorkflow(self.context).withdraw_request(message)
-        except PublicationWorkflowError as e:
+            silvainterfaces.IPublicationWorkflow(self.context).withdraw_request(message)
+        except silvainterfaces.PublicationWorkflowError as e:
             self.send_message(e.message, type='error')
             return silvaforms.FAILURE
         self.send_message('Withdrew request for approval', type='feedback')
@@ -271,13 +261,14 @@ class IRejectionMessage(Interface):
 
 
 class RejectApprovalRequestForm(PendingApprovalRequestForm):
+    """ Reject approval from an author by and editor.
+    """
     fields = silvaforms.Fields(IRejectionMessage)
     label = _('reject request')
 
     def available(self):
-        if checkPermission('silva.ApproveSilvaContent', self.context):
-            return super(RejectApprovalRequestForm, self).available()
-        return False
+        return checkPermission('silva.ApproveSilvaContent', self.context) \
+            and super(RejectApprovalRequestForm, self).available()
 
     @silvaforms.action(_('reject approval request'),
         identifier='reject',
@@ -289,11 +280,39 @@ class RejectApprovalRequestForm(PendingApprovalRequestForm):
             return silvaforms.FAILURE
         message = data.getWithDefault('message')
         try:
-            IPublicationWorkflow(self.context).reject_request(message)
-        except PublicationWorkflowError as e:
+            silvainterfaces.IPublicationWorkflow(self.context).reject_request(message)
+        except silvainterfaces.PublicationWorkflowError as e:
             self.send_message(e.message, type='error')
             return silvaforms.FAILURE
         self.send_message('Rejected request for approval', type='feedback')
         return silvaforms.SUCCESS
+
+
+class ManualCloseForm(silvaforms.SMISubForm):
+    """ Close the public version.
+    """
+    grok.context(silvainterfaces.IVersionedContent)
+    grok.view(PublishTab)
+    grok.order(30)
+
+    label = _('manual close')
+    description = _('If necessary, the published version of this '
+        'content can be manually closed (taken offline). '
+        'It will also be removed from the public index.')
+
+    def available(self):
+        return checkPermission('silva.ApproveSilvaContent', self.context) and \
+            self.context.get_public_version() is not None
+
+    @silvaforms.action(_('close published version'),
+        identifier='close',
+        description=_('access key: alt-c'),
+        accesskey='c')
+    def close(self):
+        try:
+            silvainterfaces.IPublicationWorkflow(self.context).close()
+        except silvainterfaces.PublicationWorkflowError as e:
+            self.send_message(e.message, type='error')
+            return silvaforms.FAILURE
 
 

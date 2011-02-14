@@ -45,7 +45,7 @@ class TestBreakReference(unittest.TestCase):
     def test_delete_by_manager(self):
         response = http('POST /root/edit/ HTTP/1.1',
                         auth='manager',
-                        handle_errors=True,
+                        handle_errors=False,
                         parsed=True,
                         data={'ids:list': 'file',
                               'tab_edit_delete:method': 'delete'})

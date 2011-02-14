@@ -9,7 +9,8 @@
 <tal:block>
   <form method="post"
     action="."
-    tal:attributes="action request.URL"
+    tal:attributes="action request.URL;
+      name view.prefix"
     tal:condition="content and view.set_names">
     <!-- tal:attributes="class python: template.id != 'tab_metadata' and 'sublisting' or nothing" -->
     <input type="hidden" name="returntotab" tal:attributes="value string:XXX"/>
