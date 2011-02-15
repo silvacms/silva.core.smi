@@ -263,7 +263,29 @@ class TestVersionListing(unittest.TestCase):
         status = form.get_control(
             'form.publicationstatustableform.action.delete').click()
         self.assertEquals(1, len(browser.inspect.version_checkboxes))
-        self.assertEquals(['deleted version #1'],
+        self.assertEquals(['deleted 1'],
+            browser.inspect.feedback)
+
+    def test_cannot_delete_publish_version(self):
+        browser = self.layer.get_browser(publish_settings)
+        browser.login('editor')
+        status = browser.open('http://localhost/root/document/edit/tab_status')
+        self.assertEquals(200, status)
+        form = browser.get_form('form.publicationstatustableform')
+        form.get_control(
+            'form.publicationstatustableform.line-0.select.0').checked = True
+        status = form.get_control(
+            'form.publicationstatustableform.action.copy').click()
+        self.assertEquals(200, status)
+        self.assertEquals(2, len(browser.inspect.version_checkboxes))
+
+        IPublicationWorkflow(self.root.document).approve()
+        form.get_control(
+            'form.publicationstatustableform.line-0.select.0').checked = True
+        status = form.get_control(
+            'form.publicationstatustableform.action.delete').click()
+        self.assertEquals(2, len(browser.inspect.version_checkboxes))
+        self.assertEquals(['could not delete 1: version is published'],
             browser.inspect.feedback)
 
 

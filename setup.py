@@ -55,6 +55,7 @@ setup(name='silva.core.smi',
         'z3c.schema',
         'zeam.form.base',
         'zeam.form.silva',
+        'zeam.form.ztk',
         'zope.cachedescriptors',
         'zope.component',
         'zope.contentprovider',
@@ -68,4 +69,9 @@ setup(name='silva.core.smi',
         ],
       tests_require=tests_require,
       extras_require={'test': tests_require},
+      entry_points="""
+      # -*- Entry points: -*-
+      [zeam.form.components]
+      publicationstatus = silva.core.smi.widgets.zeamform:register
+      """,
       )

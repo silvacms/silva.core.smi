@@ -14,11 +14,18 @@ from zeam.form import autofields
 from zeam.form.ztk.actions import EditAction
 from silva.translations import translate as _
 from Products.Silva.Versioning import VersioningError
+from silva.core.smi.widgets.zeamform import PublicationStatus
 
 grok.layer(interfaces.ISMILayer)
 
 
-# XXX move this somewhere else
+# TODO
+# - messages
+# - prevent multiple copy
+# - make publish form accessible to >= editor
+# - compare
+# - throw events ?
+
 
 class PublishTab(silvaforms.SMIComposedForm):
     """Publish tab.
@@ -340,7 +347,7 @@ class IPublicationStatusInfo(Interface):
     publication_time = schema.Datetime(title=_('publication time'))
     expiration_time = schema.Datetime(title=_('expiration time'))
     last_author = schema.TextLine(title=_('last author'))
-    version_status = schema.TextLine(title=_('version status'))
+    version_status = PublicationStatus(title=_('version status'))
 
 
 class PublicationStatusInfo(grok.Adapter):
@@ -419,10 +426,18 @@ class DeleteVersion(silvaforms.Action):
 
     def __call__(self, form, content, line):
         try:
-            content.delete_version()
-            form.send_message(_('deleted version #${id}',
-                mapping={'id': content.context.id}), type='feedback')
-            return silvaforms.SUCCESS
+            status = silvaforms.SUCCESS
+            for id, error in content.delete_version():
+                if error:
+                    form.send_message(
+                        _('could not delete ${id}: ${error}',
+                            mapping={'id': id, 'error': error}),
+                        type='error')
+                    status = silvaforms.FAILURE
+                else:
+                    form.send_message(_('deleted ${id}',
+                        mapping={'id': id}), type='feedback')
+            return status
         except VersioningError as e:
             form.send_message(unicode(e), type='error')
             return silvaforms.FAILURE
