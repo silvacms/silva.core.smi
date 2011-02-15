@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from five import grok
 from zope.interface import Interface
 from zope import schema
@@ -11,7 +13,7 @@ from zeam.form import silva as silvaforms
 from zeam.form import autofields
 from zeam.form.ztk.actions import EditAction
 from silva.translations import translate as _
-
+from Products.Silva.Versioning import VersioningError
 
 grok.layer(interfaces.ISMILayer)
 
@@ -168,7 +170,8 @@ class RequestApprovalAction(PublicationAction):
     def execute(self, form, content, data):
         message = data.getWithDefault('message')
         try:
-            silvainterfaces.IPublicationWorkflow(content).request_approval(message)
+            silvainterfaces.IPublicationWorkflow(
+                content).request_approval(message)
         except silvainterfaces.PublicationWorkflowError as e:
             form.send_message(e.message, type='error')
             return silvaforms.FAILURE
@@ -280,7 +283,8 @@ class RejectApprovalRequestForm(PendingApprovalRequestForm):
             return silvaforms.FAILURE
         message = data.getWithDefault('message')
         try:
-            silvainterfaces.IPublicationWorkflow(self.context).reject_request(message)
+            silvainterfaces.IPublicationWorkflow(
+                self.context).reject_request(message)
         except silvainterfaces.PublicationWorkflowError as e:
             self.send_message(e.message, type='error')
             return silvaforms.FAILURE
@@ -316,3 +320,138 @@ class ManualCloseForm(silvaforms.SMISubForm):
             return silvaforms.FAILURE
 
 
+# sort the versions, order approved, unapproved, published, closed
+def sort_versions(a, b):
+    ast = a.version_status()
+    bst = b.version_status()
+    order = ['unapproved', 'approved', 'public', 'last_closed', 'closed']
+    ret = cmp(order.index(ast), order.index(bst))
+    if ret == 0:
+        try:
+            ret = cmp(int(b.id), int(a.id))
+        except ValueError:
+            # non-int id(s)
+            ret = cmp(b.id, a.id)
+    return ret
+
+
+class IPublicationStatusInfo(Interface):
+    modification_time = schema.Datetime(title=_('modification time'))
+    publication_time = schema.Datetime(title=_('publication time'))
+    expiration_time = schema.Datetime(title=_('expiration time'))
+    last_author = schema.TextLine(title=_('last author'))
+    version_status = schema.TextLine(title=_('version status'))
+
+
+class PublicationStatusInfo(grok.Adapter):
+    grok.context(silvainterfaces.IVersion)
+    grok.provides(IPublicationStatusInfo)
+
+    def __init__(self, context):
+        self.context = context
+        self.versioned_content = self.context.get_content()
+        self.version_manager = silvainterfaces.IVersionManagement(
+            self.context.get_content())
+
+    @property
+    def modification_time(self):
+        dt = self.version_manager.getVersionModificationTime(self.context.id)
+        if dt is not None:
+            return dt.asdatetime()
+
+    @property
+    def publication_time(self):
+        dt = self.version_manager.getVersionPublicationTime(self.context.id)
+        if dt is not None:
+            return dt.asdatetime()
+
+    @property
+    def expiration_time(self):
+        dt = self.version_manager.getVersionExpirationTime(self.context.id).asdatetime()
+        if dt is not None:
+            return dt.asdatetime()
+
+    @property
+    def last_author(self):
+        author = self.version_manager.getVersionLastAuthorInfo(self.context.id)
+        if author is not None:
+            return author.fullname()
+
+    @property
+    def version_status(self):
+        return self.version_manager.getVersionStatus(self.context.id)
+
+    def delete_version(self):
+        return self.version_manager.deleteVersions([self.context.id])
+
+    def copy_version_for_editing(self):
+        return self.version_manager.revertPreviousToEditable(self.context.id)
+
+# XXX : TODO...
+# class Compare(silvaforms.Action):
+#     pass
+
+
+class CopyForEditing(silvaforms.Action):
+    """ copy a version to use as new editable version
+    """
+    title = _('copy for editing')
+    description = _('create a new editable version of '
+                    'the selected old one: alt-f')
+    accesskey = 'f'
+
+    def __call__(self, form, content, line):
+        try:
+            content.copy_version_for_editing()
+            form.send_message(
+                _("Reverted to previous version."), type='feedback')
+            return silvaforms.SUCCESS
+        except VersioningError as e:
+            form.send_message(unicode(e), type='error')
+            return silvaforms.FAILURE
+
+
+class DeleteVersion(silvaforms.Action):
+    """ permanently remove version
+    """
+    title = _("delete")
+    description = _("there's no undo")
+
+    def __call__(self, form, content, line):
+        try:
+            content.delete_version()
+            form.send_message(_('deleted version #${id}',
+                mapping={'id': content.context.id}), type='feedback')
+            return silvaforms.SUCCESS
+        except VersioningError as e:
+            form.send_message(unicode(e), type='error')
+            return silvaforms.FAILURE
+
+
+class PublicationStatusTableForm(silvaforms.SMISubTableForm):
+    """ Manage versions.
+    """
+    grok.context(silvainterfaces.IVersionedContent)
+    grok.view(PublishTab)
+    grok.order(30)
+
+    label = _('manage versions')
+    mode = silvaforms.DISPLAY
+
+    ignoreRequest = True
+    ignoreContent = False
+
+    tableFields = silvaforms.Fields(IPublicationStatusInfo)
+    tableActions = silvaforms.TableActions(
+        DeleteVersion(identifier='delete'),
+        CopyForEditing(identifier='copy'))
+
+    def update(self):
+        self.label = _(u'manage versions of «${title}»', mapping={'title':
+            self.context.get_title_or_id()})
+
+    def getItems(self):
+        version_manager = silvainterfaces.IVersionManagement(self.context)
+        versions = version_manager.getVersions(False)
+        versions.sort(sort_versions)
+        return [IPublicationStatusInfo(v) for v in versions]
