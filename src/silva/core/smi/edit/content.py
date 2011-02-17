@@ -165,6 +165,7 @@ class RevokeApproval(SMIAction):
 class Publish(SMIAction):
     """ Publish the version
     """
+    title = _('publish now')
     description = _(u"publish this document: alt-p")
     accesskey = u'p'
 

@@ -15,6 +15,8 @@ from zeam.form.ztk.actions import EditAction
 from silva.translations import translate as _
 from Products.Silva.Versioning import VersioningError
 from silva.core.smi.widgets.zeamform import PublicationStatus
+from silva.core.smi.edit.content import Publish
+
 
 grok.layer(interfaces.ISMILayer)
 
@@ -22,7 +24,6 @@ grok.layer(interfaces.ISMILayer)
 # TODO
 # - messages
 # - prevent multiple copy
-# - make publish form accessible to >= editor
 # - compare
 # - throw events ?
 
@@ -39,7 +40,7 @@ class PublishTab(silvaforms.SMIComposedForm):
     label = _('properties')
 
 
-class IRequestApprovalFields(Interface):
+class IPublicationFields(Interface):
     """ Interface to register autofields for request approval
     """
 
@@ -190,7 +191,7 @@ class RequestApprovalForm(silvaforms.SMISubForm):
     grok.context(silvainterfaces.IVersionedContent)
     grok.view(PublishTab)
     grok.order(20)
-    fields = autofields.FieldsCollector(IRequestApprovalFields)
+    fields = autofields.FieldsCollector(IPublicationFields)
     actions = silvaforms.Actions(RequestApprovalAction())
 
     label = _('request approval for new version')
@@ -205,14 +206,54 @@ class RequestApprovalForm(silvaforms.SMISubForm):
             not self.context.is_version_approval_requested()
 
 
+class Approve(PublicationAction):
+
+    title = _('approve for future')
+
+    def available(self, form):
+        return bool(
+            checkPermission('silva.ApproveSilvaContent', form.context) and
+            form.context.get_unapproved_version())
+
+    def execute(self, form, content, data):
+        try:
+            silvainterfaces.IPublicationWorkflow(content).approve()
+        except silvainterfaces.PublicationWorkflowError as e:
+            form.send_message(e.message, type='error')
+            return silvaforms.FAILURE
+        form.send_message(_("approved."), type='feedback')
+        return silvaforms.SUCCESS
+
+
+class PublicationForm(silvaforms.SMISubForm):
+    grok.context(silvainterfaces.IVersionedContent)
+    grok.view(PublishTab)
+    grok.order(20)
+    fields = autofields.FieldsCollector(IPublicationFields)
+    actions = silvaforms.Actions(
+        Approve(identifier='approve'),
+        Publish(identifier='publish-now'))
+
+    label = _('publish new version')
+
+    def available(self):
+        return bool(
+            checkPermission('silva.ApproveSilvaContent', self.context) and
+            self.context.get_unapproved_version())
+
+
 class DefaultRequestApprovalFields(autofields.AutoFields):
-    autofields.group(IRequestApprovalFields)
-    autofields.order(0)
-    # XXX this shouldn't be needed but SMISubFrom doesn't seem to provide
-    # zope.browser.interfaces.IBrowserView which is default requirement
-    grok.view(RequestApprovalForm)
-    fields = silvaforms.Fields(IPublicationInformation, IPublicationMessage)
+    autofields.group(IPublicationFields)
+    autofields.order(10)
+    fields = silvaforms.Fields(IPublicationInformation)
     fields['publication_datetime'].defaultValue = lambda d: datetime.now()
+
+
+class RequestApprovalMessage(autofields.AutoFields):
+    autofields.group(IPublicationFields)
+    autofields.order(20)
+    grok.view(RequestApprovalForm)
+    fields = silvaforms.Fields(IPublicationMessage)
 
 
 class PendingApprovalRequestForm(silvaforms.SMISubForm):
