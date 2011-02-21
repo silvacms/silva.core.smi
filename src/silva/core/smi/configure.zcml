@@ -18,10 +18,10 @@
   <!-- This should be in zeam.form.silva, but due to loops we have to
   set it here -->
 
-  <browser:resourceInclude
-     layer="silva.core.smi.interfaces.ISMILayer"
-     include="form.js"
-     base="zeam.form.silva" />
+  <!-- <browser:resourceInclude -->
+  <!--    layer="silva.core.smi.interfaces.ISMILayer" -->
+  <!--    include="form.js" -->
+  <!--    base="zeam.form.silva" /> -->
 
   <!-- SMI absolute_url -->
   <view
