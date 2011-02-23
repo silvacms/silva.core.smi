@@ -186,3 +186,8 @@ class IAddingTab(IEditTab, ISMINavigationOff):
     """Adding tab.
     """
     __name__ = Attribute("Content type of the added content")
+
+
+class IImageForm(Interface):
+    """ marker for forms that manipulates silva image.
+    """

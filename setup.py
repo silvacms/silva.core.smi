@@ -73,5 +73,6 @@ setup(name='silva.core.smi',
       # -*- Entry points: -*-
       [zeam.form.components]
       publicationstatus = silva.core.smi.widgets.zeamform:register
+      imagewidgets = silva.core.smi.edit.imagewidgets:register
       """,
       )

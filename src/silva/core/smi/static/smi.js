@@ -1,5 +1,17 @@
 // SMI Javascript
 
+// Add a rescope method
+if (Function.prototype.scope === undefined) {
+    Function.prototype.scope = function(scope) {
+        var _function = this;
+
+        return function() {
+            return _function.apply(scope, arguments);
+        };
+    };
+}
+
+
 $(document).ready(function() {
     var base_url = $('#smi-content-url').attr('href');
 

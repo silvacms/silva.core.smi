@@ -27,6 +27,7 @@ class TabSettings(silvaforms.SMIComposedForm):
     grok.implements(interfaces.IPropertiesTab)
     grok.require('silva.ManageSilvaContent')
     tab = 'settings'
+    tab_name = 'tab_settings'
     label = _("settings")
     description = _("")
 

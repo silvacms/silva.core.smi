@@ -22,6 +22,7 @@ class PropertiesTab(silvaforms.SMIComposedForm):
     grok.name('tab_metadata')
     grok.implements(interfaces.IPropertiesTab, interfaces.ISMITabIndex)
     tab = 'properties'
+    tab_name = 'tab_metadata'
 
 
 class MetadataFormGroup(silvaforms.SMISubFormGroup):

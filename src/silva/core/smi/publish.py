@@ -153,6 +153,7 @@ class VersionedContentPublicationWorkflow(grok.Adapter):
                 _("There is no unapproved version to approve."))
         self.context.set_unapproved_version_publication_datetime(time)
         self.context.approve_version()
+        return True
 
 
 class PublicationAction(EditAction):
