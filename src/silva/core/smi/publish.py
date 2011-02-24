@@ -103,6 +103,14 @@ class VersionedContentPublicationWorkflow(grok.Adapter):
     grok.context(silvainterfaces.IVersionedContent)
     grok.implements(silvainterfaces.IPublicationWorkflow)
 
+    def new_version(self):
+        if self.context.get_unapproved_version() is not None:
+            raise silvainterfaces.PublicationWorkflowError(
+                _("This content already has a new version."))
+        self.context.create_copy()
+        self.context.sec_update_last_author_info()
+        return True
+
     def request_approval(self, message):
         # XXX add checkout publication datetime
         if self.context.get_unapproved_version() is None:

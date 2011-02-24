@@ -48,8 +48,8 @@ class ImageEditForm(silvaforms.SMISubForm):
     # XXX: image field is no longer required so it does nothing
     # when image is not specified.
 
-    fields['image'].required = False
-    fields['image'].ignoreContent = True
+    #fields['image'].required = False
+    #fields['image'].ignoreContent = True
 
     actions  = silvaforms.Actions(EditAction(), CancelEditAction())
 
