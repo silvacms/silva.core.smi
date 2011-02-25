@@ -1,35 +1,36 @@
-from five import grok
+# Copyright (c) 2011 Infrae. All rights reserved.
+# See also LICENSE.txt
 
+from five import grok
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope import component
 from zope.interface import Interface
 from zope import schema
-
-
 from zeam.form import silva as silvaforms
-from silva.core import interfaces as silvainterfaces
-from silva.core.smi import interfaces
+from silva.ui.menu import SettingsMenuItem
+from silva.core import interfaces
 from silva.core.smi.properties.metadata import MetadataFormGroup
 from silva.translations import translate as _
+
 from Products.Silva.transform.interfaces import IRendererRegistry
 from Products.Silva import mangle
 
-grok.layer(interfaces.ISMILayer)
-# XXX Check permissions on every component
+
+class SettingsMenu(SettingsMenuItem):
+    grok.context(interfaces.ISilvaObject)
+    grok.order(10)
+    name = _(u'Settings')
+    action = 'settings'
 
 
 class TabSettings(silvaforms.SMIComposedForm):
     """Settings tab.
     """
-    grok.context(silvainterfaces.ISilvaObject)
-    grok.name('tab_settings')
-    grok.implements(interfaces.IPropertiesTab)
+    grok.context(interfaces.ISilvaObject)
+    grok.name('silva.ui.settings')
     grok.require('silva.ManageSilvaContent')
-    tab = 'settings'
-    tab_name = 'tab_settings'
     label = _("settings")
-    description = _("")
 
 
 class ConvertToFolderAction(silvaforms.Action):
@@ -38,8 +39,8 @@ class ConvertToFolderAction(silvaforms.Action):
     description = _('change container type to a folder: alt-f')
 
     def available(self, form):
-        return silvainterfaces.IGhostFolder.providedBy(form.context) or \
-            silvainterfaces.IPublication.providedBy(form.context)
+        return interfaces.IGhostFolder.providedBy(form.context) or \
+            interfaces.IPublication.providedBy(form.context)
 
     def __call__(self, form):
         form.context.to_folder()
@@ -55,8 +56,8 @@ class ConvertToPublicationAction(silvaforms.Action):
     description = _('change container type to a publication: alt-p')
 
     def available(self, form):
-        silvainterfaces.IPublication.providedBy('')
-        return not silvainterfaces.IPublication.providedBy(form.context)
+        interfaces.IPublication.providedBy('')
+        return not interfaces.IPublication.providedBy(form.context)
 
     def __call__(self, form):
         form.context.to_publication()
@@ -66,7 +67,7 @@ class ConvertToPublicationAction(silvaforms.Action):
 
 
 class ConvertToForm(silvaforms.SMISubForm):
-    grok.context(silvainterfaces.IContainer)
+    grok.context(interfaces.IContainer)
     # XXX set it for real
     grok.require('silva.ManageSilvaContent')
     grok.view(TabSettings)
@@ -76,16 +77,16 @@ class ConvertToForm(silvaforms.SMISubForm):
     label = _('container type')
 
     def available(self):
-        if silvainterfaces.IRoot.providedBy(self.context):
+        if interfaces.IRoot.providedBy(self.context):
             return False
         return super(ConvertToForm, self).available()
 
     def update(self):
-        if silvainterfaces.IGhostFolder.providedBy(self.context):
+        if interfaces.IGhostFolder.providedBy(self.context):
             self.description = _('This Ghost Folder can be converted'
                 ' to a normal Publication or Folder. All ghosted content'
                 ' will be duplicated and can then be edited.')
-        elif silvainterfaces.IPublication.providedBy(self.context):
+        elif interfaces.IPublication.providedBy(self.context):
             self.description = _('This Silva Publication can be converted'
                                  ' to a Silva Folder')
         else:
@@ -118,7 +119,7 @@ class IRendererShema(Interface):
 
 
 class RendererForm(silvaforms.SMISubForm):
-    grok.context(silvainterfaces.ISilvaObject)
+    grok.context(interfaces.ISilvaObject)
     grok.view(TabSettings)
     grok.order(20)
     grok.require('silva.ManageSilvaContent')
@@ -156,7 +157,7 @@ def get_feeds_status(form):
 # XXX : this should display url to feeds somewhere. but there is no
 # possibility to put some html in there except overriding template.
 class ActivateFeedsForm(silvaforms.SMISubForm):
-    grok.context(silvainterfaces.IContainer)
+    grok.context(interfaces.IContainer)
     grok.view(TabSettings)
     grok.order(30)
     grok.require('silva.ManageSilvaContent')
@@ -191,7 +192,7 @@ def get_used_space(form):
 
 
 class QuotaForm(silvaforms.SMISubForm):
-    grok.context(silvainterfaces.IContainer)
+    grok.context(interfaces.IContainer)
     grok.view(TabSettings)
     grok.order(40)
     grok.require('silva.ManageSilvaContentSettings')
@@ -218,7 +219,7 @@ class QuotaForm(silvaforms.SMISubForm):
 
 
 class LayoutMetadataForm(MetadataFormGroup):
-    grok.context(silvainterfaces.ISilvaObject)
+    grok.context(interfaces.ISilvaObject)
     grok.order(50)
     grok.view(TabSettings)
     category = 'layout'
@@ -226,7 +227,7 @@ class LayoutMetadataForm(MetadataFormGroup):
 
 
 class SettingsMetadataForm(MetadataFormGroup):
-    grok.context(silvainterfaces.ISilvaObject)
+    grok.context(interfaces.ISilvaObject)
     grok.order(50)
     grok.view(TabSettings)
     category = 'settings'
