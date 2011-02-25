@@ -13,7 +13,6 @@ from grokcore.view.meta.views import default_view_name
 from infrae import rest
 from megrok import pagetemplate as pt
 from megrok.chameleon.components import ChameleonPageTemplate
-from silva.core.conf.utils import getSilvaViewFor
 from silva.core.interfaces import ISilvaObject, IAuthorizationManager
 from silva.core.layout.interfaces import IMetadata
 from silva.core.messages.interfaces import IMessageService
@@ -57,7 +56,7 @@ class SMIView(silvaviews.HTTPHeaderView, grok.View):
         # Lookup the correct Silva edit view so forms are able to use
         # silva macros.
         context = self.request['model']
-        return getSilvaViewFor(self.context, 'edit', context)
+        return None
 
     @property
     def tab_name(self):
