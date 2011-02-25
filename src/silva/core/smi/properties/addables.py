@@ -1,15 +1,23 @@
+# Copyright (c) 2011 Infrae. All rights reserved.
+# See also LICENSE.txt
+
 from five import grok
-
-from zope.interface import Interface
-from zope import schema
 from silva.core.interfaces import IContainer, IRoot
-from silva.core.smi.interfaces import IPropertiesTab
-from zeam.form import silva as silvaforms
 from silva.translations import translate as _
-
-
+from silva.ui.menu import SettingsMenuItem
+from zeam.form import silva as silvaforms
+from zope import schema
+from zope.interface import Interface
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+
+
+class AddablesMenu(SettingsMenuItem):
+    grok.context(IContainer)
+    grok.order(50)
+    name = _(u'Addables')
+    action = 'addables'
+
 
 @grok.provider(IContextSourceBinder)
 def addables_content_types(context):
@@ -49,11 +57,9 @@ class AddablesTab(silvaforms.SMIForm):
     """Control addables for silva containers.
     """
     grok.context(IContainer)
-    grok.implements(IPropertiesTab)
-    grok.name('tab_addables')
+    grok.name('silva.ui.addables')
     grok.require('silva.ManageSilvaContentSettings')
 
-    tab = 'properties'
     label = _(u"addable settings")
     fields = silvaforms.Fields(IAddablesSchema)
     fields['acquire'].defaultValue = acquire_addables
