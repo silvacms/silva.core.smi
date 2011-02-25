@@ -19,7 +19,7 @@ from zope.interface import Interface
 
 class ImportMenu(SettingsMenuItem):
     grok.context(IContainer)
-    grok.order(50)
+    grok.order(61)
     name = _(u'Import')
     action = 'import'
 

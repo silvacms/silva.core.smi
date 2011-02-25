@@ -1,28 +1,30 @@
+# Copyright (c) 2011 Infrae. All rights reserved.
+# See also LICENSE.txt
+
 from five import grok
-from zope import component
-
 from silva.core.interfaces import ISilvaObject, IVersionedContent, IContainer
-from silva.core.smi import interfaces
-
+from silva.translations import translate as _
+from silva.ui.menu import ContentMenuItem
 from zeam.form import silva as silvaforms
+from zope import component
 
 from Products.Silva.icon import get_icon_url
 from Products.Silva.adapters.security import is_role_greater_or_equal
 from Products.SilvaMetadata.interfaces import IMetadataService
 
-from silva.translations import translate as _
 
-grok.layer(interfaces.ISMILayer)
+class PropertiesTabMenu(ContentMenuItem):
+    grok.context(ISilvaObject)
+    grok.order(20)
+    name = _('Properties')
+    action = 'properties'
 
 
 class PropertiesTab(silvaforms.SMIComposedForm):
     """ Properties tab allows metadata editing.
     """
     grok.context(ISilvaObject)
-    grok.name('tab_metadata')
-    grok.implements(interfaces.IPropertiesTab, interfaces.ISMITabIndex)
-    tab = 'properties'
-    tab_name = 'tab_metadata'
+    grok.name('silva.ui.properties')
 
 
 class MetadataFormGroup(silvaforms.SMISubFormGroup):

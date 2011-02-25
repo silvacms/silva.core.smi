@@ -3,41 +3,37 @@
 # See also LICENSE.txt
 
 from five import grok
+from silva.core.interfaces import IDirectlyRendered
+from silva.core.interfaces import ISilvaObject
+from silva.core.views.interfaces import ISilvaURL
+from silva.translations import translate as _
+from silva.ui.menu import ViewMenuItem
+from silva.ui.rest.base import PageREST
 from zope.component import getMultiAdapter
 
-from silva.core.views.interfaces import ISilvaURL
-from silva.core.smi.smi import SMIPage
-from silva.core.interfaces import IDirectlyRendered, ISilvaObject
-from silva.translations import translate as _
 
-from silva.core.smi.interfaces import ISMILayer
-
-
-grok.templatedir('smi_templates')
-grok.layer(ISMILayer)
-
-
-class PreviewTab(SMIPage):
-    """Preview tab for non-publishable content in Silva.
-    """
-    grok.context(IDirectlyRendered)
-    grok.name('tab_preview')
-    grok.require('silva.ReadSilvaContent')
-
-    tab = _('preview')
-
-    def render(self):
-        return self.context.preview()
-
-
-class PreviewFrameset(grok.View):
+class PreviewMenu(ViewMenuItem):
     grok.context(ISilvaObject)
-    grok.name('previewframeset')
+    grok.order(10)
+    name = _('Preview')
+    action = 'preview'
+
+
+class Preview(PageREST):
+    grok.context(ISilvaObject)
+    grok.name('silva.ui.preview')
     grok.require('silva.ReadSilvaContent')
 
-    rows = '52px,*'
+    def payload(self):
+        return {"ifaces": ["preview"],
+                "html_url": getMultiAdapter((self.context, self.request), ISilvaURL).preview()}
 
-    @property
-    def preview_url(self):
-        url = getMultiAdapter((self.context, self.request), ISilvaURL)
-        return url.preview()
+
+class Preview(PageREST):
+    grok.context(IDirectlyRendered)
+    grok.name('silva.ui.preview')
+    grok.require('silva.ReadSilvaContent')
+
+    def payload(self):
+        return {"ifaces": ["preview"],
+                "html": self.context.preview()}

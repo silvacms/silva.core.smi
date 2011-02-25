@@ -21,7 +21,7 @@ from zExceptions import BadRequest
 
 class ExportMenu(SettingsMenuItem):
     grok.context(IContainer)
-    grok.order(50)
+    grok.order(60)
     name = _(u'Export')
     action = 'export'
 
