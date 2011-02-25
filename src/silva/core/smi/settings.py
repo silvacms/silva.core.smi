@@ -2,9 +2,6 @@
 # See also LICENSE.txt
 
 from five import grok
-from zope.schema.interfaces import IContextSourceBinder
-from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
-from zope import component
 from zope.interface import Interface
 from zope import schema
 from zeam.form import silva as silvaforms
@@ -13,7 +10,6 @@ from silva.core import interfaces
 from silva.core.smi.properties.metadata import MetadataFormGroup
 from silva.translations import translate as _
 
-from Products.Silva.transform.interfaces import IRendererRegistry
 from Products.Silva import mangle
 
 
@@ -92,58 +88,6 @@ class ConvertToForm(silvaforms.SMISubForm):
         else:
             self.description = _('This Silva Folder can be converted'
                                  ' to a Publication')
-
-
-@grok.provider(IContextSourceBinder)
-def renderers(context):
-    registry = component.queryUtility(IRendererRegistry) or \
-        context.service_renderer_registry
-    renderers = []
-    for name in registry.getFormRenderersList(context.meta_type):
-        renderers.append(SimpleTerm(title=name, value=name, token=name))
-    return SimpleVocabulary(renderers)
-
-RENDERER_DEFAULT = '(Default)'
-
-def selected_renderer(form):
-    editable = form.context.get_editable()
-    if editable:
-        return editable.get_renderer_name() or RENDERER_DEFAULT
-    return RENDERER_DEFAULT
-
-
-class IRendererShema(Interface):
-    renderer = schema.Choice(source=renderers,
-        title=_('renderer'),
-        description=_('Select a renderer to render this content.'))
-
-
-class RendererForm(silvaforms.SMISubForm):
-    grok.context(interfaces.ISilvaObject)
-    grok.view(TabSettings)
-    grok.order(20)
-    grok.require('silva.ManageSilvaContent')
-    fields = silvaforms.Fields(IRendererShema)
-    fields['renderer'].defaultValue = selected_renderer
-    ignoreContent = True
-    ignoreRequest = False
-
-    def available(self):
-        return bool(self.context.get_editable())
-
-    @silvaforms.action(_('change renderer'),
-        identifier='renderer',
-        description=_('change renderer: alt-c'),
-        accesskey='c')
-    def change_renderer(self):
-        data, errors = self.extractData()
-        if errors:
-            return silvaforms.FAILURE
-        editable = self.context.get_editable()
-        editable.set_renderer_name(data.getWithDefault('renderer'))
-        self.send_message(_('Renderer setting saved.'), type='feedback')
-        return silvaforms.SUCCESS
-
 
 class IActivateFeedsSchema(Interface):
     feeds = schema.Bool(title=_('allow feeds'),
