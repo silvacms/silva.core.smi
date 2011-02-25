@@ -1,21 +1,30 @@
+# Copyright (c) 2011 Infrae. All rights reserved.
+# See also LICENSE.txt
+
 import urllib
 from datetime import datetime
 
 from five import grok
-
-from zope.interface import Interface
+from silva.core.interfaces import IContainer
+from silva.core.views import views as silvaviews
+from silva.translations import translate as _
+from silva.ui.menu import SettingsMenuItem
+from zeam.form import silva as silvaforms
 from zope import schema, component
+from zope.interface import Interface
 from zope.schema.interfaces import IContextSourceBinder
 
-from zeam.form import silva as silvaforms
-from silva.core.interfaces import ISilvaObject
-from silva.translations import translate as _
-from silva.core.views import views as silvaviews
-
-from silva.core.smi import interfaces
 from Products.Silva.utility.interfaces import IExportUtility
 from Products.Silva.silvaxml import xmlexport
 from zExceptions import BadRequest
+
+
+class ExportMenu(SettingsMenuItem):
+    grok.context(IContainer)
+    grok.order(50)
+    name = _(u'Export')
+    action = 'export'
+
 
 @grok.provider(IContextSourceBinder)
 def export_formats(context):
@@ -52,12 +61,10 @@ class IExportFields(Interface):
 class ExportTab(silvaforms.SMIForm):
     """Export form for containers.
     """
-    grok.name('tab_status_export')
-    grok.implements(interfaces.IPublishTab)
-    grok.context(ISilvaObject)
+    grok.context(IContainer)
     grok.require('silva.ReadSilvaContent')
+    grok.name('silva.ui.export')
 
-    tab = 'publish'
     label = _(u"export")
 
     fields = silvaforms.Fields(IExportFields)
@@ -74,7 +81,7 @@ class ExportTab(silvaforms.SMIForm):
     def export(self):
         data, errors = self.extractData()
         if len(errors) == 0:
-            url = self.url() + '/edit/tab_status_export/download'
+            url = self.url() + '/++rest++silva.ui.export/download'
             query_string = "?" + urllib.urlencode(self.request.form)
             self.redirect(url + query_string)
             return silvaforms.SUCCESS
@@ -83,6 +90,7 @@ class ExportTab(silvaforms.SMIForm):
     def publishTraverse(self, request, name):
         if name == 'download':
             return ExportDownload(self, request)
+        return super(ExportTab, self).publishTraverse(request, name)
 
 
 class ExportDownload(silvaviews.View):

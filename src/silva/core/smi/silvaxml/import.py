@@ -9,13 +9,19 @@ from five import grok
 from silva.core.conf import schema as silvaschema
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
-from silva.core.smi import smi as silvasmi
-from silva.core.smi.interfaces import IPublishTab, IPublicationAwareTab
 from silva.translations import translate as _
+from silva.ui.menu import SettingsMenuItem
 from zeam.form import silva as silvaforms
 from zeam.form.silva.form import ExtractedDecoratedAction
 from zope import schema
 from zope.interface import Interface
+
+
+class ImportMenu(SettingsMenuItem):
+    grok.context(IContainer)
+    grok.order(50)
+    name = _(u'Import')
+    action = 'import'
 
 
 class IImportFields(Interface):
@@ -50,12 +56,9 @@ class IImportFields(Interface):
 class ImportForm(silvaforms.SMIForm):
     """Import the content of a file in Silva.
     """
-    grok.name('tab_edit_import')
-    grok.require('silva.ManageSilvaContentSettings')
     grok.context(IContainer)
-    grok.implements(IPublishTab)
-
-    tab = 'edit'
+    grok.name('silva.ui.import')
+    grok.require('silva.ManageSilvaContentSettings')
 
     label = _(u"import and extract zip archive")
     fields = silvaforms.Fields(IImportFields)
@@ -95,26 +98,3 @@ class ImportForm(silvaforms.SMIForm):
                       mapping={'failed': ', '.join(failures)}),
                     type=u"error")
 
-
-class ImportButton(silvasmi.SMIMiddleGroundButton):
-    grok.context(IContainer)
-    grok.order(200)
-    grok.require('silva.ManageSilvaContentSettings')
-    grok.view(IPublicationAwareTab)
-
-    tab = 'tab_edit_import'
-    label = _(u"import")
-    help = _(u"import xml data or a zip file: alt-i")
-    accesskey = 'i'
-
-
-class ExportButton(silvasmi.SMIMiddleGroundButton):
-    grok.context(IContainer)
-    grok.order(210)
-    grok.require('silva.ManageSilvaContentSettings')
-    grok.view(IPublicationAwareTab)
-
-    tab = 'tab_status_export'
-    label = _(u"export")
-    help = _(u"export to xml or other: alt-e")
-    accesskey = 'e'

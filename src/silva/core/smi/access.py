@@ -10,7 +10,6 @@ from zope import interface, schema, component
 
 from Products.Silva.Security import UnauthorizedRoleAssignement
 
-from silva.core.smi.interfaces import IAccessTab, ISMITabIndex
 from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
 from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
@@ -28,11 +27,8 @@ class AccessTab(silvaforms.SMIComposedForm):
     """Control access to Silva.
     """
     grok.context(ISilvaObject)
-    grok.implements(IAccessTab, ISMITabIndex)
-    grok.name('tab_access')
+    grok.name('silva.ui.access')
     grok.require('silva.ChangeSilvaAccess')
-
-    tab = 'access'
 
     label = _(u"manage access to content")
     description = _(u"This screen lets you authorize or revoke access "
