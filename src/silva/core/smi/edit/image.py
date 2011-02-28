@@ -16,18 +16,13 @@ from silva.translations import translate as _
 
 from Products.Silva.Image import IImageAddFields
 
-grok.layer(interfaces.ISMILayer)
-
 
 class ImageEditTab(silvaforms.SMIComposedForm):
     """ Edit tab
     """
     grok.context(silvainterfaces.IImage)
-    grok.implements(interfaces.IEditTabIndex)
-    grok.name('tab_edit')
+    grok.name('silva.ui.content')
     grok.require('silva.ChangeSilvaContent')
-    tab = 'edit'
-    tab_name = 'tab_edit'
 
     label = _('edit')
 
