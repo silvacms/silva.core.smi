@@ -2,13 +2,12 @@
 # See also LICENSE.txt
 
 from five import grok
-from silva.core.interfaces import ISilvaObject, IVersionedContent, IContainer
+from silva.core.interfaces import ISilvaObject, IVersionedContent
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenuItem
 from zeam.form import silva as silvaforms
 from zope import component
 
-from Products.Silva.icon import get_icon_url
 from Products.Silva.adapters.security import is_role_greater_or_equal
 from Products.SilvaMetadata.interfaces import IMetadataService
 
@@ -91,10 +90,6 @@ class MetadataForm(silvaforms.SMISubForm):
         self.user_roles = self.context.sec_get_all_roles()
         self.errors = False
         self.set_names = self.binding.getSetNames(category=self.category)
-        self.is_container = IContainer.providedBy(self.context)
-
-    def get_icon_url(self):
-        return get_icon_url(self.context, self.request)
 
     def get_set_title(self, set_name):
         return self.binding.getSet(set_name).getTitle() or set_name
