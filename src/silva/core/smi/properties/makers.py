@@ -9,13 +9,19 @@ from zope.interface import Interface
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
+from silva.ui.menu import SettingsMenuItem
 from silva.core.interfaces import ISilvaObject
 from silva.core.layout.interfaces import IMarkManager
-from silva.core.smi.interfaces import IPropertiesTab
-from silva.core.smi.smi import SMIButton
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
+
+
+class CustomizationMenu(SettingsMenuItem):
+    grok.context(ISilvaObject)
+    grok.order(100)
+    name = _(u'Customization')
+    action = 'customization'
 
 
 class ManageCustomizeMarker(silvaforms.SMIComposedForm):
@@ -23,11 +29,8 @@ class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     current content.
     """
     grok.context(ISilvaObject)
-    grok.implements(IPropertiesTab)
-    grok.name('tab_customization')
+    grok.name('silva.ui.customization')
     grok.require('silva.ManageSilvaContent')
-
-    tab = 'properties'
 
     label = _(u"customization markers")
     description = _(u"This screen lets you tag content with markers "
@@ -178,10 +181,3 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
         return silvaforms.SUCCESS
 
 
-class ManageCustomizationButton(SMIButton):
-    grok.order(110)
-    grok.require('silva.ManageSilvaContent')
-    grok.view(IPropertiesTab)
-
-    tab = 'tab_customization'
-    label = _("customization")

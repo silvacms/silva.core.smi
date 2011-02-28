@@ -7,7 +7,6 @@ from DateTime import DateTime
 from datetime import datetime
 from AccessControl.security import checkPermission
 
-from silva.core.smi import interfaces
 from silva.core import interfaces as silvainterfaces
 from zeam.form import silva as silvaforms
 from zeam.form import autofields
@@ -16,10 +15,7 @@ from silva.translations import translate as _
 from Products.Silva.Versioning import VersioningError
 from silva.core.smi.widgets.zeamform import PublicationStatus
 from silva.core.smi.edit.content import Publish
-
-
-grok.layer(interfaces.ISMILayer)
-
+from silva.ui.menu import ContentMenuItem
 
 # TODO
 # - messages
@@ -28,14 +24,19 @@ grok.layer(interfaces.ISMILayer)
 # - throw events ?
 
 
+class PublishTabMenu(ContentMenuItem):
+    grok.context(silvainterfaces.IVersionedContent)
+    grok.order(30)
+    name = _('Publish')
+    action = 'publish'
+
+
 class PublishTab(silvaforms.SMIComposedForm):
     """Publish tab.
     """
-    grok.context(silvainterfaces.ISilvaObject)
+    grok.context(silvainterfaces.IVersionedContent)
     grok.require('silva.ChangeSilvaContent')
-    grok.implements(interfaces.IPublishTab, interfaces.ISMITabIndex)
-    grok.name('tab_status')
-    tab = 'publish'
+    grok.name('silva.ui.publish')
 
     label = _('properties')
 

@@ -5,22 +5,30 @@
 import operator
 
 from five import grok
-from zope.cachedescriptors.property import CachedProperty
+from silva.core.cache.store import SessionStore
+from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
+from silva.core.interfaces import ISilvaObject
+from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
+from silva.core.services.interfaces import IMemberService, MemberLookupError
+from silva.translations import translate as _
+from silva.ui.menu import SettingsMenuItem
+from zeam.form import silva as silvaforms
 from zope import interface, schema, component
+from zope.cachedescriptors.property import CachedProperty
 
 from Products.Silva.Security import UnauthorizedRoleAssignement
 
-from silva.core.interfaces import ISilvaObject
-from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
-from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
-from silva.core.services.interfaces import IMemberService, MemberLookupError
-from silva.core.cache.store import SessionStore
-from silva.translations import translate as _
-from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import (
     IRESTCloseOnSuccessAction, IRESTRefreshAction, IRemoverAction)
 
 USER_STORE_KEY = 'lookup user'
+
+
+class AccessMenu(SettingsMenuItem):
+    grok.context(ISilvaObject)
+    grok.order(10)
+    name = _(u'Access')
+    action = 'access'
 
 
 class AccessTab(silvaforms.SMIComposedForm):

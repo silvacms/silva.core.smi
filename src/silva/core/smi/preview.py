@@ -29,7 +29,7 @@ class Preview(PageREST):
                 "html_url": getMultiAdapter((self.context, self.request), ISilvaURL).preview()}
 
 
-class Preview(PageREST):
+class DirectlyRenderedPreview(PageREST):
     grok.context(IDirectlyRendered)
     grok.name('silva.ui.preview')
     grok.require('silva.ReadSilvaContent')
