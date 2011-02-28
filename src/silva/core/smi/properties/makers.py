@@ -78,7 +78,7 @@ def availableMarkersForContent(context):
 
 class IDisplayUsedInterfaces(Interface):
 
-    usedInterface = schema.List(
+    usedInterface = schema.Set(
         title=_(u"used interfaces"),
         value_type=schema.Choice(
             source=usedInterfacesForContent),
@@ -87,7 +87,7 @@ class IDisplayUsedInterfaces(Interface):
 
 class IRemoveCustomizationMarker(Interface):
 
-    usedMarkers = schema.List(
+    usedMarkers = schema.Set(
         title=_(u"used markers"),
         value_type=schema.Choice(
             source=usedMarkersForContent))
