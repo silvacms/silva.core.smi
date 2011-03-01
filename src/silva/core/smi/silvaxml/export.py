@@ -8,7 +8,7 @@ from five import grok
 from silva.core.interfaces import IContainer
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
-from silva.ui.menu import SettingsMenuItem
+from silva.ui.menu import ContentMenuItem
 from zeam.form import silva as silvaforms
 from zope import schema, component
 from zope.interface import Interface
@@ -19,7 +19,7 @@ from Products.Silva.silvaxml import xmlexport
 from zExceptions import BadRequest
 
 
-class ExportMenu(SettingsMenuItem):
+class ExportMenu(ContentMenuItem):
     grok.context(IContainer)
     grok.order(60)
     name = _(u'Export')

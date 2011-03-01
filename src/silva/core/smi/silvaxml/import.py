@@ -10,14 +10,14 @@ from silva.core.conf import schema as silvaschema
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
 from silva.translations import translate as _
-from silva.ui.menu import SettingsMenuItem
+from silva.ui.menu import ContentMenuItem
 from zeam.form import silva as silvaforms
 from zeam.form.silva.form import ExtractedDecoratedAction
 from zope import schema
 from zope.interface import Interface
 
 
-class ImportMenu(SettingsMenuItem):
+class ImportMenu(ContentMenuItem):
     grok.context(IContainer)
     grok.order(61)
     name = _(u'Import')
