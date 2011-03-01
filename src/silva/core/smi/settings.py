@@ -10,7 +10,21 @@ from silva.core import interfaces
 from silva.core.smi.properties.metadata import MetadataFormGroup
 from silva.translations import translate as _
 
+import Acquisition
 from Products.Silva import mangle
+
+class AcquisitionMethod(Acquisition.Explicit):
+    """This class let you have an acquisition context on a method.
+    """
+    # for Formulamerde.
+    def __init__(self, parent, method_name):
+        self.parent = parent
+        self.method_name = method_name
+
+    def __call__(self, *args, **kwargs):
+        instance = self.parent.aq_inner
+        method = getattr(instance, self.method_name)
+        return method(*args, **kwargs)
 
 
 class SettingsMenu(SettingsMenuItem):
@@ -27,6 +41,12 @@ class TabSettings(silvaforms.SMIComposedForm):
     grok.name('silva.ui.settings')
     grok.require('silva.ManageSilvaContent')
     label = _("settings")
+
+    def get_wanted_quota_validator(self):
+        # for Formulamerde crap.
+        return AcquisitionMethod(self.context, 'validate_wanted_quota')
+
+    get_wanted_quota_validator__roles__ = None
 
 
 class ConvertToFolderAction(silvaforms.Action):

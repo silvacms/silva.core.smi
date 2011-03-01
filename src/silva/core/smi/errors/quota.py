@@ -4,26 +4,19 @@
 # $Id$
 
 from five import grok
-from silva.core.views import views as silvaviews
-from zope.traversing.browser import absoluteURL
+from megrok.chameleon.components import ChameleonPageTemplate
 
-from Acquisition import aq_parent
 from Products.Silva.mangle import Bytes
 from Products.Silva.Publication import OverQuotaException
+from silva.ui.rest.errors import ErrorREST
 
 
-class OverQuotaErrorPage(silvaviews.Page):
-    """ Page to render broken references errors.
-
-    It redirects to break references form if the user as the necessary rights to
-    break references.
+class OverQuotaError(ErrorREST):
+    """ Over quota error.
     """
     grok.context(OverQuotaException)
-    grok.name('error.html')
-    grok.template('error')
 
-    tab_name = 'tab_edit'
+    message_template = ChameleonPageTemplate('templates/quota.cpt')
 
     def update(self):
         self.exceeding_size = Bytes(self.context.error.args[0])
-        self.next_url = absoluteURL(aq_parent(self.context), self.request) + '/edit'
