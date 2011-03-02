@@ -21,7 +21,7 @@ class ImportMenu(ContentMenuItem):
     grok.context(IContainer)
     grok.order(61)
     name = _(u'Import')
-    action = 'import'
+    screen = 'import'
 
 
 class IImportFields(Interface):

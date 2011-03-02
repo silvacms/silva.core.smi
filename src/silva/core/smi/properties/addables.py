@@ -16,7 +16,7 @@ class AddablesMenu(SettingsMenuItem):
     grok.context(IContainer)
     grok.order(50)
     name = _(u'Addables')
-    action = 'addables'
+    screen = 'addables'
 
 
 @grok.provider(IContextSourceBinder)

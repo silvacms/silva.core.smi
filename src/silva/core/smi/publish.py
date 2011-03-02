@@ -14,7 +14,6 @@ from zeam.form.ztk.actions import EditAction
 from silva.translations import translate as _
 from Products.Silva.Versioning import VersioningError
 from silva.core.smi.widgets.zeamform import PublicationStatus
-from silva.core.smi.edit.content import Publish
 from silva.ui.menu import ContentMenuItem
 
 # TODO
@@ -28,7 +27,7 @@ class PublishTabMenu(ContentMenuItem):
     grok.context(silvainterfaces.IVersionedContent)
     grok.order(30)
     name = _('Publish')
-    action = 'publish'
+    screen = 'publish'
 
 
 class PublishTab(silvaforms.SMIComposedForm):
@@ -216,6 +215,25 @@ class RequestApprovalForm(silvaforms.SMISubForm):
             not self.context.is_version_approval_requested()
 
 
+class Publish(PublicationAction):
+
+    title = _('publish now')
+
+    def available(self, form):
+        return bool(
+            checkPermission('silva.ApproveSilvaContent', form.context) and
+            form.context.get_unapproved_version())
+
+    def execute(self, form, content, data):
+        try:
+            silvainterfaces.IPublicationWorkflow(content).approve()
+        except silvainterfaces.PublicationWorkflowError as e:
+            form.send_message(e.message, type='error')
+            return silvaforms.FAILURE
+        form.send_message(_("approved."), type='feedback')
+        return silvaforms.SUCCESS
+
+
 class Approve(PublicationAction):
 
     title = _('approve for future')
@@ -227,6 +245,7 @@ class Approve(PublicationAction):
 
     def execute(self, form, content, data):
         try:
+            # XXX approve here should take the publication datetime but doesnt !
             silvainterfaces.IPublicationWorkflow(content).approve()
         except silvainterfaces.PublicationWorkflowError as e:
             form.send_message(e.message, type='error')

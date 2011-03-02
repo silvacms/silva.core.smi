@@ -21,7 +21,7 @@ class CustomizationMenu(SettingsMenuItem):
     grok.context(ISilvaObject)
     grok.order(100)
     name = _(u'Customization')
-    action = 'customization'
+    screen = 'customization'
 
 
 class ManageCustomizeMarker(silvaforms.SMIComposedForm):

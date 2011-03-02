@@ -16,7 +16,7 @@ class PropertiesTabMenu(ContentMenuItem):
     grok.context(ISilvaObject)
     grok.order(20)
     name = _('Properties')
-    action = 'properties'
+    screen = 'properties'
 
 
 class PropertiesTab(silvaforms.SMIComposedForm):

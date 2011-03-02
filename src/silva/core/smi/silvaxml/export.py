@@ -23,7 +23,7 @@ class ExportMenu(ContentMenuItem):
     grok.context(IContainer)
     grok.order(60)
     name = _(u'Export')
-    action = 'export'
+    screen = 'export'
 
 
 @grok.provider(IContextSourceBinder)

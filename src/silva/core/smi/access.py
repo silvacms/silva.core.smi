@@ -28,7 +28,7 @@ class AccessMenu(SettingsMenuItem):
     grok.context(ISilvaObject)
     grok.order(10)
     name = _(u'Access')
-    action = 'access'
+    screen = 'access'
 
 
 class AccessTab(silvaforms.SMIComposedForm):

@@ -16,7 +16,7 @@ class PreviewMenu(ViewMenuItem):
     grok.context(ISilvaObject)
     grok.order(10)
     name = _('Preview')
-    action = 'preview'
+    screen = 'preview'
 
 
 class Preview(PageREST):

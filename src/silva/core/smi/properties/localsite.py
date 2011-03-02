@@ -18,7 +18,7 @@ class LocalSiteMenu(SettingsMenuItem):
     grok.context(IPublication)
     grok.order(100)
     name = _(u'Local site')
-    action = 'localsite'
+    screen = 'localsite'
 
 
 class ManageLocalSite(silvaforms.SMIForm):

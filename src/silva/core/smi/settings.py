@@ -31,7 +31,7 @@ class SettingsMenu(SettingsMenuItem):
     grok.context(interfaces.ISilvaObject)
     grok.order(10)
     name = _(u'Settings')
-    action = 'settings'
+    screen = 'settings'
 
 
 class TabSettings(silvaforms.SMIComposedForm):
