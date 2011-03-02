@@ -11,7 +11,6 @@ from Products.Silva import mangle
 from five import grok
 from grokcore.view.meta.views import default_view_name
 from infrae import rest
-from megrok import pagetemplate as pt
 from megrok.chameleon.components import ChameleonPageTemplate
 from silva.core.interfaces import ISilvaObject, IAuthorizationManager
 from silva.core.layout.interfaces import IMetadata
@@ -22,7 +21,6 @@ from silva.core.views import views as silvaviews
 from silva.core.views.absoluteurl import AbsoluteURL
 from silva.core.views.interfaces import IVirtualSite
 from silva.translations import translate as _
-from zeam.form import silva as silvaforms
 from zope.cachedescriptors.property import CachedProperty
 from zope.component import getUtility, getMultiAdapter
 from zope.i18n import translate
@@ -179,39 +177,6 @@ class SMITab(SMIView):
     grok.baseclass()
 
 
-# For the moment tabs are not registered. Dummy tabs are used instead
-# to register components to, they will become the real tab when we
-# will switch from Silva views to that system completly.
-
-
-class DummyPropertiesTab(SMITab):
-    grok.implements(interfaces.IPropertiesTab)
-    grok.template('smitab')
-    grok.name('tab_metadata_extra')
-    tab_name = 'tab_metadata'
-
-
-class DummyPublishTab(SMITab):
-    grok.implements(interfaces.IPublishTab)
-    grok.template('smitab')
-    grok.name('tab_publish_extra')
-    tab_name = 'tab_status'
-
-
-class DummyPreviewTab(SMITab):
-    grok.implements(interfaces.IPreviewTab)
-    grok.template('smitab')
-    grok.name('tab_preview_extra')
-    tab_name = 'tab_preview_frame_top'
-
-
-class DummyEditTab(SMITab):
-    grok.implements(interfaces.IEditTab)
-    grok.template('smitab')
-    grok.name('tab_edit_extra')
-    tab_name = 'tab_edit'
-
-
 class SMIMiddleGroundManager(silvaviews.ViewletManager):
     """Middleground macro.
     """
@@ -289,26 +254,6 @@ class SMIMiddleGroundRemoteButton(silvaviews.Viewlet):
         return True
 
 
-class SMIMiddleGroundActionForm(silvaforms.SMIViewletForm):
-    grok.baseclass()
-    grok.require('silva.ChangeSilvaContent')
-    grok.implements(interfaces.ISMIExecutorButton)
-    grok.viewletmanager(SMIMiddleGroundManager)
-
-    postOnly = True
-
-    @property
-    def tab_name(self):
-        return getattr(self.view, 'tab_name', None)
-
-    def available(self):
-        return True
-
-
-class SMIMiddleGroundActionFormTemplate(pt.PageTemplate):
-    grok.view(SMIMiddleGroundActionForm)
-
-
 class SMIPortletManager(silvaviews.ViewletManager):
     """Third SMI column manager.
     """
@@ -345,13 +290,3 @@ class SMIMessages(silvaviews.ContentProvider):
             return 'fixed-alert'
         return 'fixed-feedback'
 
-
-class SMIFeedback(rest.REST):
-    grok.name('smi-feedback')
-    grok.context(ISilvaObject)
-
-    def GET(self):
-        messages = getMultiAdapter(
-            (self.context, self.request, self), name='smimessages')
-        messages.update()
-        return self.json_response({'messages': messages.render()})
