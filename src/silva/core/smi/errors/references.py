@@ -9,11 +9,9 @@ from five import grok
 from zope.component import getUtility
 from zope.traversing.browser import absoluteURL
 
-from infrae.layout import layout
 from silva.core.interfaces import ISilvaObject
 from silva.core.references.interfaces import IReferenceService
 from silva.core.references.reference import BrokenReferenceError
-from silva.core.smi.simple import ISimpleSMILayout
 from silva.core.smi.interfaces import ISMILayer
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
@@ -74,7 +72,6 @@ class BreakReferencesForm(silvaforms.SMIForm):
     grok.context(ISilvaObject)
     grok.name('tab_reference_error')
     grok.template('break_references')
-    layout(ISimpleSMILayout)
 
     label = _(u"Break references?")
     fields = Fields(RedirectField('redirect_to'))

@@ -1,3 +1,0 @@
-<tal:tab>
-  <tal:replace tal:replace="structure provider:smimiddlegroundmanager" />
-</tal:tab>

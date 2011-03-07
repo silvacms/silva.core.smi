@@ -1,6 +1,0 @@
-<tal:block>
-  <tal:pathbar tal:content="structure provider:smipathbar" />
-  <tal:menu tal:content="structure provider:smimenutabs" />
-  <div class="flowbar">
-  </div>
-</tal:block>
