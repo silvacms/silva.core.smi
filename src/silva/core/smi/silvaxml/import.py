@@ -12,7 +12,6 @@ from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenuItem
 from zeam.form import silva as silvaforms
-from zeam.form.silva.form import ExtractedDecoratedAction
 from zope import schema
 from zope.interface import Interface
 
@@ -67,7 +66,7 @@ class ImportForm(silvaforms.SMIForm):
     @silvaforms.action(
         _(u"import"),
         description=_(u"upload and import file"),
-        factory=ExtractedDecoratedAction)
+        factory=silvaforms.ExtractedDecoratedAction)
     def import_file(self, data):
         importer = IZipFileImporter(self.context)
         try:

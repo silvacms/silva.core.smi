@@ -6,8 +6,6 @@ from zope.interface import Interface
 from zope import schema
 
 from zeam.form import silva as silvaforms
-from zeam.form.silva.actions import EditAction, CancelEditAction
-from zeam.form.silva.form import SilvaDataManager
 
 from silva.core import interfaces as silvainterfaces
 from silva.core.smi import interfaces
@@ -34,7 +32,7 @@ class ImageEditForm(silvaforms.SMISubForm):
     grok.view(ImageEditTab)
     grok.order(10)
 
-    dataManager = SilvaDataManager
+    dataManager = silvaforms.SilvaDataManager
     ignoreContent = False
 
     label = _('characterization')
@@ -46,7 +44,7 @@ class ImageEditForm(silvaforms.SMISubForm):
     #fields['image'].required = False
     #fields['image'].ignoreContent = True
 
-    actions  = silvaforms.Actions(EditAction(), CancelEditAction())
+    actions  = silvaforms.Actions(silvaforms.EditAction(), silvaforms.CancelEditAction())
 
 image_formats = SimpleVocabulary([SimpleTerm(title=u'jpg', value='JPEG'),
                                   SimpleTerm(title=u'png', value='PNG'),
@@ -82,7 +80,7 @@ class FormatAndScalingForm(silvaforms.SMISubForm):
     grok.order(20)
 
     ignoreContent = False
-    dataManager = SilvaDataManager
+    dataManager = silvaforms.SilvaDataManager
 
     label = _('format and scaling')
     fields = silvaforms.Fields(IFormatAndScalingFields)
