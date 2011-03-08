@@ -1,112 +1,65 @@
-<form method="post" name="#"
-      i18n:domain="silva"
+<form class="form-content" name="#"
       tal:attributes="name view.prefix"
-      tal:condition="content and view.set_names">
-  <h4>
-    <tal:block content="view.title" />
-    &#xab;<span tal:replace="content.get_title()" />&#xbb;
-  </h4>
-  <table>
-    <tbody>
-      <tal:block repeat="set_name view.set_names">
-        <tal:block define="set_errors path:view/errors/?set_name | nothing">
-          <tr class="top-controls">
-            <td colspan="3">
-              <h5 tal:define="set view.get_set_title(set_name);
-                              label set == 'silva-extra' and 'silva-meta' or set;">
-                <tal:i18n i18n:translate="">metadata set</tal:i18n> &#xab;<tal:block replace="label" />&#xbb;
-              </h5>
-            </td>
-          </tr>
-          <tr>
-            <th i18n:translate="">
-              element
-            </th>
-            <th i18n:translate="">
-              content
-            </th>
-            <th i18n:translate="">
-              acquired content
-            </th>
-          </tr>
-          <tal:block repeat="element_name view.get_element_names(set_name)">
-            <tal:block define="element_error path:view/errors/?set_name/?element_name | nothing;
-                               iterate repeat['element_name'].odd;
-                               identifier (set_name, element_name)">
-              <tal:block
-                 condition="view.is_element_hidden(*identifier)"
-                 replace="structure python: view.render_element(*identifier)"
-                 />
-              <tr tal:condition="not view.is_element_hidden(*identifier)"
-                  tal:attributes="class element_error and 'alert' or iterate and 'odd' or 'even';">
-                <td class="designator">
-                  <span class="matchlabel"
-                        tal:omit-tag="view.is_element_editable(*identifier)">
-                    <label tal:content="view.get_element_title(*identifier)"
-                           tal:attributes="for view.html_id(*identifier)"
-                           tal:omit-tag="python:not (view.is_element_editable(*identifier) and view.html_id(*identifier))"
-                           i18n:translate="">
-                      Element name
-                    </label><span class="required"
-                                  tal:condition="view.is_element_required(*identifier)"> * </span>
-                  </span>
-                  <p tal:content="structure view.get_element_description(*identifier)"
-                     i18n:translate="">
-                    Element description
-                  </p>
-                </td>
-                <td class="field">
-                  <span class="error"
-                        tal:condition="element_error"
-                        tal:content="element_error">
-                    Error message
-                  </span>
-                  <tal:input
-                     tal:condition="view.is_element_editable(*identifier) or not view.is_element_acquired(*identifier)"
-                     tal:content="structure view.render_element(*identifier)">
-                    element edit widget
-                  </tal:input>
-                </td>
-                <td>
-                  <tal:block
-                     condition="view.is_element_acquired(*identifier)"
-                     replace="structure view.render_element_view(*identifier)" />
-                  <sup tal:condition="view.is_element_acquireable(*identifier)">
-                    &#8224;
-                  </sup>
-                  <tal:block condition="not: view.is_element_acquired(*identifier)">
-                    &nbsp;
-                  </tal:block>
-                </td>
-              </tr>
-            </tal:block>
-          </tal:block>
-        </tal:block>
-        <tr tal:condition="set_name != 'silva-content'">
-          <th i18n:translate="">
-            * required
-          </th>
-          <th>
-            <tal:if tal:condition="set_name == 'silva-extra'"
-                    i18n:translate="">
-              day / month / year &nbsp;(23:59)
-            </tal:if>&nbsp;
-          </th>
-          <th i18n:translate="">
-            &#8224; acquireable
-          </th>
-        </tr>
-        <tr class="controls" tal:condition="view.edit">
-          <td colspan="3">
-            <div class="form-controls"
-                 tal:condition="view.actionWidgets">
-              <tal:action tal:repeat="widget view.actionWidgets">
-                <tal:widget tal:content="structure widget.render()" />
-              </tal:action>
-            </div>
-          </td>
-        </tr>
-      </tal:block>
-    </tbody>
-  </table>
+      tal:condition="view.set_names"
+      i18n:domain="silva">
+  <div class="form-head">
+    <h4 tal:content="view.label">
+    </h4>
+  </div>
+  <div class="form-body" tal:repeat="set_name view.set_names">
+    <h5 tal:define="set view.get_set_title(set_name);
+                    label set == 'silva-extra' and 'silva-meta' or set;">
+      <tal:i18n i18n:translate="">metadata set</tal:i18n> &#xab;<tal:block replace="label" />&#xbb;
+    </h5>
+    <tal:section tal:repeat="element_name view.get_element_names(set_name)">
+      <div class="form-section ${error and 'form-error' or None}"
+           tal:define="error path:view/errors/?set_name/?element_name | nothing;
+                       identifier (set_name, element_name)">
+        <tal:hidden
+           tal:condition="view.is_element_hidden(*identifier)"
+           tal:replace="structure python: view.render_element(*identifier)" />
+        <tal:field tal:condition="not view.is_element_hidden(*identifier)">
+          <div class="form-label">
+            <label tal:content="view.get_element_title(*identifier)"
+                   tal:attributes="for view.html_id(*identifier)"
+                   tal:omit-tag="python:not (view.is_element_editable(*identifier) and view.html_id(*identifier))">
+              Element name
+            </label>
+            <span class="form-required"
+                  tal:condition="view.is_element_required(*identifier)"
+                  i18n:translate="">
+              required
+            </span>
+            <p tal:content="structure view.get_element_description(*identifier)">
+              Element description
+            </p>
+          </div>
+          <div class="form-field">
+            <tal:input
+               tal:condition="view.is_element_editable(*identifier) or not view.is_element_acquired(*identifier)"
+               tal:content="structure view.render_element(*identifier)">
+              Widget
+            </tal:input>
+            <tal:acquired
+               tal:condition="view.is_element_acquired(*identifier)"
+               tal:replace="structure view.render_element_view(*identifier)" />
+            <sup tal:condition="view.is_element_acquireable(*identifier)">
+              &#8224;
+            </sup>
+          </div>
+          <div class="form-error-detail"
+               tal:condition="error"
+               tal:content="error">
+            Error message
+          </div>
+        </tal:field>
+      </div>
+    </tal:section>
+  </div>
+  <div class="form-footer">
+    <div class="form-controls" tal:condition="view.actionWidgets">
+      <input tal:repeat="widget view.actionWidgets"
+             tal:replace="structure widget.render()" />
+    </div>
+  </div>
 </form>

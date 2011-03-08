@@ -34,7 +34,6 @@ class MetadataFormGroup(silvaforms.SMISubFormGroup):
     grok.order(10)
     # metadata category filter
     category = ''
-    title = _('properties of')
 
 
 class BindingCache(object):
@@ -63,7 +62,7 @@ class MetadataForm(silvaforms.SMISubForm):
     grok.template('metadataform')
     grok.require('zope2.ManageProperties')
 
-    title = ''
+    label = _('Content properties')
 
     @property
     def edit(self):
@@ -72,16 +71,9 @@ class MetadataForm(silvaforms.SMISubForm):
     def available(self):
         return False
 
-    def default_namespace(self):
-        parent = super(MetadataForm, self).default_namespace()
-        parent['content'] = self.getContent()
-        return parent
-
     def update(self):
         if not self.available():
             return
-        if not self.title:
-            self.title = self.parent.title
         self.category = self.parent.category
         self.metadata_service = component.getUtility(IMetadataService)
         self.binding = self.metadata_service.getMetadata(self.getContent())
@@ -222,7 +214,7 @@ class PreviewableMetadataForm(MetadataEditForm):
     grok.context(IVersionedContent)
     grok.view(MetadataFormGroup)
     grok.order(20)
-    title = _('properties for approved version of')
+    label = _('properties for approved version of')
 
     def getContent(self):
         return self.context.get_previewable()
@@ -236,7 +228,7 @@ class ViewableMetadataForm(MetadataReadOnlyForm):
     """
     grok.context(IVersionedContent)
     grok.order(30)
-    title = _('properties for public version of')
+    label = _('properties for public version of')
 
     def getContent(self):
         return self.context.get_viewable()
@@ -250,7 +242,7 @@ class LastClosedMetadataForm(MetadataReadOnlyForm):
     """
     grok.context(IVersionedContent)
     grok.order(30)
-    title = _('properties for closed version of')
+    label = _('properties for closed version of')
 
     def getContent(self):
         return self.context.get_last_closed()
