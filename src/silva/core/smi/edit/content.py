@@ -15,6 +15,7 @@ class PublicationMenuItem(ActionMenuItem):
     """
     grok.baseclass()
     grok.context(IVersionedContent)
+    grok.require('silva.ChangeSilvaContent')
 
     def can_approve_content(self):
         sm = getSecurityManager()
