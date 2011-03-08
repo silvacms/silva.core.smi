@@ -25,6 +25,7 @@ from silva.ui.menu import ContentMenuItem
 
 class PublishTabMenu(ContentMenuItem):
     grok.context(silvainterfaces.IVersionedContent)
+    grok.require('silva.ChangeSilvaContent')
     grok.order(30)
     name = _('Publish')
     screen = 'publish'

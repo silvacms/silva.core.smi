@@ -27,6 +27,7 @@ USER_STORE_KEY = 'lookup user'
 class AccessMenu(SettingsMenuItem):
     grok.context(ISilvaObject)
     grok.order(10)
+    grok.require('silva.ChangeSilvaAccess')
     name = _(u'Access')
     screen = 'access'
 

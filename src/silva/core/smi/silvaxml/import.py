@@ -7,6 +7,7 @@ import zipfile
 
 from five import grok
 from silva.core.conf import schema as silvaschema
+from silva.core.smi.silvaxml import XMLMenu
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
 from silva.translations import translate as _
@@ -17,8 +18,9 @@ from zope.interface import Interface
 
 
 class ImportMenu(ContentMenuItem):
-    grok.context(IContainer)
-    grok.order(61)
+    grok.context(XMLMenu)
+    grok.order(10)
+    grok.require('silva.ManageSilvaContentSettings')
     name = _(u'Import')
     screen = 'import'
 
@@ -64,7 +66,7 @@ class ImportForm(silvaforms.SMIForm):
     actions = silvaforms.Actions(silvaforms.CancelAction())
 
     @silvaforms.action(
-        _(u"import"),
+        _(u"Import"),
         description=_(u"upload and import file"),
         factory=silvaforms.ExtractedDecoratedAction)
     def import_file(self, data):

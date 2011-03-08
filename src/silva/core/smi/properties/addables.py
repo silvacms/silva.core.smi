@@ -15,6 +15,7 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 class AddablesMenu(SettingsMenuItem):
     grok.context(IContainer)
     grok.order(50)
+    grok.require('silva.ManageSilvaContentSettings')
     name = _(u'Addables')
     screen = 'addables'
 

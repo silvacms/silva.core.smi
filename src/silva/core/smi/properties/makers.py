@@ -20,6 +20,7 @@ from zeam.form.silva.interfaces import IRemoverAction
 class CustomizationMenu(SettingsMenuItem):
     grok.context(ISilvaObject)
     grok.order(100)
+    grok.require('silva.ManageSilvaContent')
     name = _(u'Customization')
     screen = 'customization'
 

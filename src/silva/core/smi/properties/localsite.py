@@ -17,6 +17,7 @@ from silva.core.interfaces import IPublication, IRoot, ISiteManager
 class LocalSiteMenu(SettingsMenuItem):
     grok.context(IPublication)
     grok.order(100)
+    grok.require('zope2.ViewManagementScreens')
     name = _(u'Local site')
     screen = 'localsite'
 

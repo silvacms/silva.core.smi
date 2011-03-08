@@ -8,6 +8,7 @@ from five import grok
 from silva.core.interfaces import IContainer
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
+from silva.core.smi.silvaxml import XMLMenu
 from silva.ui.menu import ContentMenuItem
 from zeam.form import silva as silvaforms
 from zope import schema, component
@@ -20,8 +21,9 @@ from zExceptions import BadRequest
 
 
 class ExportMenu(ContentMenuItem):
-    grok.context(IContainer)
-    grok.order(60)
+    grok.context(XMLMenu)
+    grok.order(20)
+    grok.require('silva.ManageSilvaContentSettings')
     name = _(u'Export')
     screen = 'export'
 
@@ -65,19 +67,19 @@ class ExportTab(silvaforms.SMIForm):
     grok.require('silva.ReadSilvaContent')
     grok.name('silva.ui.export')
 
-    label = _(u"export")
+    label = _(u"Export")
 
     fields = silvaforms.Fields(IExportFields)
     fields['export_format'].mode = 'radio'
     fields['export_format'].defaultValue = default_format
+    actions = silvaforms.Actions(silvaforms.CancelAction())
 
     postOnly = False
     ignoreContent=True
     ignoreRequest=False
 
-    @silvaforms.action(title=_(u"export"),
-        description=_(u"access key: alt-z"),
-        accesskey=u"z")
+    @silvaforms.action(title=_(u"Export"),
+        description=_(u"export as an zip archive"))
     def export(self):
         data, errors = self.extractData()
         if len(errors) == 0:

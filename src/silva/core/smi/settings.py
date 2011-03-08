@@ -30,6 +30,7 @@ class AcquisitionMethod(Acquisition.Explicit):
 class SettingsMenu(SettingsMenuItem):
     grok.context(interfaces.ISilvaObject)
     grok.order(10)
+    grok.require('silva.ManageSilvaContent')
     name = _(u'Settings')
     screen = 'settings'
 
