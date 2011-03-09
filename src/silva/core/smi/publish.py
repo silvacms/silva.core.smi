@@ -7,14 +7,15 @@ from DateTime import DateTime
 from datetime import datetime
 from AccessControl.security import checkPermission
 
-from silva.core import interfaces as silvainterfaces
-from zeam.form import silva as silvaforms
-from zeam.form import autofields
-from zeam.form.ztk.actions import EditAction
-from silva.translations import translate as _
 from Products.Silva.Versioning import VersioningError
+from silva.core import interfaces as silvainterfaces
 from silva.core.smi.widgets.zeamform import PublicationStatus
+from silva.translations import translate as _
 from silva.ui.menu import ContentMenuItem
+from zeam.form import autofields
+from zeam.form import silva as silvaforms
+from zeam.form.silva.interfaces import IRemoverAction
+from zeam.form.ztk.actions import EditAction
 
 # TODO
 # - messages
@@ -38,7 +39,7 @@ class PublishTab(silvaforms.SMIComposedForm):
     grok.require('silva.ChangeSilvaContent')
     grok.name('silva.ui.publish')
 
-    label = _('properties')
+    label = _('Properties')
 
 
 class IPublicationFields(Interface):
@@ -48,9 +49,9 @@ class IPublicationFields(Interface):
 
 class IPublicationInformation(Interface):
     publication_datetime = schema.Datetime(
-        title=_('publication time'), required=True)
+        title=_('Publication time'), required=True)
     expiration_datetime = schema.Datetime(
-        title=_('expiration time'),
+        title=_('Expiration time'),
         description=_('Empty indicates no expiration.'),
         required=False)
 
@@ -118,7 +119,7 @@ class PublicationAction(EditAction):
 
 class RequestApprovalAction(PublicationAction):
 
-    title = _('request approval')
+    title = _('Request approval')
 
     def execute(self, form, content, data):
         message = data.getWithDefault('message')
@@ -139,7 +140,7 @@ class RequestApprovalForm(silvaforms.SMISubForm):
     fields = autofields.FieldsCollector(IPublicationFields)
     actions = silvaforms.Actions(RequestApprovalAction())
 
-    label = _('request approval for new version')
+    label = _('Request approval for new version')
 
     def available(self):
         """ This form do not show if there is no unapproved version or if
@@ -153,7 +154,7 @@ class RequestApprovalForm(silvaforms.SMISubForm):
 
 class Publish(PublicationAction):
 
-    title = _('publish now')
+    title = _('Publish now')
 
     def available(self, form):
         return bool(
@@ -172,7 +173,7 @@ class Publish(PublicationAction):
 
 class Approve(PublicationAction):
 
-    title = _('approve for future')
+    title = _('Approve for future')
 
     def available(self, form):
         return bool(
@@ -199,7 +200,7 @@ class PublicationForm(silvaforms.SMISubForm):
         Approve(identifier='approve'),
         Publish(identifier='publish-now'))
 
-    label = _('publish new version')
+    label = _('Publish new version')
 
     def available(self):
         return bool(
@@ -251,10 +252,8 @@ class WithdrawApprovalRequestForm(PendingApprovalRequestForm):
             return False
         return super(WithdrawApprovalRequestForm, self).available()
 
-    @silvaforms.action(_('withdraw approval request'),
-        identifier='withdraw',
-        description=_('access key: alt-r'),
-        accesskey='r')
+    @silvaforms.action(_('Withdraw approval request'),
+        identifier='withdraw')
     def withdraw(self):
         data, errors = self.extractData()
         if errors:
@@ -280,16 +279,14 @@ class RejectApprovalRequestForm(PendingApprovalRequestForm):
     """ Reject approval from an author by and editor.
     """
     fields = silvaforms.Fields(IRejectionMessage)
-    label = _('reject request')
+    label = _('Reject request')
 
     def available(self):
         return checkPermission('silva.ApproveSilvaContent', self.context) \
             and super(RejectApprovalRequestForm, self).available()
 
-    @silvaforms.action(_('reject approval request'),
-        identifier='reject',
-        description=_('access key: alt-j'),
-        accesskey='j')
+    @silvaforms.action(_('Reject approval request'),
+        identifier='reject')
     def reject(self):
         data, errors = self.extractData()
         if errors:
@@ -312,7 +309,7 @@ class ManualCloseForm(silvaforms.SMISubForm):
     grok.view(PublishTab)
     grok.order(30)
 
-    label = _('manual close')
+    label = _('Manual close')
     description = _('If necessary, the published version of this '
         'content can be manually closed (taken offline). '
         'It will also be removed from the public index.')
@@ -321,10 +318,9 @@ class ManualCloseForm(silvaforms.SMISubForm):
         return checkPermission('silva.ApproveSilvaContent', self.context) and \
             self.context.get_public_version() is not None
 
-    @silvaforms.action(_('close published version'),
+    @silvaforms.action(_('Close published version'),
         identifier='close',
-        description=_('access key: alt-c'),
-        accesskey='c')
+        implements=IRemoverAction)
     def close(self):
         try:
             silvainterfaces.IPublicationWorkflow(self.context).close()
@@ -349,11 +345,11 @@ def sort_versions(a, b):
 
 
 class IPublicationStatusInfo(Interface):
-    modification_time = schema.Datetime(title=_('modification time'))
-    publication_time = schema.Datetime(title=_('publication time'))
-    expiration_time = schema.Datetime(title=_('expiration time'))
-    last_author = schema.TextLine(title=_('last author'))
-    version_status = PublicationStatus(title=_('version status'))
+    modification_time = schema.Datetime(title=_('Modification time'))
+    publication_time = schema.Datetime(title=_('Publication time'))
+    expiration_time = schema.Datetime(title=_('Expiration time'))
+    last_author = schema.TextLine(title=_('Last author'))
+    version_status = PublicationStatus(title=_('Version status'))
 
 
 class PublicationStatusInfo(grok.Adapter):
@@ -408,9 +404,9 @@ class PublicationStatusInfo(grok.Adapter):
 class CopyForEditing(silvaforms.Action):
     """ copy a version to use as new editable version
     """
-    title = _('copy for editing')
+    title = _('Copy for editing')
     description = _('create a new editable version of '
-                    'the selected old one: alt-f')
+                    'the selected old one')
     accesskey = 'f'
 
     def __call__(self, form, content, line):
@@ -427,7 +423,8 @@ class CopyForEditing(silvaforms.Action):
 class DeleteVersion(silvaforms.Action):
     """ permanently remove version
     """
-    title = _("delete")
+    grok.implements(IRemoverAction)
+    title = _("Delete")
     description = _("there's no undo")
 
     def __call__(self, form, content, line):
@@ -456,7 +453,7 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     grok.view(PublishTab)
     grok.order(30)
 
-    label = _('manage versions')
+    label = _(u"Manage versions")
     mode = silvaforms.DISPLAY
 
     ignoreRequest = True
@@ -466,10 +463,6 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     tableActions = silvaforms.TableActions(
         DeleteVersion(identifier='delete'),
         CopyForEditing(identifier='copy'))
-
-    def update(self):
-        self.label = _(u'manage versions of «${title}»', mapping={'title':
-            self.context.get_title_or_id()})
 
     def getItems(self):
         version_manager = silvainterfaces.IVersionManagement(self.context)
