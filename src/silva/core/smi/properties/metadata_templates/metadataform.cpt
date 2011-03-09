@@ -6,60 +6,66 @@
     <h4 tal:content="view.label">
     </h4>
   </div>
-  <div class="form-body" tal:repeat="set_name view.set_names">
-    <h5 tal:define="set view.get_set_title(set_name);
-                    label set == 'silva-extra' and 'silva-meta' or set;">
-      <tal:i18n i18n:translate="">metadata set</tal:i18n> &#xab;<tal:block replace="label" />&#xbb;
-    </h5>
-    <tal:section tal:repeat="element_name view.get_element_names(set_name)">
-      <div class="form-section ${error and 'form-error' or None}"
-           tal:define="error path:view/errors/?set_name/?element_name | nothing;
-                       identifier (set_name, element_name)">
-        <tal:hidden
-           tal:condition="view.is_element_hidden(*identifier)"
-           tal:replace="structure python: view.render_element(*identifier)" />
-        <tal:field tal:condition="not view.is_element_hidden(*identifier)">
-          <div class="form-label">
-            <label tal:content="view.get_element_title(*identifier)"
-                   tal:attributes="for view.html_id(*identifier)"
-                   tal:omit-tag="python:not (view.is_element_editable(*identifier) and view.html_id(*identifier))">
-              Element name
-            </label>
-            <span class="form-required"
-                  tal:condition="view.is_element_required(*identifier)"
-                  i18n:translate="">
-              required
-            </span>
-            <p tal:content="structure view.get_element_description(*identifier)">
-              Element description
-            </p>
-          </div>
-          <div class="form-field">
-            <tal:input
-               tal:condition="view.is_element_editable(*identifier) or not view.is_element_acquired(*identifier)"
-               tal:content="structure view.render_element(*identifier)">
-              Widget
-            </tal:input>
-            <tal:acquired
-               tal:condition="view.is_element_acquired(*identifier)"
-               tal:replace="structure view.render_element_view(*identifier)" />
-            <sup tal:condition="view.is_element_acquireable(*identifier)">
-              &#8224;
-            </sup>
-          </div>
-          <div class="form-error-detail"
-               tal:condition="error"
-               tal:content="error">
-            Error message
-          </div>
-        </tal:field>
-      </div>
-    </tal:section>
-  </div>
-  <div class="form-footer">
-    <div class="form-controls" tal:condition="view.actionWidgets">
-      <input tal:repeat="widget view.actionWidgets"
-             tal:replace="structure widget.render()" />
+  <tal:sets tal:repeat="set_name view.set_names">
+    <div class="form-head">
+      <h5 tal:define="set view.get_set_title(set_name);
+                      label set == 'silva-extra' and 'silva-meta' or set;">
+        <tal:i18n i18n:translate="">metadata set</tal:i18n> &#xab;<tal:block tal:replace="label" />&#xbb;
+      </h5>
     </div>
-  </div>
+    <div class="form-body">
+      <tal:section tal:repeat="element_name view.get_element_names(set_name)">
+        <div class="form-section ${error and 'form-error' or None}"
+             tal:define="error path:view/errors/?set_name/?element_name | nothing;
+                         identifier (set_name, element_name)">
+          <tal:hidden
+             tal:condition="view.is_element_hidden(*identifier)"
+             tal:replace="structure python: view.render_element(*identifier)" />
+          <tal:field tal:condition="not view.is_element_hidden(*identifier)">
+            <div class="form-label">
+              <label tal:content="view.get_element_title(*identifier)"
+                     tal:attributes="for view.html_id(*identifier)"
+                     tal:omit-tag="python:not (view.is_element_editable(*identifier) and view.html_id(*identifier))">
+                Element name
+              </label>
+              <span class="form-required"
+                    tal:condition="view.is_element_required(*identifier)"
+                    i18n:translate="">
+                required
+              </span>
+              <span class="form-acquirable"
+                    tal:condition="view.is_element_acquireable(*identifier)">
+                acquirable
+              </span>
+              <p tal:content="structure view.get_element_description(*identifier)">
+                Element description
+              </p>
+            </div>
+            <div class="form-field">
+              <tal:input
+                 tal:condition="view.is_element_editable(*identifier) or not view.is_element_acquired(*identifier)"
+                 tal:content="structure view.render_element(*identifier)">
+                Widget
+              </tal:input>
+              <p class="form-acquired" tal:condition="view.is_element_acquired(*identifier)">
+                <span class="form-acquired-label">Acquired Value:</span>
+                <tal:value tal:replace="structure view.render_element_view(*identifier)" />
+              </p>
+            </div>
+            <div class="form-error-detail"
+                 tal:condition="error"
+                 tal:content="error">
+              Error message
+            </div>
+          </tal:field>
+        </div>
+      </tal:section>
+    </div>
+    <div class="form-footer">
+      <div class="form-controls" tal:condition="view.actionWidgets">
+        <input tal:repeat="widget view.actionWidgets"
+               tal:replace="structure widget.render()" />
+      </div>
+    </div>
+  </tal:sets>
 </form>
