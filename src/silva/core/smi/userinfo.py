@@ -6,7 +6,7 @@
 from AccessControl import getSecurityManager
 
 from five import grok
-from silva.core.interfaces import ISilvaObject
+from silva.core.interfaces import ISilvaObject, IEditableMember
 from silva.core.interfaces.adapters import ILanguageProvider
 from silva.core.services.interfaces import IMemberService
 from silva.translations import translate as _
@@ -41,20 +41,20 @@ def language_source(context):
 
 class IUserInfo(interface.Interface):
     userid = schema.TextLine(
-        title=_(u"user identifier"),
+        title=_(u"User identifier"),
         description=_(
             u"identifier used to authenticate"),
         required=False)
     fullname = schema.TextLine(
-        title=_(u"fullname"),
+        title=_(u"Fullname"),
         description=_(u"user full name"),
         required=True)
     email = RFC822MailAddress(
-        title=_(u"email address"),
+        title=_(u"Email address"),
         description=_(u"contact email address"),
         required=True)
     language = schema.Choice(
-        title=_(u"preferred language"),
+        title=_(u"Preferred language"),
         description=_(u"language to use the for Silva interface"),
         source=language_source,
         required=False)
@@ -75,16 +75,17 @@ class UserDataManager(silvaforms.ObjectDataManager):
 
     def set(self, key, value):
         if key in ('email', 'fullname'):
-            return getattr(self.content, 'set_' + key)(value)
+            if IEditableMember.providedBy(self.content):
+                return getattr(self.content, 'set_' + key)(value)
         if key == 'language':
             return self.language.setPreferredLanguage(value)
 
 
 class UserInfo(silvaforms.RESTPopupForm):
     grok.context(ISilvaObject)
-    grok.name('userinfo')
+    grok.name('silva.core.smi.userpreferences')
 
-    label = _(u"user settings")
+    label = _(u"User preferences")
     fields = silvaforms.Fields(IUserInfo)
     fields['userid'].mode = silvaforms.DISPLAY
     ignoreContent = False
@@ -92,7 +93,13 @@ class UserInfo(silvaforms.RESTPopupForm):
         silvaforms.EditAction(),
         silvaforms.CancelAction())
 
-    def getContentData(self):
+    def update(self):
         service = getUtility(IMemberService)
         member = service.get_member(getSecurityManager().getUser().getId())
-        return UserDataManager(member, self.request)
+        if not IEditableMember.providedBy(member):
+            self.fields['fullname'].mode = silvaforms.DISPLAY
+            self.fields['email'].mode = silvaforms.DISPLAY
+        self.user = UserDataManager(member, self.request)
+
+    def getContentData(self):
+        return self.user
