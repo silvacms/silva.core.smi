@@ -22,7 +22,7 @@ class ImageEditTab(silvaforms.SMIComposedForm):
     grok.name('silva.ui.content')
     grok.require('silva.ChangeSilvaContent')
 
-    label = _('edit')
+    label = _('Edit')
 
 
 class ImageEditForm(silvaforms.SMISubForm):
