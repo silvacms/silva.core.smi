@@ -214,7 +214,7 @@ class PreviewableMetadataForm(MetadataEditForm):
     grok.context(IVersionedContent)
     grok.view(MetadataFormGroup)
     grok.order(20)
-    label = _('properties for approved version of')
+    label = _('Content properties for the approved version')
 
     def getContent(self):
         return self.context.get_previewable()
@@ -228,7 +228,7 @@ class ViewableMetadataForm(MetadataReadOnlyForm):
     """
     grok.context(IVersionedContent)
     grok.order(30)
-    label = _('properties for public version of')
+    label = _('Content properties for the public version')
 
     def getContent(self):
         return self.context.get_viewable()
@@ -242,7 +242,7 @@ class LastClosedMetadataForm(MetadataReadOnlyForm):
     """
     grok.context(IVersionedContent)
     grok.order(30)
-    label = _('properties for closed version of')
+    label = _('Content properties for the last closed version')
 
     def getContent(self):
         return self.context.get_last_closed()
