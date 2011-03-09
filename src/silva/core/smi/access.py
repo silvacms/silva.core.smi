@@ -39,7 +39,7 @@ class AccessTab(silvaforms.SMIComposedForm):
     grok.name('silva.ui.access')
     grok.require('silva.ChangeSilvaAccess')
 
-    label = _(u"manage access to content")
+    label = _(u"Manage access to content")
     description = _(u"This screen lets you authorize or revoke access "
                     u"to this item and all content it contains.")
 
@@ -47,7 +47,7 @@ class AccessTab(silvaforms.SMIComposedForm):
 class LookupUserPopupAction(silvaforms.PopupAction):
     title = _(u"lookup users...")
     description = _(u"search for users to assign them roles: alt-l")
-    action = 'smi-lookupuser'
+    action = 'silva.core.smi.lookupuser'
     accesskey = u'l'
 
 
@@ -64,7 +64,7 @@ class LookupUserAction(silvaforms.Action):
     grok.implements(IRESTCloseOnSuccessAction, IRESTRefreshAction)
     refresh = 'form-userrole'
 
-    title = _(u"lookup user")
+    title = _(u"Lookup user")
 
     def __call__(self, form):
         data, errors = form.extractData()
@@ -108,10 +108,10 @@ class LookupUserForm(silvaforms.RESTPopupForm):
     """Form to manage default permission needed to see the current
     content.
     """
-    grok.name('smi-lookupuser')
+    grok.name('silva.core.smi.lookupuser')
     grok.context(ISilvaObject)
 
-    label = _(u"lookup users")
+    label = _(u"Lookup users")
     description = _(u"Search for users to assign them roles. Enter as least "
                     u"two characters. Looukup entire "
                     u"names to limit the number of results.")
