@@ -13,6 +13,7 @@ from silva.translations import translate as _
 import Acquisition
 from Products.Silva import mangle
 
+
 class AcquisitionMethod(Acquisition.Explicit):
     """This class let you have an acquisition context on a method.
     """
@@ -28,7 +29,7 @@ class AcquisitionMethod(Acquisition.Explicit):
 
 
 class SettingsMenu(SettingsMenuItem):
-    grok.context(interfaces.ISilvaObject)
+    grok.context(interfaces.IContainer)
     grok.order(10)
     grok.require('silva.ManageSilvaContent')
     name = _(u'Settings')
@@ -38,10 +39,10 @@ class SettingsMenu(SettingsMenuItem):
 class TabSettings(silvaforms.SMIComposedForm):
     """Settings tab.
     """
-    grok.context(interfaces.ISilvaObject)
+    grok.context(interfaces.IContainer)
     grok.name('silva.ui.settings')
     grok.require('silva.ManageSilvaContent')
-    label = _("settings")
+    label = _("Settings")
 
     def get_wanted_quota_validator(self):
         # for Formulamerde crap.
@@ -51,9 +52,8 @@ class TabSettings(silvaforms.SMIComposedForm):
 
 
 class ConvertToFolderAction(silvaforms.Action):
-    title = _('convert to folder')
-    accesskey = 'f'
-    description = _('change container type to a folder: alt-f')
+    title = _('Convert to folder')
+    description = _('Change container to a folder')
 
     def available(self, form):
         return interfaces.IGhostFolder.providedBy(form.context) or \
@@ -68,9 +68,8 @@ class ConvertToFolderAction(silvaforms.Action):
 
 
 class ConvertToPublicationAction(silvaforms.Action):
-    title = _('convert to publication')
-    accesskey = 'p'
-    description = _('change container type to a publication: alt-p')
+    title = _('Convert to publication')
+    description = _('Change container to a publication')
 
     def available(self, form):
         interfaces.IPublication.providedBy('')
@@ -91,7 +90,7 @@ class ConvertToForm(silvaforms.SMISubForm):
     grok.order(10)
     actions = silvaforms.Actions(ConvertToPublicationAction(),
         ConvertToFolderAction())
-    label = _('container type')
+    label = _('Container type')
 
     def available(self):
         if interfaces.IRoot.providedBy(self.context):
@@ -111,7 +110,7 @@ class ConvertToForm(silvaforms.SMISubForm):
                                  ' to a Publication')
 
 class IActivateFeedsSchema(Interface):
-    feeds = schema.Bool(title=_('allow feeds'),
+    feeds = schema.Bool(title=_('Allow feeds'),
         description=_('Check to provide an Atom / RSS '
                       'feed from this container.'))
 
@@ -133,12 +132,11 @@ class ActivateFeedsForm(silvaforms.SMISubForm):
     ignoreContent = True
     ignoreRequest = False
 
-    label = _('atom/rss feeds')
+    label = _('Atom/rss feeds')
 
-    @silvaforms.action(_('change feed settings'),
+    @silvaforms.action(_('Change feed settings'),
         identifier='activatefeeds',
-        description=_('change feed settings: alt-f'),
-        accesskey='f')
+        description=_('change feed settings'))
     def activate_feeds(self):
         data, errors = self.extractData()
         if errors:
@@ -149,7 +147,7 @@ class ActivateFeedsForm(silvaforms.SMISubForm):
 
 
 class IQuotaSchema(Interface):
-    size = schema.TextLine(title=_('space used in this folder'))
+    size = schema.TextLine(title=_('Space used in this folder'))
 
 
 def get_used_space(form):
@@ -170,7 +168,7 @@ class QuotaForm(silvaforms.SMISubForm):
     ignoreContent = True
     ignoreRequest = True
 
-    label = _('used space')
+    label = _('Used space')
 
     def available(self):
         return bool(
@@ -184,18 +182,18 @@ class QuotaForm(silvaforms.SMISubForm):
 
 
 class LayoutMetadataForm(MetadataFormGroup):
-    grok.context(interfaces.ISilvaObject)
+    grok.context(interfaces.IContainer)
     grok.order(50)
     grok.view(TabSettings)
     category = 'layout'
-    title = _('layout settings of')
+    label = _('Layout Settings')
 
 
 class SettingsMetadataForm(MetadataFormGroup):
-    grok.context(interfaces.ISilvaObject)
+    grok.context(interfaces.IContainer)
     grok.order(50)
     grok.view(TabSettings)
     category = 'settings'
-    title = _('settings of')
+    label = _('Generic Settings')
 
 

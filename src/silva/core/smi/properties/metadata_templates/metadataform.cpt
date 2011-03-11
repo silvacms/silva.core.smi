@@ -45,6 +45,11 @@
               </p>
             </div>
             <div class="form-field">
+              <div class="form-error-detail"
+                   tal:condition="error"
+                   tal:content="error">
+                Error message
+              </div>
               <tal:empty
                  tal:condition="not (is_editable or is_acquired)">
                 -
@@ -58,11 +63,6 @@
                 <span class="form-acquired-label">Acquired Value:</span>
                 <tal:value tal:replace="structure view.render_element_view(*identifier)" />
               </p>
-            </div>
-            <div class="form-error-detail"
-                 tal:condition="error"
-                 tal:content="error">
-              Error message
             </div>
           </tal:field>
         </div>
