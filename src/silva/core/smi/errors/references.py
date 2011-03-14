@@ -12,7 +12,6 @@ from zope.traversing.browser import absoluteURL
 from silva.core.interfaces import ISilvaObject
 from silva.core.references.interfaces import IReferenceService
 from silva.core.references.reference import BrokenReferenceError
-from silva.core.smi.interfaces import ISMILayer
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
@@ -23,9 +22,6 @@ from zeam.form.silva.interfaces import ICancelerAction
 class BreakReferencePermission(grok.Permission):
     grok.name('perm.breakreference')
     grok.title('Break silva references')
-
-
-grok.layer(ISMILayer)
 
 
 class BrokenReferenceErrorPage(silvaviews.Page):

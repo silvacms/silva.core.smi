@@ -8,7 +8,6 @@ from zope import schema
 from zeam.form import silva as silvaforms
 
 from silva.core import interfaces as silvainterfaces
-from silva.core.smi import interfaces
 from silva.core.conf import schema as silvaschema
 from silva.translations import translate as _
 
@@ -66,7 +65,6 @@ class FormatAndScalingForm(silvaforms.SMISubForm):
     """ form to resize / change format of image.
     """
     grok.context(silvainterfaces.IImage)
-    grok.implements(interfaces.IImageForm)
     grok.view(AssetEditTab)
     grok.order(20)
 
