@@ -1,8 +1,8 @@
-<p i18n:domain="silva">
+<p class="message" i18n:domain="silva">
   <ins class="ui-icon ui-icon-alert"></ins>
   <tal:message i18n:translate="">
     The action could not perform because it would break a reference from :
-    <a href="#"
+    <a href="#" target="_blank"
        tal:attributes="href view.source_url"
        tal:content="view.source_title">
     </a>
