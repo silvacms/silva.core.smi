@@ -24,6 +24,7 @@ class PropertiesTab(silvaforms.SMIComposedForm):
     """
     grok.context(ISilvaObject)
     grok.name('silva.ui.properties')
+    label=_('Properties')
 
 
 class MetadataFormGroup(silvaforms.SMISubFormGroup):
@@ -62,7 +63,7 @@ class MetadataForm(silvaforms.SMISubForm):
     grok.template('metadataform')
     grok.require('zope2.ManageProperties')
 
-    label = _('Content properties')
+    label = _('Editable content properties')
 
     @property
     def edit(self):
@@ -214,7 +215,7 @@ class PreviewableMetadataForm(MetadataEditForm):
     grok.context(IVersionedContent)
     grok.view(MetadataFormGroup)
     grok.order(20)
-    label = _('Content properties for the approved version')
+    label = _('Approved version content properties')
 
     def getContent(self):
         return self.context.get_previewable()
@@ -228,7 +229,7 @@ class ViewableMetadataForm(MetadataReadOnlyForm):
     """
     grok.context(IVersionedContent)
     grok.order(30)
-    label = _('Content properties for the public version')
+    label = _('Public version content properties')
 
     def getContent(self):
         return self.context.get_viewable()
@@ -242,7 +243,7 @@ class LastClosedMetadataForm(MetadataReadOnlyForm):
     """
     grok.context(IVersionedContent)
     grok.order(30)
-    label = _('Content properties for the last closed version')
+    label = _('Last closed version content properties')
 
     def getContent(self):
         return self.context.get_last_closed()
