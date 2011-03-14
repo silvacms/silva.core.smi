@@ -35,6 +35,7 @@ class ManageLocalSite(silvaforms.SMIForm):
                     u"By making a local site, you will be able to add "
                     u"local services to the publication. Those services "
                     u"will only affect elements inside that publication.")
+    actions = silvaforms.Actions(silvaforms.CancelAction())
 
     @CachedProperty
     def manager(self):
@@ -45,7 +46,7 @@ class ManageLocalSite(silvaforms.SMIForm):
             not self.manager.isSite()
 
     @silvaforms.action(
-        _("make local site"),
+        _("Make local site"),
         identifier="make_site",
         available=lambda form: form.can_be_a_local_site())
     def make_site(self):
@@ -64,7 +65,7 @@ class ManageLocalSite(silvaforms.SMIForm):
             not IRoot.providedBy(self.context)
 
     @silvaforms.action(
-        _("remove local site"),
+        _("Remove local site"),
         identifier="delete_site",
         available=lambda form: form.can_be_normal_again(),
         implements=IRemoverAction)

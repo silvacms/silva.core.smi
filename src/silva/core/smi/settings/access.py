@@ -325,9 +325,10 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     dataManager = silvaforms.makeAdaptiveDataManager(IAccessSecurity)
     fields = silvaforms.Fields(IAccessMinimumRoleSchema)
     fields['acquired'].mode = silvaforms.DISPLAY
+    actions = silvaforms.Actions(silvaforms.CancelAction())
 
     @silvaforms.action(
-        _(u"acquire restriction"),
+        _(u"Acquire restriction"),
         description=_(u"set the access restriction to acquire its "
                       u"setting from the parent container."),
         available=lambda form: not form.getContent().is_acquired(),
@@ -346,7 +347,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
         return silvaforms.SUCCESS
 
     @silvaforms.action(
-        _(u"set restriction"),
+        _(u"Set restriction"),
         description=_(
             u"restrict access to this content to the selected role"))
     def restrict(self):

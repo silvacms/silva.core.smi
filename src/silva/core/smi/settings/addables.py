@@ -61,10 +61,11 @@ class AddablesTab(silvaforms.SMIForm):
     grok.name('silva.ui.addables')
     grok.require('silva.ManageSilvaContentSettings')
 
-    label = _(u"addable settings")
+    label = _(u"Addable settings")
     fields = silvaforms.Fields(IAddablesSchema)
     fields['acquire'].defaultValue = acquire_addables
     fields['addables'].defaultValue = default_content_types
+    actions = silvaforms.Actions(silvaforms.CancelAction())
     ignoreContent=True
     ignoreRequest=False
 
@@ -74,9 +75,8 @@ class AddablesTab(silvaforms.SMIForm):
         else:
             self.fields['acquire'].mode = silvaforms.INPUT
 
-    @silvaforms.action(_(u'save addables settings'),
-        description=_(u'save addable settings for this publication: alt-a'),
-        accesskey=u'a')
+    @silvaforms.action(_(u'Save addables settings'),
+        description=_(u'save addable settings for this publication'))
     def save_changes(self):
         data, errors = self.extractData()
         currently_acquired = self.context.is_silva_addables_acquired()

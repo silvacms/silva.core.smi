@@ -7,7 +7,7 @@ from zope import schema
 from zeam.form import silva as silvaforms
 from silva.ui.menu import SettingsMenuItem
 from silva.core import interfaces
-from silva.core.smi.properties.metadata import MetadataFormGroup
+from silva.core.smi.content.metadata import MetadataFormGroup
 from silva.translations import translate as _
 
 import Acquisition

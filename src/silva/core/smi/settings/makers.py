@@ -33,7 +33,7 @@ class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     grok.name('silva.ui.customization')
     grok.require('silva.ManageSilvaContent')
 
-    label = _(u"customization markers")
+    label = _(u"Customization markers")
     description = _(u"This screen lets you tag content with markers "
                     u"which can alter how content is displayed.")
 
@@ -117,7 +117,7 @@ class DisplayUsedInterfaces(silvaforms.SMISubForm):
      grok.order(10)
      grok.context(ISilvaObject)
 
-     label = _(u"interfaces in use which affect the rendering of content")
+     label = _(u"Interfaces in use which affect the rendering of content")
      fields = silvaforms.Fields(IDisplayUsedInterfaces)
      mode = silvaforms.DISPLAY
      dataManager = silvaforms.makeAdaptiveDataManager(IDisplayUsedInterfaces)
@@ -130,7 +130,7 @@ class AddCustomizationMarker(silvaforms.SMISubForm):
     grok.order(20)
     grok.context(ISilvaObject)
 
-    label = _(u"add a marker to alter the rendering")
+    label = _(u"Add a marker to alter the rendering")
     fields = silvaforms.Fields(IAddCustomizationMarker)
 
     def available(self):
@@ -138,7 +138,7 @@ class AddCustomizationMarker(silvaforms.SMISubForm):
         return len(markerField.valueField.getChoices(self.context))
 
     @silvaforms.action(
-        _(u"add marker"),
+        _(u"Add marker"),
         description=_(u"mark the content with the selected marker(s)"))
     def add(self):
         values, errors = self.extractData()
@@ -158,7 +158,7 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
     grok.order(30)
     grok.context(ISilvaObject)
 
-    label = _(u"remove a marker")
+    label = _(u"Remove a marker")
     fields = silvaforms.Fields(IRemoveCustomizationMarker)
 
     def available(self):
@@ -166,7 +166,7 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
         return len(markerField.valueField.getChoices(self.context))
 
     @silvaforms.action(
-        _(u"remove"),
+        _(u"Remove"),
         description=_(u"remove the selected marker(s) from the content"),
         implements=IRemoverAction)
     def remove(self):
