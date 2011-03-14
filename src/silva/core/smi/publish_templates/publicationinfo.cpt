@@ -1,0 +1,19 @@
+<div class="portlet"
+     i18n:domain="silva">
+  <h4 i18n:translate="">Status</h4>
+  <p> bla bla bla </p>
+
+  <tal:publication tal:condition="viewlet.publication_date">
+    <h4 title="Publication date of the public version"
+        i18n:attributes="title"
+        i18n:translate="">Publication date</h4>
+    <p tal:content="viewlet.publication_date">date</p>
+  </tal:publication>
+
+  <tal:expiration tal:condition="viewlet.expiration_date">
+    <h4 title="Expiration date of the public version"
+        i18n:attributes="title"
+        i18n:translate="">Expiration date</h4>
+    <p tal:content="viewlet.expiration_date">date</p>
+  </tal:expiration>
+</div>

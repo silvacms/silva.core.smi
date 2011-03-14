@@ -10,6 +10,7 @@ from AccessControl.security import checkPermission
 from Products.Silva.Versioning import VersioningError
 from silva.core import interfaces as silvainterfaces
 from silva.core.smi.widgets.zeamform import PublicationStatus
+from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenuItem
 from zeam.form import autofields
@@ -39,7 +40,21 @@ class PublishTab(silvaforms.SMIComposedForm):
     grok.require('silva.ChangeSilvaContent')
     grok.name('silva.ui.publish')
 
-    label = _('Properties')
+    label = _('Publication')
+
+
+class PublicationInfo(silvaviews.Viewlet):
+    grok.context(silvainterfaces.IVersionedContent)
+    grok.view(PublishTab)
+    grok.viewletmanager(silvaforms.SMIFormPortlets)
+
+    def update(self):
+        formatter = self.request.locale.dates.getFormatter('dateTime')
+        convert = lambda d: d is not None and formatter.format(d.asdatetime()) or None
+        self.publication_date = convert(
+            self.context.get_public_version_publication_datetime())
+        self.expiration_date = convert(
+            self.context.get_public_version_expiration_datetime())
 
 
 class IPublicationFields(Interface):
