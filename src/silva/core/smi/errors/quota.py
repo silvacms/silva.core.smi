@@ -4,11 +4,11 @@
 # $Id$
 
 from five import grok
-from megrok.chameleon.components import ChameleonPageTemplate
 
 from Products.Silva.mangle import Bytes
 from Products.Silva.Publication import OverQuotaException
 from silva.ui.rest.errors import ErrorREST
+from silva.translations import translate as _
 
 
 class OverQuotaError(ErrorREST):
@@ -16,7 +16,7 @@ class OverQuotaError(ErrorREST):
     """
     grok.context(OverQuotaException)
 
-    message_template = ChameleonPageTemplate('templates/quota.cpt')
+    title = _(u'Over Quota')
 
     def update(self):
         self.exceeding_size = Bytes(self.context.error.args[0])

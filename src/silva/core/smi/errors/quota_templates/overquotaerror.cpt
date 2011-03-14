@@ -1,0 +1,9 @@
+<p class="message" i18n:domain="silva">
+  <ins class="ui-icon ui-icon-alert"></ins>
+  <tal:message i18n:translate="">
+    Sorry, a quota is applied to the container you are working in, and the
+    current operation would require
+    <b i18n:name="exceeding_size"
+       tal:content="view.exceeding_size">1.2MB</b> more space.
+  </tal:message>
+</p>
