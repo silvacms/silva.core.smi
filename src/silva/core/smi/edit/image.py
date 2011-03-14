@@ -12,24 +12,15 @@ from silva.core.smi import interfaces
 from silva.core.conf import schema as silvaschema
 from silva.translations import translate as _
 
+from Products.Silva.Asset import AssetEditTab
 from Products.Silva.Image import IImageAddFields
-
-
-class ImageEditTab(silvaforms.SMIComposedForm):
-    """ Edit tab
-    """
-    grok.context(silvainterfaces.IImage)
-    grok.name('silva.ui.content')
-    grok.require('silva.ChangeSilvaContent')
-
-    label = _('Edit')
 
 
 class ImageEditForm(silvaforms.SMISubForm):
     """ Edit image attributes
     """
     grok.context(silvainterfaces.IImage)
-    grok.view(ImageEditTab)
+    grok.view(AssetEditTab)
     grok.order(10)
 
     dataManager = silvaforms.SilvaDataManager
@@ -76,7 +67,7 @@ class FormatAndScalingForm(silvaforms.SMISubForm):
     """
     grok.context(silvainterfaces.IImage)
     grok.implements(interfaces.IImageForm)
-    grok.view(ImageEditTab)
+    grok.view(AssetEditTab)
     grok.order(20)
 
     ignoreContent = False
