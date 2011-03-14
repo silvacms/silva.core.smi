@@ -4,18 +4,18 @@
     You tried to export the content
     <a href="#"
        i18n:name="exported_content"
-       tal:attributes="href view/exported/@@absolute_url"
-       tal:content="view/exported/get_title_or_id">EXPORTED</a>
+       tal:attributes="href path:view/exported/@@absolute_url"
+       tal:content="view.exported.get_title_or_id()">EXPORTED</a>
     which contains the content
     <a href="#"
        i18n:name="original_content"
-       tal:attributes="href view/origin/@@absolute_url"
-       tal:content="view/origin/get_title_or_id">ORIGIN</a>
+       tal:attributes="href path:view/origin/@@absolute_url"
+       tal:content="view.origin.get_title_or_id()">ORIGIN</a>
     who have a reference to the content
     <a href="#"
        i18n:name="target_content"
-       tal:attributes="href view/target/@@absolute_url"
-       tal:content="view/target/get_title_or_id">TARGET</a>
+       tal:attributes="href path:view/target/@@absolute_url"
+       tal:content="view.target.get_title_or_id()">TARGET</a>
     which is not itself contained in the exported content.
   </tal:message>
 </p>
