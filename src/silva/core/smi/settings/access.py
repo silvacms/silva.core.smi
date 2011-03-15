@@ -62,7 +62,7 @@ class ILookupUserSchema(interface.Interface):
 
 class LookupUserAction(silvaforms.Action):
     grok.implements(IRESTCloseOnSuccessAction, IRESTRefreshAction)
-    refresh = 'form-userrole'
+    refresh = 'form.userrole.lookupuserresultform'
 
     title = _(u"Lookup user")
 
