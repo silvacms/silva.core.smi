@@ -5,8 +5,14 @@
 from AccessControl import getSecurityManager
 
 from five import grok
+from zope.component import getMultiAdapter, getUtility
+
 from silva.core.interfaces import IVersionedContent
+from silva.core.interfaces import IPublicationWorkflow
+from silva.core.interfaces import PublicationWorkflowError
+from silva.core.messages.interfaces import IMessageService
 from silva.translations import translate as _
+from silva.ui.rest import UIREST
 from silva.ui.menu import ActionMenuItem
 
 
@@ -22,6 +28,39 @@ class PublicationMenuItem(ActionMenuItem):
         return sm.checkPermission('Approve Silva content', self.context)
 
 
+class PublicationAction(UIREST):
+    grok.baseclass()
+    grok.context(IVersionedContent)
+    grok.require('silva.ChangeSilvaContent')
+
+    def process(self, workflow):
+        raise NotImplementedError
+
+    def send_notification(self, message, type="feedback"):
+        service = getUtility(IMessageService)
+        service.send(message, self.request, namespace=type)
+
+    def POST(self):
+        self.workflow = IPublicationWorkflow(self.context)
+        try:
+            self.process()
+        except PublicationWorkflowError as error:
+            # Notify failure.
+            self.send_notification(error.message, type="error")
+            return self.json_response({
+                'ifaces': ['notifications'],
+                'notifications': self.get_notifications()})
+
+        # Refresh screen on success
+        # XXX need an API for that
+        # XXX need to check if we are on the content.
+        screen = "silva.ui." + self.request.form.get('screen', 'content')
+        content = getMultiAdapter((self.context, self.request), name=screen)
+        content.__parent__ = self.context
+        content.__name__ = screen
+        return content.GET()
+
+
 class NewVersionMenu(PublicationMenuItem):
     grok.order(100)
 
@@ -31,6 +70,14 @@ class NewVersionMenu(PublicationMenuItem):
 
     def available(self):
         return self.context.get_editable() is None
+
+
+class NewVersionAction(PublicationAction):
+    grok.name('silva.ui.actions.newversion')
+
+    def process(self):
+        self.workflow.new_version()
+        self.send_notification(_(u'New version created.'))
 
 
 class RequestApprovalMenu(PublicationMenuItem):
@@ -46,31 +93,59 @@ class RequestApprovalMenu(PublicationMenuItem):
                     not self.context.is_version_approval_requested())
 
 
-class WithdrawApprovalRequest(PublicationMenuItem):
+class RequestApprovalAction(PublicationAction):
+    grok.name('silva.ui.actions.requestapproval')
+
+    def process(self):
+        self.workflow.request_approval(
+            u"Request immediate publication of this content. ")
+        self.send_notification(
+            _(u"Approval requested for immediate publication."))
+
+
+class WithdrawApprovalRequestMenu(PublicationMenuItem):
     grok.order(40)
 
     name = _(u'Withdraw Request')
     description = _(u'withdraw a request for approval')
-    action = 'withdrawapproval'
+    action = 'withdrawrequest'
 
     def available(self):
         return bool(not self.can_approve_content() and
                     self.context.is_version_approval_requested())
 
 
-class RejectApprovalRequest(PublicationMenuItem):
+class WithdrawApprovalRequestAction(PublicationAction):
+    grok.name('silva.ui.actions.withdrawrequest')
+
+    def process(self):
+        self.workflow.withdraw_request(
+            u"Approval was withdrawn (automatically generated message).")
+        self.send_notification(_(u"Withdrew request for approval."))
+
+
+class RejectApprovalRequestMenu(PublicationMenuItem):
     grok.order(80)
 
     name = _(u'Reject Request')
     description = _(u'reject a request for approval')
-    action = 'rejectapproval'
+    action = 'rejectrequest'
 
     def available(self):
         return bool(self.can_approve_content() and
                     self.context.is_version_approval_requested())
 
 
-class RevokeApproval(PublicationMenuItem):
+class RejectApprovalRequestAction(PublicationAction):
+    grok.name('silva.ui.actions.rejectrequest')
+
+    def process(self):
+        self.workflow.reject_request(
+            u"Approval was rejected (automatically generated message).")
+        self.send_notification(_(u"Rejected request for approval."))
+
+
+class RevokeApprovalMenu(PublicationMenuItem):
     grok.order(81)
 
     name = _(u'Revoke Approval')
@@ -81,7 +156,15 @@ class RevokeApproval(PublicationMenuItem):
         return bool(self.context.get_approved_version())
 
 
-class Publish(PublicationMenuItem):
+class RevokeApprovalAction(PublicationAction):
+    grok.name('silva.ui.actions.revokeapproval')
+
+    def process(self):
+        self.workflow.revoke_approval()
+        self.send_notification(_(u'Revoked approval.'))
+
+
+class PublishMenu(PublicationMenuItem):
     grok.order(10)
 
     name = _(u'Publish Now')
@@ -93,121 +176,11 @@ class Publish(PublicationMenuItem):
                     self.context.get_unapproved_version())
 
 
-# class NewVersion(SMIAction):
-#     """ This action create a copy of the current version
-#     """
-#     accesskey = u'n'
+class PublishAction(PublicationAction):
+    grok.name('silva.ui.actions.publish')
 
-#     def __call__(self, form):
-#         form.context.create_copy()
-#         form.context.sec_update_last_author_info()
-#         form.send_message(
-#             _(u'New version created.'), type=u"feedback")
-#         return self.redirect(form)
+    def process(self):
+        self.workflow.publish()
+        self.send_notification(_(u"Version published."))
 
 
-# class RequestApproval(SMIAction):
-#     """Request approval for immediate publication.
-#     """
-#     accesskey = u'r'
-
-#     def __call__(self, form):
-#         message = None
-#         if form.context.get_unapproved_version() is None:
-#             message = _(u"There is no unapproved version.")
-#         if form.context.is_version_approval_requested():
-#             message= _(u"Approval has already been requested.")
-#         if message is not None:
-#             form.send_message(message, type="error")
-#             return self.redirect(form)
-
-#         form.context.set_unapproved_version_publication_datetime(DateTime())
-#         form.context.request_version_approval(
-#             u"Request immediate publication of this content. ")
-#         form.send_message(
-#             _(u"Approval requested for immediate publication."),
-#             type="feedback")
-#         return self.redirect(form)
-
-
-# class WithdrawApprovalRequest(SMIAction):
-#     """Withdraw approval request.
-#     """
-#     accesskey = u'w'
-
-#     def __call__(self, form):
-#         if form.context.get_unapproved_version() is None:
-#             if form.context.get_public_version() is not None:
-#                 message = _(u"This content is already public.")
-#             else:
-#                 message = _(u"This content is already approved. "
-#                             u"You can revoke the approval.")
-#             form.send_message(message, type="error")
-#             return self.redirect(form)
-
-#         form.context.withdraw_version_approval(
-#             u"Approval was withdrawn via the edit screen. "
-#             u"(automatically generated message)")
-#         form.send_message(
-#             _(u"Withdrew request for approval."), type="feedback")
-#         return self.redirect(form)
-
-
-# class RejectApprovalRequest(SMIAction):
-#     """Withdraw approval request.
-#     """
-#     accesskey = u'w'
-
-#     def __call__(self, form):
-#         if form.context.get_unapproved_version() is None:
-#             if form.context.get_public_version() is not None:
-#                 message = _(u"This content is already public.")
-#             else:
-#                 message = _(u"This content is already approved. "
-#                             u"You can revoke the approval.")
-#             form.send_message(message, type="error")
-#             return self.redirect(form)
-
-#         form.context.reject_version_approval(
-#             u"Approval was rejected via the edit screen "
-#             u"(automatically generated message).")
-#         form.send_message(
-#             _(u"Rejected request for approval."), type="feedback")
-#         return self.redirect(form)
-
-
-# class RevokeApproval(SMIAction):
-#     """Revoke approval.
-#     """
-#     accesskey = u'r'
-
-#     def __call__(self, form):
-#         form.context.unapprove_version()
-#         form.context.sec_update_last_author_info()
-#         form.send_message(
-#             _(u'Revoked approval.'), type=u"feedback")
-#         return self.redirect(form)
-
-
-# class Publish(SMIAction):
-#     """ Publish the version
-#     """
-#     accesskey = u'p'
-
-#     def __call__(self, form):
-#         if not form.context.get_unapproved_version():
-#             # SHORTCUT: To allow approval of closed docs with no
-#             # new version available first create a new version.
-#             # This "shortcuts" the workflow.
-#             # See also edit/Container/tab_status_approve.py
-#             if form.context.is_version_published():
-#                 form.send_message(
-#                     _("There is no unapproved version to approve."),
-#                     type=u'error')
-#                 return self.redirect(form)
-#             form.context.create_copy()
-
-#         form.context.set_unapproved_version_publication_datetime(DateTime())
-#         form.context.approve_version()
-#         form.send_message(_(u"Version approved."), type=u"feedback")
-#         return self.redirect(form)
