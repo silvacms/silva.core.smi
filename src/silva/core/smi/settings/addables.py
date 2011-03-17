@@ -2,7 +2,7 @@
 # See also LICENSE.txt
 
 from five import grok
-from silva.core.interfaces import IContainer, IRoot
+from silva.core.interfaces import IContainer, IRoot, IAddableContents
 from silva.translations import translate as _
 from silva.ui.menu import SettingsMenuItem
 from zeam.form import silva as silvaforms
@@ -22,7 +22,7 @@ class AddablesMenu(SettingsMenuItem):
 
 @grok.provider(IContextSourceBinder)
 def addables_content_types(context):
-    addables = context.get_silva_addables_all()
+    addables = IAddableContents(context).get_all_addables()
     entries = []
     for addable in addables:
         entries.append(SimpleTerm(value=addable,
@@ -31,7 +31,7 @@ def addables_content_types(context):
     return SimpleVocabulary(entries)
 
 def default_content_types(form):
-    return form.context.get_silva_addables_allowed_in_container()
+    return IAddableContents(form.context).get_container_addables()
 
 def acquire_addables(form):
     return form.context.is_silva_addables_acquired()
@@ -67,7 +67,7 @@ class AddablesTab(silvaforms.SMIForm):
     fields['addables'].defaultValue = default_content_types
     actions = silvaforms.Actions(silvaforms.CancelAction())
     ignoreContent=True
-    ignoreRequest=False
+    ignoreRequest=True
 
     def update(self):
         if IRoot.providedBy(self.context):
