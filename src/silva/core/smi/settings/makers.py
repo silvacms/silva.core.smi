@@ -18,14 +18,6 @@ from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
 
 
-class CustomizationMenu(MenuItem):
-    grok.adapts(SettingsMenu, ISilvaObject)
-    grok.order(100)
-    grok.require('silva.ManageSilvaContent')
-    name = _(u'Customization')
-    screen = 'customization'
-
-
 class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     """This form lets you add and remove customization markers for the
     current content.
@@ -37,6 +29,15 @@ class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     label = _(u"Customization markers")
     description = _(u"This screen lets you tag content with markers "
                     u"which can alter how content is displayed.")
+
+
+class CustomizationMenu(MenuItem):
+    grok.adapts(SettingsMenu, ISilvaObject)
+    grok.order(100)
+    grok.require('silva.ManageSilvaContent')
+    name = _(u'Customization')
+    screen = ManageCustomizeMarker
+
 
 # Forms to mark objects
 

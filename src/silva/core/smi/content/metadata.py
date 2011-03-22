@@ -21,19 +21,19 @@ from Products.Silva.icon import get_icon_url
 from Products.SilvaMetadata.interfaces import IMetadataService
 
 
-class PropertiesMenu(MenuItem):
-    grok.adapts(ContentMenu, ISilvaObject)
-    grok.order(20)
-    name = _('Properties')
-    screen = 'properties'
-
-
 class Properties(silvaforms.SMIComposedForm):
     """ Properties tab allows metadata editing.
     """
     grok.adapts(Screen, ISilvaObject)
     grok.name('properties')
     label=_('Properties')
+
+
+class PropertiesMenu(MenuItem):
+    grok.adapts(ContentMenu, ISilvaObject)
+    grok.order(20)
+    name = _('Properties')
+    screen = Properties
 
 
 class MetadataFormGroup(silvaforms.SMISubFormGroup):

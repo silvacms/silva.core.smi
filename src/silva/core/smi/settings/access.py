@@ -25,14 +25,6 @@ from zeam.form.silva.interfaces import (
 USER_STORE_KEY = 'lookup user'
 
 
-class AccessMenu(MenuItem):
-    grok.adapts(SettingsMenu, ISilvaObject)
-    grok.order(10)
-    grok.require('silva.ChangeSilvaAccess')
-    name = _(u'Access')
-    screen = 'access'
-
-
 class Access(silvaforms.SMIComposedForm):
     """Control access to Silva.
     """
@@ -43,6 +35,14 @@ class Access(silvaforms.SMIComposedForm):
     label = _(u"Manage access to content")
     description = _(u"This screen lets you authorize or revoke access "
                     u"to this item and all content it contains.")
+
+
+class AccessMenu(MenuItem):
+    grok.adapts(SettingsMenu, ISilvaObject)
+    grok.order(10)
+    grok.require('silva.ChangeSilvaAccess')
+    name = _(u'Access')
+    screen = Access
 
 
 class LookupUserPopupAction(silvaforms.PopupAction):

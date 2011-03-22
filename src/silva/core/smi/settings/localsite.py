@@ -15,15 +15,8 @@ from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
 
 
-class LocalSiteMenu(MenuItem):
-    grok.adapts(SettingsMenu, IPublication)
-    grok.order(100)
-    grok.require('zope2.ViewManagementScreens')
-    name = _(u'Local site')
-    screen = 'localsite'
 
-
-class ManageLocalSite(silvaforms.SMIForm):
+class LocalSiteForm(silvaforms.SMIForm):
     """This form let enable (or disable) a Publication as a local
     site.
     """
@@ -80,3 +73,10 @@ class ManageLocalSite(silvaforms.SMIForm):
             self.send_message(_("Local site deactivated."), type=u"feedback")
             return silvaforms.SUCCESS
 
+
+class LocalSiteMenu(MenuItem):
+    grok.adapts(SettingsMenu, IPublication)
+    grok.order(100)
+    grok.require('zope2.ViewManagementScreens')
+    name = _(u'Local site')
+    screen = LocalSiteForm

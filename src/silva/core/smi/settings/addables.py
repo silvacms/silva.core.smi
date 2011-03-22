@@ -13,14 +13,6 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 
-class AddablesMenu(MenuItem):
-    grok.adapts(SettingsMenu, IContainer)
-    grok.order(50)
-    grok.require('silva.ManageSilvaContentSettings')
-    name = _(u'Addables')
-    screen = 'addables'
-
-
 @grok.provider(IContextSourceBinder)
 def addables_content_types(context):
     addables = IAddableContents(context).get_all_addables()
@@ -55,7 +47,7 @@ class IAddablesSchema(Interface):
         value_type=schema.Choice(source=addables_content_types))
 
 
-class Addables(silvaforms.SMIForm):
+class AddablesForm(silvaforms.SMIForm):
     """Control addables for silva containers.
     """
     grok.adapts(Settings, IContainer)
@@ -100,4 +92,11 @@ class Addables(silvaforms.SMIForm):
                 data.getWithDefault('addables'))
 
         return silvaforms.SUCCESS
+
+class AddablesMenu(MenuItem):
+    grok.adapts(SettingsMenu, IContainer)
+    grok.order(50)
+    grok.require('silva.ManageSilvaContentSettings')
+    name = _(u'Addables')
+    screen = AddablesForm
 

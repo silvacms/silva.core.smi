@@ -17,21 +17,6 @@ from silva.ui.rest import Screen
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
 
 
-class AddMenu(ExpendableMenuItem):
-    grok.adapts(ContentMenu, IContainer)
-    grok.order(15)
-    name = _('Add')
-    screen = 'adding'
-
-    def get_submenu_items(self):
-        entries = []
-        for addable in IAddableContents(self.content).get_authorized_addables():
-            entries.append({
-                    'name': addable,
-                    'screen': '/'.join((self.screen, addable))})
-        return entries
-
-
 class Adding(REST):
     grok.adapts(Screen, IContainer)
     grok.name('adding')
@@ -50,3 +35,17 @@ class Adding(REST):
         raise NotFound(name)
 
 
+class AddMenu(ExpendableMenuItem):
+    grok.adapts(ContentMenu, IContainer)
+    grok.order(15)
+    name = _('Add')
+    screen = Adding
+
+    def get_submenu_items(self):
+        entries = []
+        path = grok.name.bind().get(self.screen)
+        for addable in IAddableContents(self.content).get_authorized_addables():
+            entries.append({
+                    'name': addable,
+                    'screen': '/'.join((path, addable))})
+        return entries

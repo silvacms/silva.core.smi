@@ -30,14 +30,6 @@ class AcquisitionMethod(Acquisition.Explicit):
         return method(*args, **kwargs)
 
 
-class OtherSettingsMenu(MenuItem):
-    grok.adapts(SettingsMenu, interfaces.IContainer)
-    grok.order(10)
-    grok.require('silva.ManageSilvaContent')
-    name = _(u'Settings')
-    screen = 'settings'
-
-
 class OtherSettings(silvaforms.SMIComposedForm):
     """Settings tab.
     """
@@ -51,6 +43,14 @@ class OtherSettings(silvaforms.SMIComposedForm):
         return AcquisitionMethod(self.context, 'validate_wanted_quota')
 
     get_wanted_quota_validator__roles__ = None
+
+
+class OtherSettingsMenu(MenuItem):
+    grok.adapts(SettingsMenu, interfaces.IContainer)
+    grok.order(10)
+    grok.require('silva.ManageSilvaContent')
+    name = _(u'Settings')
+    screen = OtherSettings
 
 
 class ConvertToFolderAction(silvaforms.Action):

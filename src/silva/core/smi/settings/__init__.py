@@ -10,13 +10,14 @@ from silva.core.interfaces import ISilvaObject
 from silva.translations import translate as _
 
 
+class Settings(REST):
+    grok.adapts(Screen, ISilvaObject)
+    grok.name('settings')
+
+
 class SettingsMenu(ExpendableMenuItem):
     grok.adapts(ContentMenu, ISilvaObject)
     grok.order(80)
     name = _('Settings')
-    screen = 'settings'
+    screen = Settings
 
-
-class Settings(REST):
-    grok.adapts(Screen, ISilvaObject)
-    grok.name('settings')

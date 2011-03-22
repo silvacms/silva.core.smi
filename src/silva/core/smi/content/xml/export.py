@@ -10,11 +10,10 @@ from zope.interface import Interface
 from zope.schema.interfaces import IContextSourceBinder
 
 from silva.core.interfaces import IContainer
+from silva.core.smi.content.container import ContainerMenu, Container
 from silva.translations import translate as _
-from silva.core.smi.content import ContainerMenu
 from silva.ui.menu import MenuItem
 from silva.ui.rest import REST
-from silva.ui.rest.container import Container
 from zeam.form import silva as silvaforms
 
 from Products.Silva.utility.interfaces import IExportUtility

@@ -6,16 +6,16 @@
 import zipfile
 
 from five import grok
+from zope import schema
+from zope.interface import Interface
+
 from silva.core.conf import schema as silvaschema
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
+from silva.core.smi.content.container import Container, ContainerMenu
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem
-from silva.core.smi.content import ContainerMenu
-from silva.ui.rest.container import Container
 from zeam.form import silva as silvaforms
-from zope import schema
-from zope.interface import Interface
 
 
 class IImportFields(Interface):
