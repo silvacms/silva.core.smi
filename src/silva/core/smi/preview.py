@@ -7,13 +7,13 @@ from silva.core.interfaces import IDirectlyRendered
 from silva.core.interfaces import ISilvaObject
 from silva.core.views.interfaces import ISilvaURL
 from silva.translations import translate as _
-from silva.ui.menu import ViewMenuItem
+from silva.ui.menu import ViewMenu, MenuItem
 from silva.ui.rest.base import PageREST
 from zope.component import getMultiAdapter
 
 
-class PreviewMenu(ViewMenuItem):
-    grok.context(ISilvaObject)
+class PreviewMenu(MenuItem):
+    grok.adapts(ViewMenu, ISilvaObject)
     grok.order(10)
     name = _('Preview')
     screen = 'preview'
@@ -25,8 +25,9 @@ class Preview(PageREST):
     grok.require('silva.ReadSilvaContent')
 
     def payload(self):
+        url = getMultiAdapter((self.context, self.request), ISilvaURL).preview()
         return {"ifaces": ["preview"],
-                "html_url": getMultiAdapter((self.context, self.request), ISilvaURL).preview()}
+                "html_url": url}
 
 
 class DirectlyRenderedPreview(PageREST):

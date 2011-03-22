@@ -13,14 +13,14 @@ from silva.core.interfaces import PublicationWorkflowError
 from silva.core.messages.interfaces import IMessageService
 from silva.translations import translate as _
 from silva.ui.rest import UIREST
-from silva.ui.menu import ActionMenuItem
+from silva.ui.menu import ActionMenu, MenuItem
 
 
-class PublicationMenuItem(ActionMenuItem):
+class PublicationMenuItem(MenuItem):
     """Base menu item for publication actions.
     """
     grok.baseclass()
-    grok.context(IVersionedContent)
+    grok.adapts(ActionMenu, IVersionedContent)
     grok.require('silva.ChangeSilvaContent')
 
     def can_approve_content(self):

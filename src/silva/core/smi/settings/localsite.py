@@ -7,15 +7,16 @@
 from zope.cachedescriptors.property import CachedProperty
 from five import grok
 
-from silva.ui.menu import SettingsMenuItem
+from silva.core.interfaces import IPublication, IRoot, ISiteManager
+from silva.core.smi.settings import SettingsMenu
+from silva.translations import translate as _
+from silva.ui.menu import MenuItem
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
-from silva.translations import translate as _
-from silva.core.interfaces import IPublication, IRoot, ISiteManager
 
 
-class LocalSiteMenu(SettingsMenuItem):
-    grok.context(IPublication)
+class LocalSiteMenu(MenuItem):
+    grok.adapts(SettingsMenu, IPublication)
     grok.order(100)
     grok.require('zope2.ViewManagementScreens')
     name = _(u'Local site')

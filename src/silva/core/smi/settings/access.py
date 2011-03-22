@@ -11,7 +11,8 @@ from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
 from silva.core.services.interfaces import IMemberService, MemberLookupError
 from silva.translations import translate as _
-from silva.ui.menu import SettingsMenuItem
+from silva.ui.menu import MenuItem
+from silva.core.smi.settings import SettingsMenu
 from zeam.form import silva as silvaforms
 from zope import interface, schema, component
 from zope.cachedescriptors.property import CachedProperty
@@ -24,8 +25,8 @@ from zeam.form.silva.interfaces import (
 USER_STORE_KEY = 'lookup user'
 
 
-class AccessMenu(SettingsMenuItem):
-    grok.context(ISilvaObject)
+class AccessMenu(MenuItem):
+    grok.adapts(SettingsMenu, ISilvaObject)
     grok.order(10)
     grok.require('silva.ChangeSilvaAccess')
     name = _(u'Access')

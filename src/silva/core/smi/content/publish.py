@@ -12,7 +12,7 @@ from silva.core import interfaces as silvainterfaces
 from silva.core.smi.widgets.zeamform import PublicationStatus
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
-from silva.ui.menu import ContentMenuItem
+from silva.ui.menu import ContentMenu, MenuItem
 from zeam.form import autofields
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
@@ -25,8 +25,8 @@ from zeam.form.ztk.actions import EditAction
 # - throw events ?
 
 
-class PublishTabMenu(ContentMenuItem):
-    grok.context(silvainterfaces.IVersionedContent)
+class PublishTabMenu(MenuItem):
+    grok.adapts(ContentMenu, silvainterfaces.IVersionedContent)
     grok.require('silva.ChangeSilvaContent')
     grok.order(30)
     name = _('Publish')

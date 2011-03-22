@@ -4,7 +4,8 @@
 from five import grok
 from silva.core.interfaces import IContainer, IRoot, IAddableContents
 from silva.translations import translate as _
-from silva.ui.menu import SettingsMenuItem
+from silva.ui.menu import MenuItem
+from silva.core.smi.settings import SettingsMenu
 from zeam.form import silva as silvaforms
 from zope import schema
 from zope.interface import Interface
@@ -12,8 +13,8 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 
-class AddablesMenu(SettingsMenuItem):
-    grok.context(IContainer)
+class AddablesMenu(MenuItem):
+    grok.adapts(SettingsMenu, IContainer)
     grok.order(50)
     grok.require('silva.ManageSilvaContentSettings')
     name = _(u'Addables')

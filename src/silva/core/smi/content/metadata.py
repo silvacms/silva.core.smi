@@ -4,7 +4,7 @@
 from five import grok
 from silva.core.interfaces import ISilvaObject, IVersionedContent
 from silva.translations import translate as _
-from silva.ui.menu import ContentMenuItem
+from silva.ui.menu import ContentMenu, MenuItem
 from zeam.form import silva as silvaforms
 from zope import component
 
@@ -12,8 +12,8 @@ from Products.Silva.adapters.security import is_role_greater_or_equal
 from Products.SilvaMetadata.interfaces import IMetadataService
 
 
-class PropertiesTabMenu(ContentMenuItem):
-    grok.context(ISilvaObject)
+class PropertiesTabMenu(MenuItem):
+    grok.adapts(ContentMenu, ISilvaObject)
     grok.order(20)
     name = _('Properties')
     screen = 'properties'

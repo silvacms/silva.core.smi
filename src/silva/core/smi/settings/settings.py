@@ -5,10 +5,12 @@ from five import grok
 from zope.interface import Interface
 from zope import schema
 from zeam.form import silva as silvaforms
-from silva.ui.menu import SettingsMenuItem
+
 from silva.core import interfaces
 from silva.core.smi.content.metadata import MetadataFormGroup
+from silva.core.smi.settings import SettingsMenu
 from silva.translations import translate as _
+from silva.ui.menu import MenuItem
 
 import Acquisition
 from Products.Silva import mangle
@@ -28,8 +30,8 @@ class AcquisitionMethod(Acquisition.Explicit):
         return method(*args, **kwargs)
 
 
-class SettingsMenu(SettingsMenuItem):
-    grok.context(interfaces.IContainer)
+class SettingsSettingsMenu(MenuItem):
+    grok.adapts(SettingsMenu, interfaces.IContainer)
     grok.order(10)
     grok.require('silva.ManageSilvaContent')
     name = _(u'Settings')

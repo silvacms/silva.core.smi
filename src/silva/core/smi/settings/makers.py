@@ -9,7 +9,8 @@ from zope.interface import Interface
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
-from silva.ui.menu import SettingsMenuItem
+from silva.ui.menu import MenuItem
+from silva.core.smi.settings import SettingsMenu
 from silva.core.interfaces import ISilvaObject
 from silva.core.layout.interfaces import IMarkManager
 from silva.translations import translate as _
@@ -17,8 +18,8 @@ from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
 
 
-class CustomizationMenu(SettingsMenuItem):
-    grok.context(ISilvaObject)
+class CustomizationMenu(MenuItem):
+    grok.adapts(SettingsMenu, ISilvaObject)
     grok.order(100)
     grok.require('silva.ManageSilvaContent')
     name = _(u'Customization')
