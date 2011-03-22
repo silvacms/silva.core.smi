@@ -5,26 +5,21 @@ import urllib
 from datetime import datetime
 
 from five import grok
-from silva.core.interfaces import IContainer
-from silva.core.views import views as silvaviews
-from silva.translations import translate as _
-from silva.ui.menu import ContentMenu, MenuItem
-from zeam.form import silva as silvaforms
 from zope import schema, component
 from zope.interface import Interface
 from zope.schema.interfaces import IContextSourceBinder
 
+from silva.core.interfaces import IContainer
+from silva.translations import translate as _
+from silva.core.smi.content import ContainerMenu
+from silva.ui.menu import MenuItem
+from silva.ui.rest import REST
+from silva.ui.rest.container import Container
+from zeam.form import silva as silvaforms
+
 from Products.Silva.utility.interfaces import IExportUtility
 from Products.Silva.silvaxml import xmlexport
 from zExceptions import BadRequest
-
-
-class ExportMenu(MenuItem):
-    grok.adapts(ContentMenu, IContainer)
-    grok.order(81)
-    grok.require('silva.ManageSilvaContentSettings')
-    name = _(u'Export')
-    screen = 'export'
 
 
 @grok.provider(IContextSourceBinder)
@@ -59,12 +54,12 @@ class IExportFields(Interface):
         description=_(u"Select the format which will be used for the export."))
 
 
-class ExportTab(silvaforms.SMIForm):
+class ExportForm(silvaforms.SMIForm):
     """Export form for containers.
     """
-    grok.context(IContainer)
+    grok.adapts(Container, IContainer)
     grok.require('silva.ReadSilvaContent')
-    grok.name('silva.ui.export')
+    grok.name('export')
 
     label = _(u"Export")
 
@@ -82,7 +77,7 @@ class ExportTab(silvaforms.SMIForm):
     def export(self):
         data, errors = self.extractData()
         if len(errors) == 0:
-            url = self.url() + '/++rest++silva.ui.export/download'
+            url = self.url() + '/++rest++silva.ui/export/download'
             query_string = "?" + urllib.urlencode(self.request.form)
             self.redirect(url + query_string)
             return silvaforms.SUCCESS
@@ -91,11 +86,20 @@ class ExportTab(silvaforms.SMIForm):
     def publishTraverse(self, request, name):
         if name == 'download':
             return ExportDownload(self, request)
-        return super(ExportTab, self).publishTraverse(request, name)
+        return super(ExportForm, self).publishTraverse(request, name)
 
 
-class ExportDownload(silvaviews.View):
-    grok.context(ExportTab)
+class ExportMenu(MenuItem):
+    grok.adapts(ContainerMenu, IContainer)
+    grok.order(81)
+    grok.require('silva.ManageSilvaContentSettings')
+
+    name = _(u'Export')
+    screen = ExportForm
+
+
+class ExportDownload(REST):
+    grok.adapts(ExportForm, IContainer)
     grok.require('silva.ReadSilvaContent')
     grok.name('download')
 
@@ -119,7 +123,8 @@ class ExportDownload(silvaviews.View):
             exporter.extension)
         self.output = exporter.export(settings)
 
-    def render(self):
+    def GET(self):
+        self.update()
         response = self.request.response
         response.setHeader('Content-Type', 'application/octet-stream')
         response.setHeader(

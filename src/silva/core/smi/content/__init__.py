@@ -8,7 +8,7 @@ from five import grok
 from silva.core.interfaces import IContent, IContainer
 from silva.core.interfaces import INonPublishable
 from silva.translations import translate as _
-from silva.ui.menu import MenuItem, ContentMenu
+from silva.ui.menu import ExpendableMenuItem, MenuItem, ContentMenu
 
 
 class EditMenu(MenuItem):
@@ -25,7 +25,7 @@ class EditAssetMenu(MenuItem):
     screen = 'content'
 
 
-class ContainerMenu(MenuItem):
+class ContainerMenu(ExpendableMenuItem):
     grok.adapts(ContentMenu, IContainer)
     grok.order(10)
     name = _('Content')

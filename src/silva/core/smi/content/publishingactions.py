@@ -25,7 +25,7 @@ class PublicationMenuItem(MenuItem):
 
     def can_approve_content(self):
         sm = getSecurityManager()
-        return sm.checkPermission('Approve Silva content', self.context)
+        return sm.checkPermission('Approve Silva content', self.content)
 
 
 class PublicationAction(UIREST):
@@ -69,7 +69,7 @@ class NewVersionMenu(PublicationMenuItem):
     action = 'newversion'
 
     def available(self):
-        return self.context.get_editable() is None
+        return self.content.get_editable() is None
 
 
 class NewVersionAction(PublicationAction):
@@ -89,8 +89,8 @@ class RequestApprovalMenu(PublicationMenuItem):
 
     def available(self):
         return bool(not self.can_approve_content() and
-                    self.context.get_unapproved_version() is not None and
-                    not self.context.is_version_approval_requested())
+                    self.content.get_unapproved_version() is not None and
+                    not self.content.is_version_approval_requested())
 
 
 class RequestApprovalAction(PublicationAction):
@@ -112,7 +112,7 @@ class WithdrawApprovalRequestMenu(PublicationMenuItem):
 
     def available(self):
         return bool(not self.can_approve_content() and
-                    self.context.is_version_approval_requested())
+                    self.content.is_version_approval_requested())
 
 
 class WithdrawApprovalRequestAction(PublicationAction):
@@ -133,7 +133,7 @@ class RejectApprovalRequestMenu(PublicationMenuItem):
 
     def available(self):
         return bool(self.can_approve_content() and
-                    self.context.is_version_approval_requested())
+                    self.content.is_version_approval_requested())
 
 
 class RejectApprovalRequestAction(PublicationAction):
@@ -153,7 +153,7 @@ class RevokeApprovalMenu(PublicationMenuItem):
     action = 'revokeapproval'
 
     def available(self):
-        return bool(self.context.get_approved_version())
+        return bool(self.content.get_approved_version())
 
 
 class RevokeApprovalAction(PublicationAction):
@@ -173,7 +173,7 @@ class PublishMenu(PublicationMenuItem):
 
     def available(self):
         return bool(self.can_approve_content() and
-                    self.context.get_unapproved_version())
+                    self.content.get_unapproved_version())
 
 
 class PublishAction(PublicationAction):

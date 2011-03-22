@@ -13,6 +13,7 @@ from infrae.rest import REST
 from silva.core.interfaces import IAddableContents
 from silva.core.interfaces import IContainer
 from silva.translations import translate as _
+from silva.ui.rest import Screen
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
 
 
@@ -32,8 +33,8 @@ class AddMenu(ExpendableMenuItem):
 
 
 class Adding(REST):
-    grok.context(IContainer)
-    grok.name('silva.ui.adding')
+    grok.adapts(Screen, IContainer)
+    grok.name('adding')
     grok.require('silva.ChangeSilvaContent')
 
     def publishTraverse(self, request, name):

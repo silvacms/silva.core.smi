@@ -1,29 +1,38 @@
 # Copyright (c) 2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 
+import bisect
+
 from five import grok
-from silva.core.interfaces import ISilvaObject, IVersionedContent
+from zope import component
+from zope.traversing.browser import absoluteURL
+
+from silva.core.interfaces import ISilvaObject, IVersion, IVersionedContent
+from silva.core.references.interfaces import IReferenceService
+from silva.core.views import views as silvaviews
+from silva.core.views.interfaces import ISilvaURL
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenu, MenuItem
+from silva.ui.rest import Screen
 from zeam.form import silva as silvaforms
-from zope import component
 
 from Products.Silva.adapters.security import is_role_greater_or_equal
+from Products.Silva.icon import get_icon_url
 from Products.SilvaMetadata.interfaces import IMetadataService
 
 
-class PropertiesTabMenu(MenuItem):
+class PropertiesMenu(MenuItem):
     grok.adapts(ContentMenu, ISilvaObject)
     grok.order(20)
     name = _('Properties')
     screen = 'properties'
 
 
-class PropertiesTab(silvaforms.SMIComposedForm):
+class Properties(silvaforms.SMIComposedForm):
     """ Properties tab allows metadata editing.
     """
-    grok.context(ISilvaObject)
-    grok.name('silva.ui.properties')
+    grok.adapts(Screen, ISilvaObject)
+    grok.name('properties')
     label=_('Properties')
 
 
@@ -31,7 +40,7 @@ class MetadataFormGroup(silvaforms.SMISubFormGroup):
     """Form group that holds metadata forms.
     """
     grok.context(ISilvaObject)
-    grok.view(PropertiesTab)
+    grok.view(Properties)
     grok.order(10)
     # metadata category filter
     category = ''
@@ -264,5 +273,53 @@ class NonVersionedContentMetadataForm(MetadataEditForm):
 
     def available(self):
         return not IVersionedContent.providedBy(self.context)
+
+
+class ContentReferencedBy(silvaviews.Viewlet):
+    """Report reference usage of this publishable
+    """
+    grok.template('contentreferencedby')
+    grok.context(ISilvaObject)
+    grok.view(Properties)
+    grok.viewletmanager(silvaforms.SMIFormPortlets)
+
+    def update(self):
+        references = {}
+        service = component.getUtility(IReferenceService)
+        self.icon_url = get_icon_url(self.context, self.request)
+        for reference in service.get_references_to(self.context):
+            source = reference.source
+            source_versions = []
+            if IVersion.providedBy(source):
+                source_versions.append(source.id)
+                source = source.get_content()
+
+            edit_url = absoluteURL(source, self.request) + '/edit'
+            if edit_url in references and source_versions:
+                previous_versions = references[edit_url]['versions']
+                if previous_versions[-1] > source_versions[0]:
+                    bisect.insort_right(
+                        previous_versions, source_versions[0])
+                    continue
+                else:
+                    source_versions = previous_versions + source_versions
+
+            source_title = source.get_title_or_id()
+            source_url = component.getMultiAdapter(
+                (source, self.request), ISilvaURL).preview()
+            references[edit_url] = {
+                'title': source_title,
+                'url': source_url,
+                'path': '/'.join(source.getPhysicalPath()),
+                'edit_url': edit_url,
+                'icon': get_icon_url(source, self.request),
+                'versions': source_versions}
+
+        self.references = references.values()
+        self.references.sort(key=lambda info: info['title'].lower())
+
+        for info in self.references:
+            if info['versions']:
+                info['title'] += ' (' + ', '.join(info['versions']) + ')'
 
 

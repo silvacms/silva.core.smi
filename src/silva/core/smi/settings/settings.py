@@ -8,7 +8,7 @@ from zeam.form import silva as silvaforms
 
 from silva.core import interfaces
 from silva.core.smi.content.metadata import MetadataFormGroup
-from silva.core.smi.settings import SettingsMenu
+from silva.core.smi.settings import SettingsMenu, Settings
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem
 
@@ -30,7 +30,7 @@ class AcquisitionMethod(Acquisition.Explicit):
         return method(*args, **kwargs)
 
 
-class SettingsSettingsMenu(MenuItem):
+class OtherSettingsMenu(MenuItem):
     grok.adapts(SettingsMenu, interfaces.IContainer)
     grok.order(10)
     grok.require('silva.ManageSilvaContent')
@@ -38,11 +38,11 @@ class SettingsSettingsMenu(MenuItem):
     screen = 'settings'
 
 
-class TabSettings(silvaforms.SMIComposedForm):
+class OtherSettings(silvaforms.SMIComposedForm):
     """Settings tab.
     """
-    grok.context(interfaces.IContainer)
-    grok.name('silva.ui.settings')
+    grok.adapts(Settings, interfaces.IContainer)
+    grok.name('settings')
     grok.require('silva.ManageSilvaContent')
     label = _("Settings")
 
@@ -88,7 +88,7 @@ class ConvertToForm(silvaforms.SMISubForm):
     grok.context(interfaces.IContainer)
     # XXX set it for real
     grok.require('silva.ManageSilvaContent')
-    grok.view(TabSettings)
+    grok.view(OtherSettings)
     grok.order(10)
     actions = silvaforms.Actions(ConvertToPublicationAction(),
         ConvertToFolderAction())
@@ -124,7 +124,7 @@ def get_feeds_status(form):
 # possibility to put some html in there except overriding template.
 class ActivateFeedsForm(silvaforms.SMISubForm):
     grok.context(interfaces.IContainer)
-    grok.view(TabSettings)
+    grok.view(OtherSettings)
     grok.order(30)
     grok.require('silva.ManageSilvaContent')
 
@@ -158,7 +158,7 @@ def get_used_space(form):
 
 class QuotaForm(silvaforms.SMISubForm):
     grok.context(interfaces.IContainer)
-    grok.view(TabSettings)
+    grok.view(OtherSettings)
     grok.order(40)
     grok.require('silva.ManageSilvaContentSettings')
 
@@ -186,7 +186,7 @@ class QuotaForm(silvaforms.SMISubForm):
 class LayoutMetadataForm(MetadataFormGroup):
     grok.context(interfaces.IContainer)
     grok.order(50)
-    grok.view(TabSettings)
+    grok.view(OtherSettings)
     category = 'layout'
     label = _('Layout Settings')
 
@@ -194,7 +194,7 @@ class LayoutMetadataForm(MetadataFormGroup):
 class SettingsMetadataForm(MetadataFormGroup):
     grok.context(interfaces.IContainer)
     grok.order(50)
-    grok.view(TabSettings)
+    grok.view(OtherSettings)
     category = 'settings'
     label = _('Generic Settings')
 

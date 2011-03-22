@@ -8,7 +8,7 @@ from zope.cachedescriptors.property import CachedProperty
 from five import grok
 
 from silva.core.interfaces import IPublication, IRoot, ISiteManager
-from silva.core.smi.settings import SettingsMenu
+from silva.core.smi.settings import Settings, SettingsMenu
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem
 from zeam.form import silva as silvaforms
@@ -27,8 +27,8 @@ class ManageLocalSite(silvaforms.SMIForm):
     """This form let enable (or disable) a Publication as a local
     site.
     """
-    grok.context(IPublication)
-    grok.name('silva.ui.localsite')
+    grok.adapts(Settings, IPublication)
+    grok.name('localsite')
     grok.require('zope2.ViewManagementScreens')
 
     label = _(u"Local site")

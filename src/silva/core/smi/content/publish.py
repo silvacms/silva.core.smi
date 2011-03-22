@@ -13,6 +13,7 @@ from silva.core.smi.widgets.zeamform import PublicationStatus
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenu, MenuItem
+from silva.ui.rest import Screen
 from zeam.form import autofields
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
@@ -25,27 +26,28 @@ from zeam.form.ztk.actions import EditAction
 # - throw events ?
 
 
-class PublishTabMenu(MenuItem):
-    grok.adapts(ContentMenu, silvainterfaces.IVersionedContent)
-    grok.require('silva.ChangeSilvaContent')
-    grok.order(30)
-    name = _('Publish')
-    screen = 'publish'
-
-
-class PublishTab(silvaforms.SMIComposedForm):
+class Publish(silvaforms.SMIComposedForm):
     """Publish tab.
     """
-    grok.context(silvainterfaces.IVersionedContent)
+    grok.adapts(Screen, silvainterfaces.IVersionedContent)
     grok.require('silva.ChangeSilvaContent')
-    grok.name('silva.ui.publish')
+    grok.name('publish')
 
     label = _('Publication')
 
 
+class PublishMenu(MenuItem):
+    grok.adapts(ContentMenu, silvainterfaces.IVersionedContent)
+    grok.require('silva.ChangeSilvaContent')
+    grok.order(30)
+    name = _('Publish')
+
+    screen = Publish
+
+
 class PublicationInfo(silvaviews.Viewlet):
     grok.context(silvainterfaces.IVersionedContent)
-    grok.view(PublishTab)
+    grok.view(Publish)
     grok.viewletmanager(silvaforms.SMIFormPortlets)
 
     def update(self):
@@ -150,7 +152,7 @@ class RequestApprovalAction(PublicationAction):
 
 class RequestApprovalForm(silvaforms.SMISubForm):
     grok.context(silvainterfaces.IVersionedContent)
-    grok.view(PublishTab)
+    grok.view(Publish)
     grok.order(20)
     fields = autofields.FieldsCollector(IPublicationFields)
     actions = silvaforms.Actions(RequestApprovalAction())
@@ -167,7 +169,7 @@ class RequestApprovalForm(silvaforms.SMISubForm):
             not self.context.is_version_approval_requested()
 
 
-class Publish(PublicationAction):
+class PublishAction(PublicationAction):
 
     title = _('Publish now')
 
@@ -186,7 +188,7 @@ class Publish(PublicationAction):
         return silvaforms.SUCCESS
 
 
-class Approve(PublicationAction):
+class ApproveAction(PublicationAction):
 
     title = _('Approve for future')
 
@@ -208,12 +210,12 @@ class Approve(PublicationAction):
 
 class PublicationForm(silvaforms.SMISubForm):
     grok.context(silvainterfaces.IVersionedContent)
-    grok.view(PublishTab)
+    grok.view(Publish)
     grok.order(20)
     fields = autofields.FieldsCollector(IPublicationFields)
     actions = silvaforms.Actions(
-        Approve(identifier='approve'),
-        Publish(identifier='publish-now'))
+        ApproveAction(identifier='approve'),
+        PublishAction(identifier='publish-now'))
 
     label = _('Publish new version')
 
@@ -240,7 +242,7 @@ class RequestApprovalMessage(autofields.AutoFields):
 class PendingApprovalRequestForm(silvaforms.SMISubForm):
     grok.baseclass()
     grok.context(silvainterfaces.IVersionedContent)
-    grok.view(PublishTab)
+    grok.view(Publish)
     grok.order(20)
 
     def available(self):
@@ -321,7 +323,7 @@ class ManualCloseForm(silvaforms.SMISubForm):
     """ Close the public version.
     """
     grok.context(silvainterfaces.IVersionedContent)
-    grok.view(PublishTab)
+    grok.view(Publish)
     grok.order(30)
 
     label = _('Manual close')
@@ -416,14 +418,12 @@ class PublicationStatusInfo(grok.Adapter):
 #     pass
 
 
-class CopyForEditing(silvaforms.Action):
+class CopyForEditingAction(silvaforms.Action):
     """ copy a version to use as new editable version
     """
     title = _('Copy for editing')
     description = _('create a new editable version of '
                     'the selected old one')
-    accesskey = 'f'
-
     def __call__(self, form, content, line):
         try:
             content.copy_version_for_editing()
@@ -435,7 +435,7 @@ class CopyForEditing(silvaforms.Action):
             return silvaforms.FAILURE
 
 
-class DeleteVersion(silvaforms.Action):
+class DeleteVersionAction(silvaforms.Action):
     """ permanently remove version
     """
     grok.implements(IRemoverAction)
@@ -465,7 +465,7 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     """ Manage versions.
     """
     grok.context(silvainterfaces.IVersionedContent)
-    grok.view(PublishTab)
+    grok.view(Publish)
     grok.order(30)
 
     label = _(u"Manage versions")
@@ -476,8 +476,8 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
 
     tableFields = silvaforms.Fields(IPublicationStatusInfo)
     tableActions = silvaforms.TableActions(
-        DeleteVersion(identifier='delete'),
-        CopyForEditing(identifier='copy'))
+        DeleteVersionAction(identifier='delete'),
+        CopyForEditingAction(identifier='copy'))
 
     def getItems(self):
         version_manager = silvainterfaces.IVersionManagement(self.context)

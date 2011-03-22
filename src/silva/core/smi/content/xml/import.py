@@ -10,18 +10,12 @@ from silva.core.conf import schema as silvaschema
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
 from silva.translations import translate as _
-from silva.ui.menu import ContentMenu, MenuItem
+from silva.ui.menu import MenuItem
+from silva.core.smi.content import ContainerMenu
+from silva.ui.rest.container import Container
 from zeam.form import silva as silvaforms
 from zope import schema
 from zope.interface import Interface
-
-
-class ImportMenu(MenuItem):
-    grok.adapts(ContentMenu, IContainer)
-    grok.order(80)
-    grok.require('silva.ManageSilvaContentSettings')
-    name = _(u'Import')
-    screen = 'import'
 
 
 class IImportFields(Interface):
@@ -56,8 +50,8 @@ class IImportFields(Interface):
 class ImportForm(silvaforms.SMIForm):
     """Import the content of a file in Silva.
     """
-    grok.context(IContainer)
-    grok.name('silva.ui.import')
+    grok.adapts(Container, IContainer)
+    grok.name('import')
     grok.require('silva.ManageSilvaContentSettings')
 
     label = _(u"Import and extract ZIP archive")
@@ -98,3 +92,11 @@ class ImportForm(silvaforms.SMIForm):
                       mapping={'failed': ', '.join(failures)}),
                     type=u"error")
 
+
+class ImportMenu(MenuItem):
+    grok.adapts(ContainerMenu, IContainer)
+    grok.order(80)
+    grok.require('silva.ManageSilvaContentSettings')
+    name = _(u'Import')
+
+    screen = ImportForm

@@ -5,7 +5,7 @@ from five import grok
 from silva.core.interfaces import IContainer, IRoot, IAddableContents
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem
-from silva.core.smi.settings import SettingsMenu
+from silva.core.smi.settings import SettingsMenu, Settings
 from zeam.form import silva as silvaforms
 from zope import schema
 from zope.interface import Interface
@@ -55,11 +55,11 @@ class IAddablesSchema(Interface):
         value_type=schema.Choice(source=addables_content_types))
 
 
-class AddablesTab(silvaforms.SMIForm):
+class Addables(silvaforms.SMIForm):
     """Control addables for silva containers.
     """
-    grok.context(IContainer)
-    grok.name('silva.ui.addables')
+    grok.adapts(Settings, IContainer)
+    grok.name('addables')
     grok.require('silva.ManageSilvaContentSettings')
 
     label = _(u"Addable settings")

@@ -10,7 +10,7 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 from silva.ui.menu import MenuItem
-from silva.core.smi.settings import SettingsMenu
+from silva.core.smi.settings import SettingsMenu, Settings
 from silva.core.interfaces import ISilvaObject
 from silva.core.layout.interfaces import IMarkManager
 from silva.translations import translate as _
@@ -30,8 +30,8 @@ class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     """This form lets you add and remove customization markers for the
     current content.
     """
-    grok.context(ISilvaObject)
-    grok.name('silva.ui.customization')
+    grok.adapts(Settings, ISilvaObject)
+    grok.name('customization')
     grok.require('silva.ManageSilvaContent')
 
     label = _(u"Customization markers")

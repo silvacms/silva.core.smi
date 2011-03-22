@@ -12,7 +12,7 @@ from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
 from silva.core.services.interfaces import IMemberService, MemberLookupError
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem
-from silva.core.smi.settings import SettingsMenu
+from silva.core.smi.settings import SettingsMenu, Settings
 from zeam.form import silva as silvaforms
 from zope import interface, schema, component
 from zope.cachedescriptors.property import CachedProperty
@@ -33,11 +33,11 @@ class AccessMenu(MenuItem):
     screen = 'access'
 
 
-class AccessTab(silvaforms.SMIComposedForm):
+class Access(silvaforms.SMIComposedForm):
     """Control access to Silva.
     """
-    grok.context(ISilvaObject)
-    grok.name('silva.ui.access')
+    grok.adapts(Settings, ISilvaObject)
+    grok.name('access')
     grok.require('silva.ChangeSilvaAccess')
 
     label = _(u"Manage access to content")
@@ -125,7 +125,7 @@ class LookupUserForm(silvaforms.RESTPopupForm):
 class UserRole(silvaforms.SMISubFormGroup):
     grok.context(ISilvaObject)
     grok.order(20)
-    grok.view(AccessTab)
+    grok.view(Access)
 
     #label = _(u'manage users roles')
     #description = _(u"Find, add and remove roles for users.")
@@ -316,7 +316,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     """
     grok.context(ISilvaObject)
     grok.order(100)
-    grok.view(AccessTab)
+    grok.view(Access)
 
     label = _(u"public view access restriction")
     description = _(u"Setting an access restriction here affects "
