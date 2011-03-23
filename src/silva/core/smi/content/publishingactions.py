@@ -4,6 +4,7 @@
 
 from AccessControl import getSecurityManager
 
+from infrae.rest import lookupREST
 from five import grok
 from zope.component import getMultiAdapter, getUtility
 
@@ -52,13 +53,12 @@ class PublicationAction(UIREST):
                 'notifications': self.get_notifications()})
 
         # Refresh screen on success
-        # XXX need an API for that
-        # XXX need to check if we are on the content.
-        screen = "silva.ui." + self.request.form.get('screen', 'content')
-        content = getMultiAdapter((self.context, self.request), name=screen)
-        content.__parent__ = self.context
-        content.__name__ = screen
-        return content.GET()
+        path = self.request.form.get('screen', 'content').split('/')
+        component = lookupREST(self.context, self.request, 'silva.ui')
+        while path:
+            part = path.pop(0)
+            component = component.publishTraverse(self.request, part)
+        return component.GET()
 
 
 class NewVersionMenu(PublicationMenuItem):
