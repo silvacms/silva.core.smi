@@ -7,9 +7,10 @@ from five import grok
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
-from silva.core.interfaces import IContainer, IContainerManager
+from silva.core.messages.interfaces import IMessageService
+from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
 from silva.core.interfaces import IPublicationWorkflow, PublicationWorkflowError
-from silva.ui.rest.base import Screen, PageREST
+from silva.ui.rest.base import Screen, PageREST, UIREST
 from silva.ui.rest.container import ContentSerializer, ContentCounter, ActionREST
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
 from silva.translations import translate as _
@@ -147,8 +148,7 @@ class PasteActionREST(ActionREST):
                 _(u'Could not move ${not_moved}.',
                   mapping={'not_moved': moved_failures}))
 
-        # Response
-        return {'clear_clipboard': True}
+        return {}
 
 
 class PasteAsGhostActionREST(ActionREST):
@@ -352,3 +352,41 @@ class NewVersionActionREST(ActionREST):
 
         return {}
 
+
+class Order(UIREST):
+    grok.context(IContainer)
+    grok.name('silva.ui.listing.order')
+    grok.require('silva.ChangeSilvaContent')
+
+    def get_integer(self, name):
+        try:
+            return int(self.request.form.get(name, '-1'))
+        except ValueError:
+            return -1
+
+    def notify(self, message, type=u""):
+        service = getUtility(IMessageService)
+        service.send(message, self.request, namespace=type)
+
+    def POST(self):
+        position = self.get_integer('position')
+        content = self.get_integer('content')
+
+        if (position >= 0 and content >= 0 and
+            IOrderManager(self.context).move(
+                getUtility(IIntIds).getObject(content),
+                position)):
+            status = 'success'
+            self.notify(
+                _(u'Content moved in position ${position}',
+                  mapping={'position': position + 1}),
+                type='feedback')
+        else:
+            status = 'failure'
+            self.notify(
+                _(u'Could not move content in position ${position}',
+                  mapping={'position': position + 1}),
+                type='error')
+
+        return self.json_response({
+                'status': status, 'notifications': self.get_notifications()})
