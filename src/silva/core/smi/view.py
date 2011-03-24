@@ -18,6 +18,7 @@ class DisplayMenu(MenuItem):
     name = _('View')
     description = _(u'view content in a new window')
     action = 'view'
+    accesskey = u';'
 
 
 class ViewREST(UIREST):
