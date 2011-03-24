@@ -6,7 +6,7 @@ from AccessControl import getSecurityManager
 
 from infrae.rest import lookupREST
 from five import grok
-from zope.component import getMultiAdapter, getUtility
+from zope.component import getUtility
 
 from silva.core.interfaces import IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow
@@ -67,6 +67,7 @@ class NewVersionMenu(PublicationMenuItem):
     name = _(u'New version')
     description = _(u'work on a new version while the previous stays online')
     action = 'newversion'
+    accesskey = u'n'
 
     def available(self):
         return self.content.get_editable() is None
@@ -86,6 +87,7 @@ class RequestApprovalMenu(PublicationMenuItem):
     name = _(u'Request Approval')
     description = _(u'request approval for immediate publication')
     action = 'requestapproval'
+    accesskey = u'r'
 
     def available(self):
         return bool(not self.can_approve_content() and
@@ -109,6 +111,7 @@ class WithdrawApprovalRequestMenu(PublicationMenuItem):
     name = _(u'Withdraw Request')
     description = _(u'withdraw a request for approval')
     action = 'withdrawrequest'
+    accesskey = u'w'
 
     def available(self):
         return bool(not self.can_approve_content() and
@@ -130,6 +133,7 @@ class RejectApprovalRequestMenu(PublicationMenuItem):
     name = _(u'Reject Request')
     description = _(u'reject a request for approval')
     action = 'rejectrequest'
+    accesskey = u'w'
 
     def available(self):
         return bool(self.can_approve_content() and
@@ -151,6 +155,7 @@ class RevokeApprovalMenu(PublicationMenuItem):
     name = _(u'Revoke Approval')
     description = _(u'un-approve this version in order to edit it')
     action = 'revokeapproval'
+    accesskey = u'r'
 
     def available(self):
         return bool(self.content.get_approved_version())
@@ -170,6 +175,7 @@ class PublishMenu(PublicationMenuItem):
     name = _(u'Publish Now')
     description = _(u'publish now this content')
     action = 'publish'
+    accesskey = u'p'
 
     def available(self):
         return bool(self.can_approve_content() and
