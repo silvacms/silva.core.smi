@@ -7,20 +7,27 @@ from five import grok
 from zope.component import queryUtility
 from zope.component.interfaces import IFactory
 
-from zExceptions import NotFound
-
-from infrae.rest import REST
 from silva.core.interfaces import IAddableContents
 from silva.core.interfaces import IContainer
 from silva.translations import translate as _
-from silva.ui.rest import Screen
+from silva.ui.rest import Screen, PageWithTemplateREST
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
 
+from Products.Silva.ExtensionRegistry import extensionRegistry
 
-class Adding(REST):
+
+class Adding(PageWithTemplateREST):
     grok.adapts(Screen, IContainer)
     grok.name('adding')
     grok.require('silva.ChangeSilvaContent')
+
+    def update(self):
+        self.addables = []
+        for addable in IAddableContents(self.context).get_container_addables():
+            info = extensionRegistry.get_addable(addable)
+            self.addables.append({'name': addable,
+                                  'screen': '/'.join(('adding', addable)),
+                                  'description': info['doc']})
 
     def publishTraverse(self, request, name):
         addables = IAddableContents(self.context).get_container_addables()
@@ -32,7 +39,7 @@ class Adding(REST):
                 factory.__name__ = '/'.join((self.__name__, name))
                 factory.__parent__ = self
                 return factory
-        raise NotFound(name)
+        return super(Adding, self).publishTraverse(request, name)
 
 
 class AddMenu(ExpendableMenuItem):
