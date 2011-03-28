@@ -100,13 +100,12 @@ class PasteActionREST(ActionREST):
 
         with manager.copier() as copier:
             for identifier, content in self.get_selected_content('copied'):
-                is_new, copy = copier.add(content)
+                copy = copier.add(content)
                 if copy is None:
                     copied_failures.append(content)
                 else:
                     copied_success.append(copy)
-                    if is_new:
-                        self.add_to_listing(copy)
+                    self.add_to_listing(copy)
 
         with manager.mover() as mover:
             for identifier, content in self.get_selected_content('cutted'):
