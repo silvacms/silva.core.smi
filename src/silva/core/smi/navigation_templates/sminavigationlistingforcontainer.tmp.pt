@@ -1,0 +1,44 @@
+<tr tal:repeat="item_indent provider/items">
+  <td tal:attributes="class python:provider.get_item_class(item)"
+    tal:define="
+      item python:item_indent[1];
+      indent python:item_indent[0];
+      item_url item/absolute_url;
+      item_tab_url python:provider.get_item_tab_url(item);
+      status_style python:item.get_object_status()[1];
+      is_default
+      ">
+  <a class="right slide-links"
+    title="slide to the publish screen"
+    tal:attributes="href string:${item_url}/edit/tab_status"
+    i18n:attributes="title">
+    &nbsp;
+  </a>
+  <a class="left slide-links"
+    title="slide to the contents screen"
+    tal:attributes="href string:${item_url}/edit"
+    i18n:attributes="title">
+    &nbsp;
+  </a>
+  <a class="navicon"
+    tal:attributes="
+      href  string:${item_tab_url};
+      style python:'padding-left:'+str((indent + 1) * 10)+'px';
+      title item/meta_type;
+    "
+    i18n:attributes="title">
+    <img tal:attributes="
+      src python:provider.get_icon_url(item);
+      alt item/meta_type" />
+  </a>
+  <div class="normal">
+    <a class="blacklink"
+      tal:attributes="
+        href string:${item_tab_url};
+        title string:id: ${item/id};"
+      tal:content="python: provider.get_item_title(item)">
+      title
+    </a>
+  </div>
+  </td>
+</tr>
