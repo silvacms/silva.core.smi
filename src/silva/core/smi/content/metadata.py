@@ -7,7 +7,8 @@ from five import grok
 from zope import component
 from zope.traversing.browser import absoluteURL
 
-from silva.core.interfaces import ISilvaObject, IVersion, IVersionedContent
+from silva.core.interfaces import (ISilvaObject, IVersion, IVersionedContent,
+    IAuthorizationManager)
 from silva.core.references.interfaces import IReferenceService
 from silva.core.views import views as silvaviews
 from silva.core.views.interfaces import ISilvaURL
@@ -89,7 +90,7 @@ class MetadataForm(silvaforms.SMISubForm):
         self.binding = self.metadata_service.getMetadata(self.getContent())
         self.binding_cache = BindingCache(self.binding)
         self.aquired_items = self.binding.listAcquired()
-        self.user_roles = self.context.sec_get_all_roles()
+        self.user_role = IAuthorizationManager(self.context).get_user_role()
         self.errors = False
         self.set_names = self.binding.getSetNames(category=self.category)
 
@@ -125,9 +126,7 @@ class MetadataForm(silvaforms.SMISubForm):
         return bound_element.isAcquireable()
 
     def is_element_editable(self, set_name, element_name):
-        at_least_author = [role for role in self.user_roles
-                           if is_role_greater_or_equal(role, 'Author')]
-        if not at_least_author:
+        if not is_role_greater_or_equal(self.user_role, 'Author'):
             return False
         # XXX: hack - this check should go in the element's guard
         if set_name == 'silva-content':
@@ -160,9 +159,8 @@ class MetadataForm(silvaforms.SMISubForm):
         minimal_role = self.binding.getSet(set_name).getMinimalRole()
         if not minimal_role:
             return True
-        for role in self.user_roles:
-            if is_role_greater_or_equal(role, minimal_role):
-                return True
+        if is_role_greater_or_equal(self.user_role, minimal_role):
+            return True
         return False
 
 
