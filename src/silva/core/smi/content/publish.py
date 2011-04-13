@@ -20,6 +20,7 @@ from zeam.form import autofields
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
 from zeam.form.ztk.actions import EditAction
+from zeam.form.base import makeAdaptiveDataManager
 
 # TODO
 # - messages
@@ -84,8 +85,8 @@ class IPublicationMessage(Interface):
 
 
 class VersionPublication(grok.Adapter):
-    grok.context(IVersioning)
-    grok.implements(IPublicationInformation)
+    grok.context(IVersionedContent)
+    grok.implements(IPublicationFields)
 
     def get_expiration_datetime(self):
         return self.context.get_unapproved_version_expiration_datetime()
@@ -104,7 +105,7 @@ class VersionPublication(grok.Adapter):
     expiration_datetime = property(
         get_expiration_datetime, set_expiration_datetime)
     publication_datetime = property(
-        get_publication_datetime, set_expiration_datetime)
+        get_publication_datetime, set_publication_datetime)
 
 
 class MessagePublication(object):
@@ -182,7 +183,7 @@ class PublishAction(PublicationAction):
 
     def execute(self, form, content, data):
         try:
-            IPublicationWorkflow(content).approve()
+            IPublicationWorkflow(form.context).approve()
         except PublicationWorkflowError as e:
             form.send_message(e.message, type='error')
             return silvaforms.FAILURE
@@ -202,7 +203,8 @@ class ApproveAction(PublicationAction):
     def execute(self, form, content, data):
         try:
             # XXX approve here should take the publication datetime but doesnt !
-            IPublicationWorkflow(content).approve()
+            IPublicationWorkflow(form.context).approve(
+                time=data.get('publication_datetime'))
         except PublicationWorkflowError as e:
             form.send_message(e.message, type='error')
             return silvaforms.FAILURE
@@ -214,6 +216,9 @@ class PublicationForm(silvaforms.SMISubForm):
     grok.context(IVersionedContent)
     grok.view(Publish)
     grok.order(20)
+
+    dataManager = makeAdaptiveDataManager(IPublicationFields)
+
     fields = autofields.FieldsCollector(IPublicationFields)
     actions = silvaforms.Actions(
         ApproveAction(identifier='approve'),
