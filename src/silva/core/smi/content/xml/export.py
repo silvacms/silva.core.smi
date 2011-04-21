@@ -5,31 +5,28 @@ import urllib
 from datetime import datetime
 
 from five import grok
-from zope import schema, component
+from zope import schema
+from zope.component import getUtility
 from zope.interface import Interface
 from zope.schema.interfaces import IContextSourceBinder
 
-from silva.core.interfaces import IContainer
+from silva.core.interfaces import IContainer, IContentExporterRegistry
 from silva.core.smi.content.container import ContainerMenu, Container
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem
 from silva.ui.rest import REST
 from zeam.form import silva as silvaforms
 
-from Products.Silva.utility.interfaces import IExportUtility
 from Products.Silva.silvaxml import xmlexport
 from zExceptions import BadRequest
 
 
 @grok.provider(IContextSourceBinder)
 def export_formats(context):
-    utility = component.getUtility(IExportUtility)
-    return utility.listContentExporter(context)
-
+    return getUtility(IContentExporterRegistry).list(context)
 
 def default_format(form):
-    exporters = component.getUtility(IExportUtility).\
-        listContentExporter(form.context)
+    exporters = getUtility(IContentExporterRegistry).list(form.context)
     if len(exporters) > 0:
         return list(exporters)[0].token
 
@@ -113,8 +110,7 @@ class ExportDownload(REST):
         settings.setLastVersion(
             data.getWithDefault('export_newest_version_only'))
 
-        utility = component.getUtility(IExportUtility)
-        exporter = utility.createContentExporter(
+        exporter = getUtility(IContentExporterRegistry).create(
             form.context, data.getWithDefault('export_format'))
         self.filename = '%s_export_%s.%s' % (
             form.context.id,
