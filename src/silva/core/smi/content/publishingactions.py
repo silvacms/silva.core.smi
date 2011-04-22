@@ -137,7 +137,7 @@ class RejectApprovalRequestMenu(PublicationMenuItem):
 
     def available(self):
         return bool(self.can_approve_content() and
-                    self.content.is_version_approval_requested())
+                    self.content.is_approval_requested())
 
 
 class RejectApprovalRequestAction(PublicationAction):
