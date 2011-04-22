@@ -92,7 +92,7 @@ class RequestApprovalMenu(PublicationMenuItem):
     def available(self):
         return bool(not self.can_approve_content() and
                     self.content.get_unapproved_version() is not None and
-                    not self.content.is_version_approval_requested())
+                    not self.content.is_approval_requested())
 
 
 class RequestApprovalAction(PublicationAction):
@@ -115,7 +115,7 @@ class WithdrawApprovalRequestMenu(PublicationMenuItem):
 
     def available(self):
         return bool(not self.can_approve_content() and
-                    self.content.is_version_approval_requested())
+                    self.content.is_approval_requested())
 
 
 class WithdrawApprovalRequestAction(PublicationAction):
