@@ -49,10 +49,16 @@ class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
         self.is_root = IRoot.providedBy(self.tree_root)
 
     def up_url(self):
-        return '%s/../edit/%s' % (self.context_url, self.view.tab_name,)
+        if self.context_url.endswith('/'):
+            return '%s../edit/%s' % (self.context_url, self.view.tab_name,)
+        else:
+            return '%s/../edit/%s' % (self.context_url, self.view.tab_name,)
 
     def top_url(self):
-        return '%s/edit/%s' % (self.layout.root_url, self.view.tab_name,)
+        if self.layout.root_url.endswith('/'):
+            return '%sedit/%s' % (self.layout.root_url, self.view.tab_name,)
+        else:
+            return '%s/edit/%s' % (self.layout.root_url, self.view.tab_name,)
 
     def top_image_src(self):
         return self.layout.static['up_publication.gif']()

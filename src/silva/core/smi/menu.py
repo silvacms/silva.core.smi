@@ -119,7 +119,7 @@ class SMITopMenuItem(SMIMenuItem):
     def toplink_url(self):
         if not IRoot.providedBy(self.context):
             publication = aq_parent(self.context).get_publication()
-            return "%s/edit/%s" % (
+            return "%sedit/%s" % (
                 absoluteURL(publication, self.request), self.path)
         return None
 
@@ -132,7 +132,7 @@ class SMITopMenuItem(SMIMenuItem):
     def uplink_url(self):
         if not IRoot.providedBy(self.context):
             parent = aq_parent(self.context)
-            return "%s/edit/%s" % (
+            return "%sedit/%s" % (
                 absoluteURL(parent, self.request), self.path)
         return None
 
