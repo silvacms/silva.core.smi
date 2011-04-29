@@ -258,11 +258,8 @@ class SMIMiddleGroundButton(silvaviews.Viewlet):
     accesskey = None
 
     def url(self):
-        url = absoluteURL(self.context, self.request)
-        if not url.endswith('/'):
-            url += '/'
         return ''.join(
-            (absoluteURL(self.context, self.request), 'edit/', self.tab))
+            (absoluteURL(self.context, self.request), '/edit/', self.tab))
 
     def formatedLabel(self):
         return translate(self.label, context=self.request) + '...'
