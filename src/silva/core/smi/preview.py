@@ -12,12 +12,6 @@ from silva.ui.rest import PageREST, Screen
 from zope.component import getMultiAdapter
 
 
-class PreviewMenu(MenuItem):
-    grok.adapts(ViewMenu, ISilvaObject)
-    grok.order(10)
-    name = _('Preview')
-    screen = 'preview'
-
 
 class Preview(PageREST):
     grok.adapts(Screen, ISilvaObject)
@@ -38,3 +32,10 @@ class DirectlyRenderedPreview(PageREST):
     def payload(self):
         return {"ifaces": ["preview"],
                 "html": self.context.preview()}
+
+
+class PreviewMenu(MenuItem):
+    grok.adapts(ViewMenu, ISilvaObject)
+    grok.order(10)
+    name = _('Preview')
+    screen = Preview
