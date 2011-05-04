@@ -4,6 +4,7 @@
 # $Id$
 
 from AccessControl import getSecurityManager
+from AccessControl.User import nobody
 
 from five import grok
 from silva.core.interfaces import ISilvaObject
@@ -17,6 +18,8 @@ from zope import schema, interface
 from zope.component import getUtility
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+from zExceptions import Unauthorized
+
 
 from silva.pas.base.interfaces import IFormFieldFactory
 
@@ -117,7 +120,10 @@ class UserInfo(silvaforms.RESTPopupForm):
            zeam form types do.  processForm is called before anything else,
            so override it here to do some field cleanup and such"""
         service = getUtility(IMemberService)
-        self.member = service.get_member(getSecurityManager().getUser().getId())
+        user = getSecurityManager().getUser()
+        if user == nobody:
+            raise Unauthorized()
+        self.member = service.get_member(user.getId())
         #different member types may have a different schema
         self.fields = IFormFieldFactory(self.member).get_fields()
         return super(UserInfo, self).processForm()
