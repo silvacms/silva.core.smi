@@ -65,7 +65,6 @@ class DeleteActionREST(ActionREST):
             for identifier, content in self.get_selected_content():
                 if deleter.add(content):
                     success.append(content)
-                    self.remove_from_listing(identifier)
                 else:
                     failures.append(content)
 
@@ -105,7 +104,6 @@ class PasteActionREST(ActionREST):
                     copied_failures.append(content)
                 else:
                     copied_success.append(copy)
-                    self.add_to_listing(copy)
 
         with manager.mover() as mover:
             for identifier, content in self.get_selected_content('cutted'):
@@ -114,7 +112,6 @@ class PasteActionREST(ActionREST):
                     moved_failures.append(content)
                 else:
                     moved_success.append(moved_content)
-                    self.add_to_listing(moved_content)
 
         # Notifications
         if copied_success:
@@ -165,7 +162,6 @@ class PasteAsGhostActionREST(ActionREST):
                     failures.append(content)
                 else:
                     success.append(ghost)
-                    self.add_to_listing(ghost)
 
         # Notifications
         if success:
@@ -209,8 +205,6 @@ class RenameActionREST(ActionREST):
                     failures.append(content)
                 else:
                     success.append(renamed_content)
-                    self.remove_from_listing(id)
-                    self.add_to_listing(renamed_content)
 
         # Notifications
         if success:
@@ -246,8 +240,6 @@ class PublishActionREST(ActionREST):
                 except PublicationWorkflowError:
                     failures.append(content)
                 else:
-                    if identifier is not None:
-                        self.update_in_listing(content)
                     success.append(content)
             else:
                 failures.append(content)
@@ -286,8 +278,6 @@ class CloseActionREST(ActionREST):
                 except PublicationWorkflowError:
                     failures.append(content)
                 else:
-                    if identifier is not None:
-                        self.update_in_listing(content)
                     success.append(content)
             else:
                 failures.append(content)
@@ -326,7 +316,6 @@ class NewVersionActionREST(ActionREST):
                 except PublicationWorkflowError:
                     failures.append(content)
                 else:
-                    self.update_in_listing(content)
                     success.append(content)
             else:
                 failures.append(content)
