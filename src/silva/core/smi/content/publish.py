@@ -169,7 +169,7 @@ class RequestApprovalForm(silvaforms.SMISubForm):
         if checkPermission('silva.ApproveSilvaContent', self.context):
             return False
         return bool(self.context.get_unapproved_version()) and \
-            not self.context.is_version_approval_requested()
+            not self.context.is_approval_requested()
 
 
 class PublishAction(PublicationAction):
@@ -257,7 +257,7 @@ class PendingApprovalRequestForm(silvaforms.SMISubForm):
         the current user can directly approve the content
         """
         return bool(self.context.get_unapproved_version()) and \
-            self.context.is_version_approval_requested()
+            self.context.is_approval_requested()
 
 
 class IWithdrawalMessage(Interface):
