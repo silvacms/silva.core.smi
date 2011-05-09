@@ -1,4 +1,4 @@
-<div class="portlet" i18n:domain="silva">
+<div class="portlet references" i18n:domain="silva">
   <h4 title="List of contents that refer to this content"
     i18n:attributes="title">
     References
@@ -9,25 +9,24 @@
     <span i18n:name="content_type" tal:replace="context.meta_type" />.
   </p>
   <tal:references tal:condition="viewlet.references">
-    <p>This content is referenced by:</p>
-    <div class="refitem"
+    <p i18n:translate="">This content is referenced by:</p>
+    <div class="item"
       tal:repeat="reference viewlet.references">
-      <a title="edit content"
-        tal:attributes="href reference.edit_url"
-        i18n:attributes="title">
+      <a title="edit content" rel="content" class="open-screen"
+         i18n:attributes="title"
+         tal:attributes="href reference.path">
         <img class="icon" alt="edit content"
-          height="16" width="16" style="float:right"
-          i18n:attributes="alt"
-          tal:attributes="src static['edit.png']()"
-        />
+             height="16" width="16" style="float:right"
+             i18n:attributes="alt"
+             tal:attributes="src static['edit.png']()"
+             />
       </a>
       <a tal:attributes="href reference.url;
                          title reference.path">
         <img class="icon" alt="view content"
-          height="16" width="16"
-          i18n:attributes="alt"
-          tal:attributes="src reference.icon"
-        />
+             height="16" width="16" style="float:left"
+             i18n:attributes="alt"
+             tal:attributes="src reference.icon" />
         <p tal:content="reference.title"/>
       </a>
     </div>

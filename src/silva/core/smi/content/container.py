@@ -377,3 +377,4 @@ class Order(UIREST):
 
         return self.json_response({
                 'status': status, 'notifications': self.get_notifications()})
+

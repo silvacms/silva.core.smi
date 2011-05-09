@@ -8,7 +8,7 @@ from datetime import datetime
 from AccessControl.security import checkPermission
 
 from Products.Silva.Versioning import VersioningError
-from silva.core.interfaces import IVersion, IVersionManager
+from silva.core.interfaces import IVersion, IVersionManager, IContainer
 from silva.core.interfaces import IVersioning, IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow, PublicationWorkflowError
 from silva.core.smi.widgets.zeamform import PublicationStatus
@@ -230,6 +230,16 @@ class PublicationForm(silvaforms.SMISubForm):
         return bool(
             checkPermission('silva.ApproveSilvaContent', self.context) and
             self.context.get_unapproved_version())
+
+
+class ApproveForFuturePopupForm(silvaforms.RESTPopupForm):
+    grok.context(IContainer)
+    grok.name('silva.core.smi.approveforfuture')
+
+    fields = autofields.FieldsCollector(IPublicationFields)
+    actions = silvaforms.Actions()
+
+    label = _('Approve for future new version')
 
 
 class DefaultRequestApprovalFields(autofields.AutoFields):

@@ -35,7 +35,8 @@
                 required
               </span>
               <span class="form-acquirable"
-                    tal:condition="view.is_element_acquireable(*identifier)">
+                    tal:condition="view.is_element_acquireable(*identifier)"
+                    i18n:translate="">
                 acquirable
               </span>
               <p tal:define="description view.get_element_description(*identifier)"
@@ -50,19 +51,33 @@
                    tal:content="error">
                 Error message
               </div>
-              <tal:empty
-                 tal:condition="not (is_editable or is_acquired)">
-                -
-              </tal:empty>
-              <tal:input
-                 tal:condition="is_editable"
-                 tal:content="structure view.render_element(*identifier)">
-                Widget
-              </tal:input>
-              <p class="form-acquired" tal:condition="is_acquired">
-                <span class="form-acquired-label">Acquired Value:</span>
-                <tal:value tal:replace="structure view.render_element_view(*identifier)" />
-              </p>
+              <tal:value tal:condition="not is_editable">
+                <p class="form-acquired"
+                   tal:omit-tag="not is_acquired"
+                   tal:define="element_view view.render_element_view(*identifier);
+                               element_view_dash element_view or '-'">
+                  <span class="form-acquired-label"
+                        tal:condition="is_acquired"
+                        i18n:translate="">
+                    Acquired Value:
+                  </span>
+                  <tal:value tal:replace="structure element_view_dash" />
+                </p>
+              </tal:value>
+
+              <tal:edit tal:condition="is_editable">
+                <tal:input
+                   tal:content="structure view.render_element(*identifier)">
+                  Widget
+                </tal:input>
+                <p class="form-acquired" tal:condition="is_acquired">
+                  <span class="form-acquired-label"
+                        i18n:translate="">
+                    Acquired Value:
+                  </span>
+                  <tal:value tal:replace="structure view.render_element_view(*identifier)" />
+                </p>
+              </tal:edit>
             </div>
           </tal:field>
         </div>
