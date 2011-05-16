@@ -11,7 +11,7 @@ from silva.core.messages.interfaces import IMessageService
 from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
 from silva.core.interfaces import IPublicationWorkflow, PublicationWorkflowError
 from silva.ui.rest.base import Screen, PageREST, UIREST
-from silva.ui.rest.container import ContentSerializer, ContentCounter, ActionREST
+from silva.ui.rest.container import ContentSerializer, ContentCounter, FolderActionREST
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
 from silva.translations import translate as _
 
@@ -53,7 +53,7 @@ class ContainerMenu(ExpendableMenuItem):
     screen = Container
 
 
-class DeleteActionREST(ActionREST):
+class DeleteActionREST(FolderActionREST):
     grok.name('silva.ui.listing.delete')
 
     def payload(self):
@@ -86,7 +86,7 @@ class DeleteActionREST(ActionREST):
         return {}
 
 
-class PasteActionREST(ActionREST):
+class PasteActionREST(FolderActionREST):
     grok.name('silva.ui.listing.paste')
 
     def payload(self):
@@ -146,7 +146,7 @@ class PasteActionREST(ActionREST):
         return {}
 
 
-class PasteAsGhostActionREST(ActionREST):
+class PasteAsGhostActionREST(FolderActionREST):
     grok.name('silva.ui.listing.pasteasghost')
 
     def payload(self):
@@ -181,7 +181,7 @@ class PasteAsGhostActionREST(ActionREST):
         return {}
 
 
-class RenameActionREST(ActionREST):
+class RenameActionREST(FolderActionREST):
     grok.name('silva.ui.listing.rename')
 
     def payload(self):
@@ -225,7 +225,7 @@ class RenameActionREST(ActionREST):
         return {}
 
 
-class PublishActionREST(ActionREST):
+class PublishActionREST(FolderActionREST):
     grok.name('silva.ui.listing.publish')
 
     def payload(self):
@@ -263,7 +263,7 @@ class PublishActionREST(ActionREST):
         return {}
 
 
-class CloseActionREST(ActionREST):
+class CloseActionREST(FolderActionREST):
     grok.name('silva.ui.listing.close')
 
     def payload(self):
@@ -301,7 +301,7 @@ class CloseActionREST(ActionREST):
         return {}
 
 
-class NewVersionActionREST(ActionREST):
+class NewVersionActionREST(FolderActionREST):
     grok.name('silva.ui.listing.newversion')
 
     def payload(self):
