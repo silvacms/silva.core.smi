@@ -363,18 +363,19 @@ class Order(UIREST):
             IOrderManager(self.context).move(
                 getUtility(IIntIds).getObject(content),
                 position)):
-            status = 'success'
+            success = True
             self.notify(
                 _(u'Content moved in position ${position}',
                   mapping={'position': position + 1}),
                 type='feedback')
         else:
-            status = 'failure'
+            success = False
             self.notify(
                 _(u'Could not move content in position ${position}',
                   mapping={'position': position + 1}),
                 type='error')
 
         return self.json_response({
-                'status': status, 'notifications': self.get_notifications()})
+                'content': success,
+                'notifications': self.get_notifications()})
 
