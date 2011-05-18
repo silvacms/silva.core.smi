@@ -49,6 +49,8 @@ class PublishMenu(MenuItem):
 
 
 class PublicationInfo(silvaviews.Viewlet):
+    """Portlet giving information about the publication status.
+    """
     grok.context(IVersionedContent)
     grok.view(Publish)
     grok.viewletmanager(silvaforms.SMIFormPortlets)
@@ -60,6 +62,13 @@ class PublicationInfo(silvaviews.Viewlet):
             self.context.get_public_version_publication_datetime())
         self.expiration_date = convert(
             self.context.get_public_version_expiration_datetime())
+        self.have_unapproved = self.context.get_unapproved_version() != None
+        self.have_next = self.context.get_next_version() != None
+        self.have_closed = self.context.get_last_closed_version() != None
+        self.have_approved = self.context.is_approved()
+        self.have_published = self.context.is_published()
+        self.may_approve = checkPermission('silva.ApproveSilvaContent', self.context)
+        self.may_change = checkPermission('silva.ChangeSilvaContent', self.context)
 
 
 class IPublicationFields(Interface):
