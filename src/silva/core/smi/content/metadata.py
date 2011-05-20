@@ -27,12 +27,14 @@ class Properties(silvaforms.SMIComposedForm):
     """
     grok.adapts(Screen, ISilvaObject)
     grok.name('properties')
-    label=_('Properties')
+    grok.require('silva.ChangeSilvaContent')
+    label = _('Properties')
 
 
 class PropertiesMenu(MenuItem):
     grok.adapts(ContentMenu, ISilvaObject)
     grok.order(20)
+    grok.require('silva.ChangeSilvaContent')
     name = _('Properties')
     screen = Properties
 

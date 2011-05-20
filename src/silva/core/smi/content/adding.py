@@ -35,6 +35,7 @@ class Adding(REST):
 class AddMenu(ExpendableMenuItem):
     grok.adapts(ContentMenu, IContainer)
     grok.order(15)
+    grok.require('silva.ChangeSilvaContent')
     name = _('Add')
     screen = Adding
 

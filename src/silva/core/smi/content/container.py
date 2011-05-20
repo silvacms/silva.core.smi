@@ -51,6 +51,7 @@ class Container(PageREST):
 class ContainerMenu(ExpendableMenuItem):
     grok.adapts(ContentMenu, IContainer)
     grok.order(10)
+    grok.require('silva.ReadSilvaContent')
     name = _('Content')
     screen = Container
 
