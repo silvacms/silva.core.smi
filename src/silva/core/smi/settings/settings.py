@@ -4,6 +4,7 @@
 from five import grok
 from zope.interface import Interface
 from zope import schema
+from zope.traversing.browser import absoluteURL
 from zeam.form import silva as silvaforms
 
 from silva.core import interfaces
@@ -112,24 +113,36 @@ class ConvertToForm(silvaforms.SMISubForm):
                                  ' to a Publication')
 
 class IActivateFeedsSchema(Interface):
-    feeds = schema.Bool(title=_('Allow feeds'),
+    allow = schema.Bool(title=_('Allow feeds'),
         description=_('Check to provide an Atom / RSS '
                       'feed from this container.'))
+    atom_url = schema.URI(title=_(u"Atom feed URL"), required=False)
+    rss_url = schema.URI(title=_(u"RSS feed URL"), required=False)
 
 
 def get_feeds_status(form):
     return bool(form.context.allow_feeds())
 
-# XXX : this should display url to feeds somewhere. but there is no
-# possibility to put some html in there except overriding template.
-class ActivateFeedsForm(silvaforms.SMISubForm):
+def get_feed_url(name):
+
+    def get_url(form):
+        return '/'.join((absoluteURL(form.context, form.request), name),)
+
+    return get_url
+
+
+class FeedsForm(silvaforms.SMISubForm):
     grok.context(interfaces.IContainer)
     grok.view(OtherSettings)
     grok.order(30)
     grok.require('silva.ManageSilvaContent')
 
     fields = silvaforms.Fields(IActivateFeedsSchema)
-    fields['feeds'].defaultValue = get_feeds_status
+    fields['allow'].defaultValue = get_feeds_status
+    fields['atom_url'].mode = silvaforms.DISPLAY
+    fields['atom_url'].defaultValue = get_feed_url('atom.xml')
+    fields['rss_url'].mode = silvaforms.DISPLAY
+    fields['rss_url'].defaultValue = get_feed_url('rss.xml')
 
     ignoreContent = True
     ignoreRequest = False
@@ -143,7 +156,7 @@ class ActivateFeedsForm(silvaforms.SMISubForm):
         data, errors = self.extractData()
         if errors:
             return silvaforms.FAILURE
-        self.context.set_allow_feeds(data.getWithDefault('feeds'))
+        self.context.set_allow_feeds(data.getWithDefault('allow'))
         self.send_message(_('Feed settings saved.'), type='feedback')
         return silvaforms.SUCCESS
 
