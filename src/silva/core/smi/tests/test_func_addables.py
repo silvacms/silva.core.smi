@@ -5,12 +5,11 @@
 import unittest
 from Products.Silva.testing import FunctionalLayer, smi_settings
 
-
-class AuthorAddablesTestCase(unittest.TestCase):
-    """An author doesn't have any setting tab nor addable one.
+class ChiefEditorAddablesTestCase(unittest.TestCase):
+    """ChiefEditor (and Manager) have a setting tab and a addable one.
     """
     layer = FunctionalLayer
-    username = 'author'
+    username = 'chiefeditor'
 
     def setUp(self):
         self.root = self.layer.get_application()
@@ -23,41 +22,12 @@ class AuthorAddablesTestCase(unittest.TestCase):
         browser.login(self.username)
 
         browser.open('/root/edit')
-        self.assertFalse('settings' in browser.inspect.content_tabs)
-
-
-class EditorAddablesTestCase(AuthorAddablesTestCase):
-    """An editor have a setting tab but no addable.
-    """
-    username = 'editor'
-
-    def test_addables(self):
-        browser = self.layer.get_selenium_browser(smi_settings)
-        browser.login(self.username)
-
-        browser.open('/root/edit')
         self.assertTrue('settings' in browser.inspect.content_tabs)
 
-        browser.inspect.content_tabs['settings'].click()
-        self.assertFalse('addables' in browser.inspect.content_subtabs)
+        self.assertEqual(browser.inspect.content_tabs['settings'].click(), 200)
 
-
-class ChiefEditorAddablesTestCase(EditorAddablesTestCase):
-    """ChiefEditor (and Manager) have a setting tab and a addable one.
-    """
-    username = 'chiefeditor'
-
-    def test_addables(self):
-        browser = self.layer.get_selenium_browser(smi_settings)
-        browser.login(self.username)
-
-        browser.open('/root/edit')
-        self.assertTrue('settings' in browser.inspect.content_tabs)
-
-        browser.inspect.content_tabs['settings'].click()
         self.assertTrue('addables' in browser.inspect.content_subtabs)
-
-        browser.inspect.content_subtabs['addables'].click()
+        self.assertEqual(browser.inspect.content_subtabs['addables'].click(), 200)
 
         # Addables form
         form = browser.get_form('form')
@@ -74,7 +44,7 @@ class ChiefEditorAddablesTestCase(EditorAddablesTestCase):
 
         # Change the addables
         addables.value = ['Silva Folder', 'Silva File', 'Silva Image']
-        browser.inspect.form_controls['save'].click()
+        self.assertEqual(browser.inspect.form_controls['save'].click(), 200)
 
         self.assertItemsEqual(
             browser.inspect.feedback,
@@ -98,7 +68,7 @@ class ChiefEditorAddablesTestCase(EditorAddablesTestCase):
 
         # Visit addable tab on this folder.
         self.assertTrue('content' in browser.inspect.content_tabs)
-        browser.inspect.content_tabs['content'].click()
+        self.assertEqual(browser.inspect.content_tabs['content'].click(), 200)
 
         # We have one folder, with an addable tab as well
         self.assertEqual(browser.inspect.folder_identifier, ['folder'])
@@ -113,11 +83,9 @@ class ChiefEditorAddablesTestCase(EditorAddablesTestCase):
             ['Silva Folder', 'Silva File', 'Silva Image'])
 
         self.assertTrue('settings' in browser.inspect.content_tabs)
-
-        browser.inspect.content_tabs['settings'].click()
+        self.assertEqual(browser.inspect.content_tabs['settings'].click(), 200)
         self.assertTrue('addables' in browser.inspect.content_subtabs)
-
-        browser.inspect.content_subtabs['addables'].click()
+        self.assertEqual(browser.inspect.content_subtabs['addables'].click(), 200)
 
         # There is a form, where settings are acquired.
         form = browser.get_form('form')
@@ -133,7 +101,7 @@ class ChiefEditorAddablesTestCase(EditorAddablesTestCase):
         form.get_control('form.field.acquire').checked = False
         form.get_control('form.field.addables').value = [
             'Silva Folder', 'Silva Link', 'Silva AutoTOC']
-        browser.inspect.form_controls['save'].click()
+        self.assertEqual(browser.inspect.form_controls['save'].click(), 200)
 
         self.assertItemsEqual(
             browser.inspect.feedback,
@@ -162,8 +130,6 @@ class ManagerAddablesTestCase(ChiefEditorAddablesTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AuthorAddablesTestCase))
-    suite.addTest(unittest.makeSuite(EditorAddablesTestCase))
     suite.addTest(unittest.makeSuite(ChiefEditorAddablesTestCase))
     suite.addTest(unittest.makeSuite(ManagerAddablesTestCase))
     return suite

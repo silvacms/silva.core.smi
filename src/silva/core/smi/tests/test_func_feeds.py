@@ -30,16 +30,16 @@ class FeedsTestCase(unittest.TestCase):
         browser.open('/root/folder/edit')
 
         self.assertTrue('settings' in browser.inspect.content_tabs)
-        browser.inspect.content_tabs['settings'].click()
+        self.assertEqual(browser.inspect.content_tabs['settings'].click(), 200)
         self.assertTrue('settings' in browser.inspect.content_subtabs)
-        browser.inspect.content_subtabs['settings'].click()
+        self.assertEqual(browser.inspect.content_subtabs['settings'].click(), 200)
 
         form = browser.get_form('form.feedsform')
         allow = form.get_control('form.feedsform.field.allow')
         self.assertEqual(allow.checked, False)
         allow.checked = True
         self.assertTrue('Change feed settings' in browser.inspect.form_controls)
-        browser.inspect.form_controls['change feed settings'].click()
+        self.assertEqual(browser.inspect.form_controls['change feed settings'].click(), 200)
         self.assertEqual(browser.inspect.feedback, ['Feed settings saved.'])
 
         # Now feeds works
