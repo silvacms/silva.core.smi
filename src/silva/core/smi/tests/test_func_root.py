@@ -8,7 +8,7 @@ import unittest
 from Products.Silva.testing import FunctionalLayer, smi_settings
 
 
-class ReaderTestCase(unittest.TestCase):
+class ReaderRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def test_root(self):
@@ -18,6 +18,7 @@ class ReaderTestCase(unittest.TestCase):
         browser.login('reader')
 
         browser.open('/root/edit')
+        self.assertEqual(browser.inspect.content_title, [u"root"])
         self.assertEqual(browser.inspect.content_tabs, ['Content'])
         self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
 
@@ -31,7 +32,7 @@ class ReaderTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.content_activetabs, ['Content'])
 
 
-class AuthorTestCase(unittest.TestCase):
+class AuthorRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def test_root(self):
@@ -41,6 +42,7 @@ class AuthorTestCase(unittest.TestCase):
         browser.login('author')
 
         browser.open('/root/edit')
+        self.assertEqual(browser.inspect.content_title, [u"root"])
         self.assertEqual(browser.inspect.content_tabs, ['Content', 'Add', 'Properties'])
         self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
 
@@ -56,7 +58,7 @@ class AuthorTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.content_activetabs, ['Properties'])
 
 
-class EditorTestCase(unittest.TestCase):
+class EditorRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def test_root(self):
@@ -66,6 +68,7 @@ class EditorTestCase(unittest.TestCase):
         browser.login('editor')
 
         browser.open('/root/edit')
+        self.assertEqual(browser.inspect.content_title, [u"root"])
         self.assertEqual(browser.inspect.content_tabs, ['Content', 'Add', 'Properties', 'Settings'])
         self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
 
@@ -83,7 +86,7 @@ class EditorTestCase(unittest.TestCase):
         # XXX Settings.
         # An editor can change the skin.
 
-class ChiefEditorTestCase(unittest.TestCase):
+class ChiefEditorRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def test_root(self):
@@ -93,6 +96,7 @@ class ChiefEditorTestCase(unittest.TestCase):
         browser.login('chiefeditor')
 
         browser.open('/root/edit')
+        self.assertEqual(browser.inspect.content_title, [u"root"])
         self.assertEqual(browser.inspect.content_tabs, ['Content', 'Add', 'Properties', 'Settings'])
         self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
 
@@ -109,7 +113,7 @@ class ChiefEditorTestCase(unittest.TestCase):
 
         # XXX Settings.
 
-class ManagerTestCase(unittest.TestCase):
+class ManagerRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def test_root(self):
@@ -119,6 +123,7 @@ class ManagerTestCase(unittest.TestCase):
         browser.login('chiefeditor')
 
         browser.open('/root/edit')
+        self.assertEqual(browser.inspect.content_title, [u"root"])
         self.assertEqual(browser.inspect.content_tabs, ['Content', 'Add', 'Properties', 'Settings'])
         self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
 
@@ -137,8 +142,8 @@ class ManagerTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ReaderTestCase))
-    suite.addTest(unittest.makeSuite(AuthorTestCase))
-    suite.addTest(unittest.makeSuite(EditorTestCase))
-    suite.addTest(unittest.makeSuite(ChiefEditorTestCase))
+    suite.addTest(unittest.makeSuite(ReaderRootTestCase))
+    suite.addTest(unittest.makeSuite(AuthorRootTestCase))
+    suite.addTest(unittest.makeSuite(EditorRootTestCase))
+    suite.addTest(unittest.makeSuite(ChiefEditorRootTestCase))
     return suite
