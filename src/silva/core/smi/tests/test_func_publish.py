@@ -63,7 +63,6 @@ class TestDocumentRequestApproval(unittest.TestCase):
             form,
             'form.requestapprovalform.field.publication_datetime',
             datetime.now())
-        import pdb; pdb.set_trace()
 
         button = form.get_control('form.requestapprovalform.action.request-approval')
         self.assertEquals(200, button.click())
