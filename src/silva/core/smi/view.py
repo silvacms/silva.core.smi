@@ -26,6 +26,7 @@ class ViewREST(UIREST):
     grok.context(ISilvaObject)
 
     def POST(self):
-        data = {'ifaces': ['view'],
-                'url': absoluteURL(self.context, self.request)}
+        data = {'content':
+                    {'ifaces': ['view'],
+                     'url': absoluteURL(self.context, self.request)}}
         return self.json_response(data)
