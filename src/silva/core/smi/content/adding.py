@@ -12,6 +12,7 @@ from silva.core.interfaces import IContainer
 from silva.translations import translate as _
 from silva.ui.rest import Screen, REST
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
+from silva.ui.interfaces import IMenuItem
 
 
 class Adding(REST):
@@ -32,6 +33,25 @@ class Adding(REST):
         return super(Adding, self).publishTraverse(request, name)
 
 
+class AddableMenuItem(object):
+    """A Addable MenuItem
+    """
+    grok.implements(IMenuItem)
+
+    def __init__(self, addable):
+        self.name = addable
+
+    def available(self):
+        return True
+
+    def describe(self, page, path, actives):
+        info = {'name': self.name,
+                'screen': '/'.join((path, self.name))}
+        if actives and actives[0].__name__ == info['screen']:
+            info['active'] = True
+        return info
+
+
 class AddMenu(ExpendableMenuItem):
     grok.adapts(ContentMenu, IContainer)
     grok.order(15)
@@ -40,10 +60,4 @@ class AddMenu(ExpendableMenuItem):
     screen = Adding
 
     def get_submenu_items(self):
-        entries = []
-        path = self.identifier()
-        for addable in IAddableContents(self.content).get_authorized_addables():
-            entries.append({
-                    'name': addable,
-                    'screen': '/'.join((path, addable))})
-        return entries
+        return map(AddableMenuItem, IAddableContents(self.content).get_authorized_addables())
