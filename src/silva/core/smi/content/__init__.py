@@ -5,14 +5,15 @@
 
 from five import grok
 
+from silva.ui.interfaces import IUIScreen
 from silva.core.interfaces import IContent, INonPublishable
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem, ContentMenu
 from zeam.form import silva as silvaforms
-from zope.interface import Interface, classImplements
+from zope.interface import classImplements
 
 
-class IEditScreen(Interface):
+class IEditScreen(IUIScreen):
     """Marker used to mark edit tab.
     """
 
