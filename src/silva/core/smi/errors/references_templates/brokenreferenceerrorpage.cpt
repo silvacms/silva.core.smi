@@ -1,9 +1,9 @@
 <p class="message" i18n:domain="silva">
   <ins class="ui-icon ui-icon-alert"></ins>
   <tal:message i18n:translate="">
-    The action could not perform because it would break a reference from :
-    <a href="#" target="_blank"
-       tal:attributes="href view.source_url"
+    The action could not be performed because the related content is used by
+    <a href="#" class="open-screen" rel="content"
+       tal:attributes="href view.source_path"
        tal:content="view.source_title">
     </a>
     (<span tal:replace="view.source_path" />).

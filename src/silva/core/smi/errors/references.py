@@ -5,7 +5,6 @@
 from AccessControl import getSecurityManager
 from five import grok
 from zope.component import getUtility
-from zope.traversing.browser import absoluteURL
 
 from silva.core.interfaces import ISilvaObject
 from silva.core.references.interfaces import IReferenceService
@@ -24,8 +23,8 @@ class BreakReferencePermission(grok.Permission):
 class BrokenReferenceErrorPage(ErrorREST):
     """ Page to render broken references errors.
 
-    Redirects to the break references form if the user has the necessary rights
-    to break references.
+    Redirects to the break references form if the user has the
+    necessary rights to break references.
     """
     grok.context(BrokenReferenceError)
 
@@ -41,9 +40,8 @@ class BrokenReferenceErrorPage(ErrorREST):
         #    self.redirect(url)
         #    return
 
-        source = self.context.error.reference.source
-        self.source_url = absoluteURL(source, self.request)
-        self.source_path = "/".join(source.getPhysicalPath())
+        source = self.context.error.reference.source.get_content()
+        self.source_path = self.get_content_path(source)
         self.source_title = source.get_title_or_id()
 
 
