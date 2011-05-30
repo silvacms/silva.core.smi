@@ -12,7 +12,7 @@ from zeam.form import silva as silvaforms
 from zope.interface import Interface, classImplements
 
 
-class IEditTab(Interface):
+class IEditScreen(Interface):
     """Marker used to mark edit tab.
     """
 
@@ -22,7 +22,7 @@ class ContentEditMenu(MenuItem):
     grok.order(10)
     name = _('Edit')
     screen = 'content'
-    interface = IEditTab
+    interface = IEditScreen
 
 
 class NonPublishableEditMenu(MenuItem):
@@ -30,10 +30,10 @@ class NonPublishableEditMenu(MenuItem):
     grok.order(10)
     name = _(u'Edit')
     screen = 'content'
-    interface = IEditTab
+    interface = IEditScreen
 
 
-classImplements(silvaforms.SMIEditForm, IEditTab)
+classImplements(silvaforms.SMIEditForm, IEditScreen)
 
 
 
