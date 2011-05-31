@@ -14,7 +14,7 @@
     </div>
     <div class="form-body">
       <tal:section tal:repeat="element_name view.get_element_names(set_name)">
-        <div class="form-section ${error and 'form-error' or None}"
+        <div class="form-section ${error and 'form-error' or ''}"
              tal:define="error path:view/errors/?set_name/?element_name | nothing;
                          identifier (set_name, element_name);
                          is_hidden view.is_element_hidden(*identifier);

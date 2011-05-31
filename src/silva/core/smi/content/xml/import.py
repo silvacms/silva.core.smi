@@ -61,7 +61,9 @@ class ImportForm(silvaforms.SMIForm):
     @silvaforms.action(
         _(u"Import"),
         description=_(u"upload and import file"),
-        factory=silvaforms.ExtractedDecoratedAction)
+        implements=silvaforms.IDefaultAction,
+        factory=silvaforms.ExtractedDecoratedAction,
+        accesskey='ctrl+i')
     def import_file(self, data):
         importer = IZipFileImporter(self.context)
         try:

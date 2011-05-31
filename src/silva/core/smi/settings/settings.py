@@ -57,6 +57,7 @@ class OtherSettingsMenu(MenuItem):
 class ConvertToFolderAction(silvaforms.Action):
     title = _('Convert to folder')
     description = _('Change container to a folder')
+    accesskey = 'ctrl+f'
 
     def available(self, form):
         return interfaces.IGhostFolder.providedBy(form.context) or \
@@ -73,9 +74,9 @@ class ConvertToFolderAction(silvaforms.Action):
 class ConvertToPublicationAction(silvaforms.Action):
     title = _('Convert to publication')
     description = _('Change container to a publication')
+    accesskey = 'ctrl+p'
 
     def available(self, form):
-        interfaces.IPublication.providedBy('')
         return not interfaces.IPublication.providedBy(form.context)
 
     def __call__(self, form):

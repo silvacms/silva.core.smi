@@ -141,7 +141,8 @@ class AddCustomizationMarker(silvaforms.SMISubForm):
 
     @silvaforms.action(
         _(u"Add marker"),
-        description=_(u"mark the content with the selected marker(s)"))
+        description=_(u"mark the content with the selected marker(s)"),
+        accesskey='ctrl+a')
     def add(self):
         values, errors = self.extractData()
         if not values.get('availablesMarkers', None):
@@ -170,6 +171,7 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
     @silvaforms.action(
         _(u"Remove"),
         description=_(u"remove the selected marker(s) from the content"),
+        accesskey='ctrl+r',
         implements=IRemoverAction)
     def remove(self):
         values, errors = self.extractData()

@@ -69,8 +69,11 @@ class ExportForm(silvaforms.SMIForm):
     ignoreContent=True
     ignoreRequest=False
 
-    @silvaforms.action(title=_(u"Export"),
-        description=_(u"export as an zip archive"))
+    @silvaforms.action(
+        title=_(u"Export"),
+        description=_(u"export as an zip archive"),
+        implements=silvaforms.IDefaultAction,
+        accesskey='ctrl+e')
     def export(self):
         data, errors = self.extractData()
         if len(errors) == 0:

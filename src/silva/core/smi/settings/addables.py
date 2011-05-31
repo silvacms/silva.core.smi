@@ -68,8 +68,11 @@ class AddablesForm(silvaforms.SMIForm):
         else:
             self.fields['acquire'].mode = silvaforms.INPUT
 
-    @silvaforms.action(_(u'Save addables settings'),
-        description=_(u'save addable settings for this publication'))
+    @silvaforms.action(
+        _(u'Save addables settings'),
+        description=_(u'save addable settings for this publication'),
+        implements=silvaforms.IDefaultAction,
+        accesskey='ctrl+s')
     def save_changes(self):
         data, errors = self.extractData()
         currently_acquired = self.context.is_silva_addables_acquired()
@@ -92,6 +95,7 @@ class AddablesForm(silvaforms.SMIForm):
                 data.getWithDefault('addables'))
 
         return silvaforms.SUCCESS
+
 
 class AddablesMenu(MenuItem):
     grok.adapts(SettingsMenu, IContainer)

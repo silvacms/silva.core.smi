@@ -169,6 +169,7 @@ class MetadataForm(silvaforms.SMISubForm):
 class MetadataEditForm(MetadataForm):
     grok.baseclass()
     grok.view(MetadataFormGroup)
+    actions = silvaforms.Actions(silvaforms.CancelAction())
     edit = True
 
     def __init__(self, context, parent, request):
@@ -178,8 +179,9 @@ class MetadataEditForm(MetadataForm):
         if self.parent.category:
             self.prefix += '-' + self.parent.category
 
-    @silvaforms.action(_('save'),
-        identifier='save-metadata')
+    @silvaforms.action(_('Save'),
+                       implements=silvaforms.IDefaultAction,
+                       accesskey='ctrl+s')
     def save(self):
         self.errors = self.binding.setValuesFromRequest(
             self.request, reindex=1)
