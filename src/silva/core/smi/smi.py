@@ -148,9 +148,12 @@ class SMIFooter(silvaviews.ContentProvider):
         if self.contact_email:
             self.contact_email_url = "mailto:%s" % quote(self.contact_email)
 
+        self.username = None
+        self.role = None
         authorization = IAuthorizationManager(self.context).get_authorization()
-        self.username = authorization.identifier
-        self.role = authorization.role
+        if authorization is not None:
+            self.username = authorization.identifier
+            self.role = authorization.role
 
     def logout_url(self):
         return mangle.urlencode(
