@@ -47,9 +47,9 @@ class AccessMenu(MenuItem):
 
 class LookupUserPopupAction(silvaforms.PopupAction):
     title = _(u"lookup users...")
-    description = _(u"search for users to assign them roles: alt-l")
+    description = _(u"search for users to assign them roles")
     action = 'silva.core.smi.lookupuser'
-    accesskey = u'l'
+    accesskey = u'ctrl+l'
 
 
 class ILookupUserSchema(interface.Interface):

@@ -4,9 +4,9 @@
 
 from five import grok
 
+from silva.core.interfaces.errors import ExternalReferenceError
 from silva.translations import translate as _
 from silva.ui.rest.errors import ErrorREST
-from Products.Silva.silvaxml.xmlexport import ExternalReferenceError
 
 
 class ExternalReferenceErrorPage(ErrorREST):
