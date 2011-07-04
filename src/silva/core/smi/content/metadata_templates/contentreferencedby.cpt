@@ -15,7 +15,7 @@
       <a title="edit content" rel="content" class="open-screen"
          i18n:attributes="title"
          tal:attributes="href reference.path">
-        <img class="icon" alt="edit content"
+        <img alt="edit content"
              height="16" width="16" style="float:right"
              i18n:attributes="alt"
              tal:attributes="src static['edit.png']()"
@@ -23,10 +23,7 @@
       </a>
       <a tal:attributes="href reference.url;
                          title reference.path">
-        <img class="icon" alt="view content"
-             height="16" width="16" style="float:left"
-             i18n:attributes="alt"
-             tal:attributes="src reference.icon" />
+        <img tal:replace="structure reference.icon" />
         <p tal:content="reference.title"/>
       </a>
     </div>

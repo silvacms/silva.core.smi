@@ -9,6 +9,7 @@ from zope.traversing.browser import absoluteURL
 
 from silva.core.interfaces import (ISilvaObject, IVersion, IVersionedContent,
     IAuthorizationManager)
+from silva.core.interfaces import IIconResolver
 from silva.core.references.interfaces import IReferenceService
 from silva.core.views import views as silvaviews
 from silva.core.views.interfaces import ISilvaURL
@@ -18,7 +19,6 @@ from silva.ui.rest import Screen
 from zeam.form import silva as silvaforms
 
 from Products.Silva.adapters.security import is_role_greater_or_equal
-from Products.Silva.icon import get_icon_url
 from Products.SilvaMetadata.interfaces import IMetadataService
 
 
@@ -288,7 +288,7 @@ class ContentReferencedBy(silvaviews.Viewlet):
     def update(self):
         references = {}
         service = component.getUtility(IReferenceService)
-        self.icon_url = get_icon_url(self.context, self.request)
+        get_icon = IIconResolver(self.request).get_tag
         for reference in service.get_references_to(self.context):
             source = reference.source
             source_versions = []
@@ -314,7 +314,7 @@ class ContentReferencedBy(silvaviews.Viewlet):
                 'url': source_url,
                 'path': '/'.join(source.getPhysicalPath()),
                 'edit_url': edit_url,
-                'icon': get_icon_url(source, self.request),
+                'icon': get_icon(source),
                 'versions': source_versions}
 
         self.references = references.values()
