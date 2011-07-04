@@ -246,7 +246,7 @@ class ApproveForFuturePopupForm(silvaforms.RESTPopupForm):
     grok.name('silva.core.smi.approveforfuture')
 
     fields = autofields.FieldsCollector(IPublicationFields)
-    actions = silvaforms.Actions()
+    actions = silvaforms.Actions(silvaforms.CancelAction())
 
     label = _('Approve for future new version')
 
