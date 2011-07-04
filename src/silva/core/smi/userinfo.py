@@ -90,8 +90,8 @@ class UserInfo(silvaforms.RESTPopupForm):
     fields['userid'].mode = silvaforms.DISPLAY
     ignoreContent = False
     actions = silvaforms.Actions(
-        silvaforms.EditAction(),
-        silvaforms.CancelAction())
+        silvaforms.CancelAction(),
+        silvaforms.EditAction())
 
     def update(self):
         service = getUtility(IMemberService)
