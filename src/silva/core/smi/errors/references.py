@@ -6,13 +6,14 @@ from AccessControl import getSecurityManager
 from five import grok
 from zope.component import getUtility
 
+from silva.ui.rest import UIREST
 from silva.core.interfaces import ISilvaObject
 from silva.core.references.interfaces import IReferenceService
 from silva.core.references.reference import BrokenReferenceError
-from silva.ui.rest.errors import ErrorREST
 from silva.translations import translate as _
+from zope.traversing.browser import absoluteURL
 from zeam.form import silva as silvaforms
-from zeam.form.silva.interfaces import ICancelerAction
+from zeam.form.silva.interfaces import IDefaultAction
 
 
 class BreakReferencePermission(grok.Permission):
@@ -20,60 +21,67 @@ class BreakReferencePermission(grok.Permission):
     grok.title('Break silva references')
 
 
-class BrokenReferenceErrorPage(ErrorREST):
-    """ Page to render broken references errors.
-
-    Redirects to the break references form if the user has the
-    necessary rights to break references.
-    """
-    grok.context(BrokenReferenceError)
-
-    title = _('Broken references')
-
-    def update(self):
-        allowed_to_break = getSecurityManager().checkPermission(
-            'Break silva references', self.context)
-
-        #if allowed_to_break:
-        #    url = absoluteURL(self.context.error.reference.target, self.request)
-        #    url += '/edit/tab_reference_error?'
-        #    self.redirect(url)
-        #    return
-
-        source = self.context.error.reference.source.get_content()
-        self.source_path = self.get_content_path(source)
-        self.source_title = source.get_title_or_id()
-
-
-class BreakReferencesForm(silvaforms.SMIForm):
+class BreakReferencesForm(silvaforms.PopupForm):
     """ Form for breaking references
     """
-    grok.require(BreakReferencePermission)
-    grok.context(ISilvaObject)
-    grok.name('tab_reference_error')
+    grok.context(BrokenReferenceError)
     grok.template('break_references')
+    grok.name('error.html')
 
-    label = _(u"Break references?")
+    label = _(u"Broken references")
+    actions = silvaforms.Actions(
+        silvaforms.CancelAction())
+
+    def get_info(self, content):
+        return {
+            'title': content.get_title(),
+            'path': self.get_content_path(content),
+            'url': absoluteURL(content, self.request)}
 
     def update(self):
+        self.content = self.context.error.args[0].target
+        self.info = self.get_info(self.content)
+
+    def referrers(self):
         service = getUtility(IReferenceService)
-        self.references = service.get_references_to(self.context)
+        return (self.get_info(reference.source)
+                for reference in service.get_references_to(self.content))
 
-    def next_url(self):
-        data, errors = self.extractData()
-        self.redirect(data['redirect_to'] or self.url(name="edit"))
+    def allowed_to_break(self):
+        return getSecurityManager().checkPermission(
+            'Break silva references', self.context)
+
+    def updateForm(self):
+        # Force form url to our content form.
+        result = super(BreakReferencesForm, self).updateForm()
+        result['content']['form_url'] = '/'.join(
+            (absoluteURL(self.content, self.request),
+             '++rest++silva.core.smi.breakreferences'))
+        self.response.setStatus(400)
+        return result
 
     @silvaforms.action(
-        _(u'cancel'),
-        implements=ICancelerAction)
-    def cancel(self):
-        self.next_url()
-
-    @silvaforms.action(
-        _(u'break references'))
+        _(u'Break references'),
+        available=allowed_to_break,
+        implements=IDefaultAction)
     def break_references(self):
-        for reference in list(self.references):
+        # This is a fake action to create the action.
+        pass
+
+
+class BreakReferenceContentForm(UIREST):
+    grok.context(ISilvaObject)
+    grok.name('silva.core.smi.breakreferences')
+    grok.require('silva.breakreference')
+
+    def POST(self):
+        service = getUtility(IReferenceService)
+        for reference in list(service.get_references_to(self.context)):
             reference.set_target_id(0)
-        self.send_message(_("References to %s have been broken.") %
-                          "/".join(self.context.getPhysicalPath()))
-        self.next_url()
+        return self.json_response({
+                'content': {
+                    'ifaces': ['message'],
+                    'title': self.translate(_(u"References broken")),
+                    'message': self.translate(_("References to ${content} have been broken.",
+                                                mapping={'content': self.get_content_path(self.context)}))
+                    }})
