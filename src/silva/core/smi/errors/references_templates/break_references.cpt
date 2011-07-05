@@ -1,5 +1,5 @@
-<div i18n:domain="silva">
-  <p class="disclaimer" i18n:translate="">
+<div class="disclaimer" i18n:domain="silva">
+  <p i18n:translate="">
     You cannot complete this operation since some content on your site
     have references to this one:
     <a target="_blank"
@@ -9,7 +9,7 @@
     </a>
     (<span tal:replace="view.info.path" />)
   </p>
-  <p class="disclaimer" i18n:translate="">
+  <p i18n:translate="">
     Those contents are:
   </p>
   <ul>
@@ -22,8 +22,7 @@
       (<span tal:replace="referrer.path" />)
     </li>
   </ul>
-  <p class="disclaimer"
-     tal:condition="view.allowed_to_break()"
+  <p tal:condition="view.allowed_to_break()"
      i18n:translate="">
     You can if you whish break those references. That might break all
     the listed content here, including published versions, and
