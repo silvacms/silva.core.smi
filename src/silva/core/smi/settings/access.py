@@ -46,7 +46,7 @@ class AccessMenu(MenuItem):
 
 
 class LookupUserPopupAction(silvaforms.PopupAction):
-    title = _(u"lookup users...")
+    title = _(u"Lookup users...")
     description = _(u"search for users to assign them roles")
     action = 'silva.core.smi.lookupuser'
     accesskey = u'ctrl+l'
@@ -142,7 +142,7 @@ class IGrantRoleSchema(interface.Interface):
 
 class GrantAccessAction(silvaforms.Action):
 
-    title = _(u"grant role")
+    title = _(u"Grant role")
     description = _(u"grant the selected role to selected users(s)")
 
     def available(self, form):
@@ -288,7 +288,7 @@ class LookupUserResultForm(UserAccessForm):
         return []
 
     @silvaforms.action(
-        _(u"clear clipboard"),
+        _(u"Clear clipboard"),
         description=_(u"clear the user clipboard"),
         available=lambda form: len(form.lines) != 0,
         implements=IRemoverAction)
