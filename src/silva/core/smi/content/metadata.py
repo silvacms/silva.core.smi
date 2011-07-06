@@ -312,7 +312,7 @@ class ContentReferencedBy(silvaviews.Viewlet):
             references[edit_url] = {
                 'title': source_title,
                 'url': source_url,
-                'path': '/'.join(source.getPhysicalPath()),
+                'path': self.view.get_content_path(source),
                 'edit_url': edit_url,
                 'icon': get_icon(source),
                 'versions': source_versions}
