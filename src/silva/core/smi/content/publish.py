@@ -18,7 +18,8 @@ from silva.ui.menu import ContentMenu, MenuItem
 from silva.ui.rest import Screen
 from zeam.form import autofields
 from zeam.form import silva as silvaforms
-from zeam.form.silva.interfaces import IRemoverAction
+from zeam.form.silva.interfaces import IRemoverAction, IDefaultAction
+from zeam.form.silva.interfaces import IRESTCloseOnSuccessAction
 from zeam.form.ztk.actions import EditAction
 from zeam.form.base import makeAdaptiveDataManager
 
@@ -248,7 +249,14 @@ class ApproveForFuturePopupForm(silvaforms.RESTPopupForm):
     fields = autofields.FieldsCollector(IPublicationFields)
     actions = silvaforms.Actions(silvaforms.CancelAction())
 
-    label = _('Approve for future new version')
+    label = _('Approve content for future')
+    description = _(u'Approve selected content for the future')
+
+    @silvaforms.action(
+        _(u"Approve"),
+        implements=(IDefaultAction, IRESTCloseOnSuccessAction))
+    def approve(self):
+        return silvaforms.FAILURE
 
 
 class DefaultRequestApprovalFields(autofields.AutoFields):
