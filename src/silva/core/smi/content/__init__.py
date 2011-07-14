@@ -8,7 +8,7 @@ from five import grok
 from silva.ui.interfaces import IUIScreen
 from silva.core.interfaces import IContent, INonPublishable
 from silva.translations import translate as _
-from silva.ui.menu import MenuItem, ContentMenu
+from silva.ui.menu import ExpendableMenuItem, MenuItem, ContentMenu
 from zeam.form import silva as silvaforms
 from zope.interface import classImplements
 
@@ -18,7 +18,7 @@ class IEditScreen(IUIScreen):
     """
 
 
-class ContentEditMenu(MenuItem):
+class ContentEditMenu(ExpendableMenuItem):
     grok.adapts(ContentMenu, IContent)
     grok.order(10)
     name = _('Edit')

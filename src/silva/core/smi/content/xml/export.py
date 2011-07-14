@@ -76,7 +76,7 @@ class ExportForm(silvaforms.SMIForm):
         accesskey='ctrl+e')
     def export(self):
         data, errors = self.extractData()
-        if len(errors) == 0:
+        if not errors:
             url = self.url() + '/++rest++silva.ui/content/export/download'
             query_string = "?" + urllib.urlencode(self.request.form)
             raise RedirectToUrl(url + query_string)
@@ -100,7 +100,7 @@ class ExportDownload(REST):
     def update(self):
         form = self.__parent__
         data, errors = form.extractData()
-        if len(errors) > 0:
+        if errors:
             raise BadRequest('invalid export parameters')
         settings = xmlexport.ExportSettings()
         settings.setWithSubPublications(
