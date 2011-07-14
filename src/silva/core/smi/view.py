@@ -6,14 +6,14 @@
 from five import grok
 from zope.traversing.browser import absoluteURL
 
-from silva.core.interfaces import ISilvaObject
+from silva.core.interfaces import IViewableObject
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem, ViewMenu
 from silva.ui.rest import UIREST
 
 
 class DisplayMenu(MenuItem):
-    grok.adapts(ViewMenu, ISilvaObject)
+    grok.adapts(ViewMenu, IViewableObject)
     grok.order(20)
     name = _('View')
     description = _(u'view content in a new window')
@@ -23,7 +23,7 @@ class DisplayMenu(MenuItem):
 
 class ViewREST(UIREST):
     grok.name('silva.ui.actions.view')
-    grok.context(ISilvaObject)
+    grok.context(IViewableObject)
 
     def POST(self):
         data = {'content':

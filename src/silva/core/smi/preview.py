@@ -4,7 +4,7 @@
 
 from five import grok
 from silva.core.interfaces import IDirectlyRendered
-from silva.core.interfaces import ISilvaObject
+from silva.core.interfaces import IViewableObject
 from silva.core.views.interfaces import ISilvaURL
 from silva.translations import translate as _
 from silva.ui.menu import ViewMenu, MenuItem
@@ -14,7 +14,7 @@ from zope.component import getMultiAdapter
 
 
 class Preview(PageREST):
-    grok.adapts(Screen, ISilvaObject)
+    grok.adapts(Screen, IViewableObject)
     grok.name('preview')
     grok.require('silva.ReadSilvaContent')
 
@@ -35,7 +35,8 @@ class DirectlyRenderedPreview(PageREST):
 
 
 class PreviewMenu(MenuItem):
-    grok.adapts(ViewMenu, ISilvaObject)
+    grok.adapts(ViewMenu, IViewableObject)
     grok.order(10)
     name = _('Preview')
+    description = _(u'view content while staying in the admin interface')
     screen = Preview
