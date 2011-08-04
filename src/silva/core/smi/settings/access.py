@@ -180,7 +180,7 @@ class GrantAccessAction(silvaforms.Action):
 class RevokeAccessAction(silvaforms.Action):
     grok.implements(IRemoverAction)
 
-    title = _(u"revoke role")
+    title = _(u"Revoke role")
     description=_(u"revoke the role of selected user(s)")
 
     def available(self, form):
@@ -248,8 +248,8 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     tableFields = silvaforms.Fields(IUserAuthorization)
     tableFields['identifier'].mode = 'silva.icon'
     tableActions = silvaforms.TableActions(
-        RevokeAccessAction(),
-        GrantAccessAction())
+        GrantAccessAction(),
+        RevokeAccessAction())
 
     def getItems(self):
         access = IAuthorizationManager(self.context)
@@ -270,7 +270,7 @@ class LookupUserResultForm(UserAccessForm):
                          u'Then assign the users roles. Any users on the '
                          u'clipboard will remain here when you move to other '
                          u'areas of the site.')
-    actions = silvaforms.Actions(LookupUserPopupAction())
+    actions = silvaforms.Actions()
     tableActions = silvaforms.TableActions(GrantAccessAction())
 
     @CachedProperty
@@ -295,6 +295,7 @@ class LookupUserResultForm(UserAccessForm):
     def clear(self):
         self.store.set(USER_STORE_KEY, set())
 
+    actions += LookupUserPopupAction()
 
 
 class IAccessMinimumRoleSchema(interface.Interface):
