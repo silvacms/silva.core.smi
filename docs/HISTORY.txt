@@ -1,5 +1,10 @@
 Changelog
 =========
+2.3.2-bethel.2 (2011-08-05)
+---------------------------
+
+* add request['SERVER_URL'] to sidebar cache key.  We don't want the sidebar to
+  be the same across all vhosts.
 
 2.3.2-bethel.1 (2011-07-07)
 ---------------------------
