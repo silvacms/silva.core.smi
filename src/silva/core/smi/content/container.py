@@ -11,8 +11,8 @@ from silva.core.messages.interfaces import IMessageService
 from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
 from silva.core.interfaces import IPublicationWorkflow, PublicationWorkflowError
 from silva.ui.rest.base import Screen, PageREST, UIREST
-from silva.ui.rest.container import ListingSynchronizer
-from silva.ui.rest.container import ContentSerializer, ContentCounter, FolderActionREST
+from silva.ui.rest.container import ContentSerializer, ContentCounter
+from silva.ui.rest.container import FolderActionREST
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
 from silva.translations import translate as _
 
@@ -38,14 +38,13 @@ class Container(PageREST):
             yield content
 
     def payload(self):
-        ListingSynchronizer().initialize_client(self.request)
         serializer = ContentSerializer(self, self.request)
-        return {"ifaces": ["listing"],
-                "content": serializer(self.context),
-                "items": {"publishables": map(serializer, self.get_publishable_content()),
-                          "assets": map(serializer, self.get_non_publishable_content())}}
-
-
+        return {
+            "ifaces": ["listing"],
+            "content": serializer(self.context),
+            "items": {
+                "publishables": map(serializer, self.get_publishable_content()),
+                "assets": map(serializer, self.get_non_publishable_content())}}
 
 
 class ContainerMenu(ExpendableMenuItem):
