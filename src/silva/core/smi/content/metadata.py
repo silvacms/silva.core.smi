@@ -78,10 +78,6 @@ class MetadataForm(silvaforms.SMISubForm):
 
     label = _('Editable content properties')
 
-    @property
-    def edit(self):
-        return self.mode == silvaforms.INPUT
-
     @CachedProperty
     def binding(self):
         service = getUtility(IMetadataService)
@@ -171,7 +167,6 @@ class MetadataEditForm(MetadataForm):
     grok.baseclass()
     grok.view(MetadataFormGroup)
     actions = silvaforms.Actions(silvaforms.CancelAction())
-    edit = True
 
     def __init__(self, context, parent, request):
         super(MetadataEditForm, self).__init__(context, parent, request)
@@ -180,9 +175,11 @@ class MetadataEditForm(MetadataForm):
         if self.parent.category:
             self.prefix += '-' + self.parent.category
 
-    @silvaforms.action(_('Save'),
-                       implements=silvaforms.IDefaultAction,
-                       accesskey='ctrl+s')
+    @silvaforms.action(
+        _('Save'),
+        implements=silvaforms.IDefaultAction,
+        available=lambda form: not form.binding.read_only,
+        accesskey='ctrl+s')
     def save(self):
         self.errors = self.binding.setValuesFromRequest(
             self.request, reindex=1)
@@ -192,16 +189,15 @@ class MetadataEditForm(MetadataForm):
             'validate properly.  Please adjust '
             'the form values and submit again.'), type='error')
             return silvaforms.FAILURE
-        else:
-            self.send_message(_('Metadata saved.'), type='feedback')
-            return silvaforms.SUCCESS
+        self.send_message(_('Metadata saved.'), type='feedback')
+        return silvaforms.SUCCESS
 
 
 class MetadataReadOnlyForm(MetadataForm):
     grok.baseclass()
     grok.view(MetadataFormGroup)
     mode = silvaforms.DISPLAY
-    edit = False
+    actions = silvaforms.Actions(silvaforms.CancelAction())
 
     def is_element_editable(self, set_name, element_name):
         return False
