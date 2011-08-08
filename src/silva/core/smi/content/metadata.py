@@ -4,7 +4,8 @@
 import bisect
 
 from five import grok
-from zope import component
+from zope.component import getUtility, getMultiAdapter
+from zope.cachedescriptors.property import CachedProperty
 from zope.traversing.browser import absoluteURL
 
 from silva.core.interfaces import (ISilvaObject, IVersion, IVersionedContent,
@@ -81,15 +82,18 @@ class MetadataForm(silvaforms.SMISubForm):
     def edit(self):
         return self.mode == silvaforms.INPUT
 
+    @CachedProperty
+    def binding(self):
+        service = getUtility(IMetadataService)
+        return service.getMetadata(self.getContent())
+
     def available(self):
-        return False
+        return self.binding is not None
 
     def update(self):
         if not self.available():
             return
         self.category = self.parent.category
-        self.metadata_service = component.getUtility(IMetadataService)
-        self.binding = self.metadata_service.getMetadata(self.getContent())
         self.binding_cache = BindingCache(self.binding)
         self.aquired_items = self.binding.listAcquired()
         self.user_role = IAuthorizationManager(self.context).get_user_role()
@@ -229,7 +233,8 @@ class PreviewableMetadataForm(MetadataEditForm):
         return self.context.get_previewable()
 
     def available(self):
-        return bool(self.context.get_approved_version())
+        return (bool(self.context.get_approved_version()) and
+                super(PreviewableMetadataForm, self).available())
 
 
 class ViewableMetadataForm(MetadataReadOnlyForm):
@@ -243,7 +248,8 @@ class ViewableMetadataForm(MetadataReadOnlyForm):
         return self.context.get_viewable()
 
     def available(self):
-        return bool(self.context.get_public_version())
+        return (bool(self.context.get_public_version()) and
+                super(ViewableMetadataForm, self).available())
 
 
 class LastClosedMetadataForm(MetadataReadOnlyForm):
@@ -257,8 +263,9 @@ class LastClosedMetadataForm(MetadataReadOnlyForm):
         return self.context.get_last_closed()
 
     def available(self):
-        return bool(not self.context.get_next_version() and \
-            not self.context.get_public_version())
+        return (not bool(self.context.get_next_version()) and
+                not bool(self.context.get_public_version()) and
+                super(LastClosedMetadataForm, self).available())
 
 
 class NonVersionedContentMetadataForm(MetadataEditForm):
@@ -271,7 +278,8 @@ class NonVersionedContentMetadataForm(MetadataEditForm):
         return self.context
 
     def available(self):
-        return not IVersionedContent.providedBy(self.context)
+        return (not IVersionedContent.providedBy(self.context) and
+                super(NonVersionedContentMetadataForm, self).available())
 
 
 class ContentReferencedBy(silvaviews.Viewlet):
@@ -284,7 +292,7 @@ class ContentReferencedBy(silvaviews.Viewlet):
 
     def update(self):
         references = {}
-        service = component.getUtility(IReferenceService)
+        service = getUtility(IReferenceService)
         get_icon = IIconResolver(self.request).get_tag
         for reference in service.get_references_to(self.context):
             source = reference.source
@@ -304,7 +312,7 @@ class ContentReferencedBy(silvaviews.Viewlet):
                     source_versions = previous_versions + source_versions
 
             source_title = source.get_title_or_id()
-            source_url = component.getMultiAdapter(
+            source_url = getMultiAdapter(
                 (source, self.request), ISilvaURL).preview()
             references[edit_url] = {
                 'title': source_title,
