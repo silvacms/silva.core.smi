@@ -130,9 +130,6 @@ class MetadataForm(silvaforms.SMISubForm):
     def is_element_editable(self, set_name, element_name):
         if not is_role_greater_or_equal(self.user_role, 'Author'):
             return False
-        # XXX: hack - this check should go in the element's guard
-        if set_name == 'silva-content':
-            return self.getContent().can_set_title()
         return self.binding.isEditable(set_name, element_name)
 
     def is_element_acquired(self, set_name, element_name):
