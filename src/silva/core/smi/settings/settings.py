@@ -197,14 +197,6 @@ class QuotaForm(silvaforms.SMISubForm):
                 mapping={'quota': self.context.get_current_quota()})
 
 
-class LayoutMetadataForm(MetadataFormGroup):
-    grok.context(interfaces.IContainer)
-    grok.order(50)
-    grok.view(OtherSettings)
-    category = 'layout'
-    label = _('Layout Settings')
-
-
 class SettingsMetadataForm(MetadataFormGroup):
     grok.context(interfaces.IContainer)
     grok.order(50)
