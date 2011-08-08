@@ -6,6 +6,7 @@
 from five import grok
 from zope.component import queryUtility
 from zope.component.interfaces import IFactory
+from zExceptions import NotFound
 
 from silva.core.interfaces import IAddableContents
 from silva.core.interfaces import IContainer
@@ -25,12 +26,13 @@ class Adding(REST):
         if name in addables:
             factory = queryUtility(IFactory, name=name)
             if factory is not None:
-                factory = factory(self.context, request)
+                form = factory(self.context, request)
                 # Set parent for security check.
-                factory.__name__ = '/'.join((self.__name__, name))
-                factory.__parent__ = self
-                return factory
-        return super(Adding, self).publishTraverse(request, name)
+                form.__name__ = '/'.join((self.__name__, name))
+                form.__parent__ = self
+                return form
+        # If it is not addable, it is not an addable.
+        raise NotFound(name)
 
 
 class AddableMenuItem(object):
