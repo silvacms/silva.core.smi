@@ -3,6 +3,7 @@
 from five import grok
 from zope.interface import Interface
 from zope import schema
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from DateTime import DateTime
 from datetime import datetime
 from AccessControl.security import checkPermission
@@ -11,11 +12,10 @@ from Products.Silva.Versioning import VersioningError
 from silva.core.interfaces import IVersion, IVersionManager, IContainer
 from silva.core.interfaces import IVersioning, IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow, PublicationWorkflowError
-from silva.core.smi.widgets.zeamform import PublicationStatus
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenu, MenuItem
-from silva.ui.rest import Screen
+from silva.ui.rest import Screen, RedirectToContentPreview
 from zeam.form import autofields
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction, IDefaultAction
@@ -25,7 +25,6 @@ from zeam.form.base import makeAdaptiveDataManager
 
 # TODO
 # - messages
-# - prevent multiple copy
 # - compare
 # - throw events ?
 
@@ -395,13 +394,29 @@ def sort_versions(a, b):
             ret = cmp(b.id, a.id)
     return ret
 
+@apply
+def version_status_vocabulary():
+    terms = [
+        SimpleTerm(value="unapproved", title=_(u"Unapproved")),
+        SimpleTerm(value="approved", title=_(u"Approved")),
+        SimpleTerm(value="published", title=_(u"Published")),
+        SimpleTerm(value="last_closed", title=_(u"Last closed")),
+        SimpleTerm(value="closed", title=_(u"Closed"))]
+    return SimpleVocabulary(terms)
+
 
 class IPublicationStatusInfo(Interface):
-    modification_time = schema.Datetime(title=_('Modification time'))
-    publication_time = schema.Datetime(title=_('Publication time'))
-    expiration_time = schema.Datetime(title=_('Expiration time'))
-    last_author = schema.TextLine(title=_('Last author'))
-    version_status = PublicationStatus(title=_('Version status'))
+    modification_time = schema.Datetime(
+        title=_('Modification time'))
+    publication_time = schema.Datetime(
+        title=_('Publication time'))
+    expiration_time = schema.Datetime(
+        title=_('Expiration time'))
+    last_author = schema.TextLine(
+        title=_('Last author'))
+    version_status = schema.Choice(
+        title=_('Version status'),
+        source=version_status_vocabulary)
 
 
 class PublicationStatusInfo(grok.Adapter):
@@ -452,24 +467,48 @@ class PublicationStatusInfo(grok.Adapter):
 
 
 class CopyForEditingAction(silvaforms.Action):
-    """ copy a version to use as new editable version
+    """Copy a version to use as new editable version.
     """
     title = _('Copy for editing')
     description = _('create a new editable version of '
                     'the selected old one')
-    def __call__(self, form, content, line):
+
+    def __call__(self, form, selected, deselected):
+        if len(selected) != 1:
+            form.send_message(
+                _(u"Select only one copy to copy it for editing."),
+                type='error')
+            return silvaforms.FAILURE
+        content = selected[0].getContentData().getContent()
         try:
             content.copy_for_editing()
-            form.send_message(
-                _("Reverted to previous version."), type='feedback')
-            return silvaforms.SUCCESS
         except VersioningError as e:
             form.send_message(e.reason(), type='error')
             return silvaforms.FAILURE
+        form.send_message(
+            _("Reverted to previous version."),
+            type='feedback')
+        return silvaforms.SUCCESS
+
+
+class ViewVersionAction(silvaforms.Action):
+    """Preview a particular version.
+    """
+    title = _('View')
+    description = _('view this particular version')
+
+    def __call__(self, form, selected, deselected):
+        if len(selected) != 1:
+            form.send_message(
+                _(u"Select only one version to view it."),
+                type='error')
+            return silvaforms.FAILURE
+        version = selected[0].getContentData().getContent().context
+        raise RedirectToContentPreview(version)
 
 
 class DeleteVersionAction(silvaforms.Action):
-    """ permanently remove version
+    """Permanently remove version.
     """
     grok.implements(IRemoverAction)
     title = _("Delete")
@@ -478,13 +517,11 @@ class DeleteVersionAction(silvaforms.Action):
     def __call__(self, form, content, line):
         try:
             content.delete()
-            form.send_message(
-                _('Deleted version'),
-                type='feedback')
-            return silvaforms.SUCCESS
         except VersioningError as e:
             form.send_message(e.reason(), type='error')
             return silvaforms.FAILURE
+        form.send_message(_(u"Deleted version"), type='feedback')
+        return silvaforms.SUCCESS
 
 
 class PublicationStatusTableForm(silvaforms.SMISubTableForm):
@@ -501,9 +538,12 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     ignoreContent = False
 
     tableFields = silvaforms.Fields(IPublicationStatusInfo)
-    tableActions = silvaforms.TableActions(
-        DeleteVersionAction(identifier='delete'),
-        CopyForEditingAction(identifier='copy'))
+    tableActions = silvaforms.CompoundActions(
+        silvaforms.TableActions(
+            DeleteVersionAction(identifier='delete')),
+        silvaforms.TableMultiActions(
+            CopyForEditingAction(identifier='copy'),
+            ViewVersionAction(identifier='view')))
 
     def getItems(self):
         versions = IPublicationWorkflow(self.context).get_versions(False)

@@ -16,7 +16,7 @@ class DisplayMenu(MenuItem):
     grok.adapts(ViewMenu, IViewableObject)
     grok.order(20)
     name = _('View')
-    description = _(u'view content in a new window')
+    description = _(u'view content in a new (popup) window')
     action = 'view'
     accesskey = u';'
 

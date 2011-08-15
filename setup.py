@@ -64,9 +64,4 @@ setup(name='silva.core.smi',
         ],
       tests_require=tests_require,
       extras_require={'test': tests_require},
-      entry_points="""
-      # -*- Entry points: -*-
-      [zeam.form.components]
-      publicationstatus = silva.core.smi.widgets.zeamform:register
-      """,
       )
