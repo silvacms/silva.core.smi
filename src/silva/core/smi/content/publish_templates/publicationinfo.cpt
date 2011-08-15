@@ -23,8 +23,13 @@
     <tal:info tal:condition="viewlet.have_unapproved and viewlet.have_published">
       <h4 i18n:translate="">Published version exists</h4>
       <p class="warning">
-        <tal:block i18n:translate="">Note: an older version of this content is online.</tal:block><br />
-        <tal:block i18n:translate="">Publishing this version will replace the public version.</tal:block>
+        <tal:block i18n:translate="">
+          Note: an older version of this content is online.
+        </tal:block>
+        <br />
+        <tal:block i18n:translate="">
+          Publishing this version will replace the public version.
+        </tal:block>
       </p>
     </tal:info>
 

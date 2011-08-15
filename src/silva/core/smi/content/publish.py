@@ -55,10 +55,11 @@ class PublicationInfo(silvaviews.Viewlet):
     grok.context(IVersionedContent)
     grok.view(Publish)
     grok.viewletmanager(silvaforms.SMIFormPortlets)
+    grok.order(10)
 
     def update(self):
-        formatter = self.request.locale.dates.getFormatter('dateTime')
-        convert = lambda d: d is not None and formatter.format(d.asdatetime()) or None
+        format = self.request.locale.dates.getFormatter('dateTime').format
+        convert = lambda d: d is not None and format(d.asdatetime()) or None
         self.publication_date = convert(
             self.context.get_public_version_publication_datetime())
         self.expiration_date = convert(
