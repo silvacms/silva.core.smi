@@ -234,13 +234,18 @@ class DeleteVersionAction(silvaforms.Action):
     title = _("Delete")
     description = _("there's no undo")
 
-    def __call__(self, form, content, line):
-        try:
-            content.delete()
-        except VersioningError as e:
-            form.send_message(e.reason(), type='error')
+    def __call__(self, form, selected, deselected):
+        if not len(deselected):
+            form.send_message(
+                _(u"Cannot delete all versions."),
+                type='error')
             return silvaforms.FAILURE
-        form.send_message(_(u"Deleted version"), type='feedback')
+        for line in selected:
+            try:
+                line.getContentData().getContent().delete()
+            except VersioningError as e:
+                form.send_message(e.reason(), type='error')
+        form.send_message(_(u"Version(s) deleted."), type='feedback')
         return silvaforms.SUCCESS
 
 
@@ -261,13 +266,11 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     batchFactory = IPublicationStatusInfo
 
     tableFields = silvaforms.Fields(IPublicationStatusInfo)
-    tableActions = silvaforms.CompoundActions(
-        silvaforms.TableActions(
-            DeleteVersionAction(identifier='delete')),
-        silvaforms.TableMultiActions(
-            CopyForEditingAction(identifier='copy'),
-            ViewVersionAction(identifier='view'),
-            CompareVersionAction(identifier='compare')))
+    tableActions = silvaforms.TableMultiActions(
+        DeleteVersionAction(identifier='delete'),
+        CopyForEditingAction(identifier='copy'),
+        ViewVersionAction(identifier='view'),
+        CompareVersionAction(identifier='compare'))
 
     def getItems(self):
         versions = IPublicationWorkflow(self.context).get_versions(False)
