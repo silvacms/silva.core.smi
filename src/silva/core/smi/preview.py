@@ -30,8 +30,10 @@ class DirectlyRenderedPreview(PageREST):
     grok.require('silva.ReadSilvaContent')
 
     def payload(self):
+        content = getMultiAdapter(
+            (self.context, self.request), name='content.html')
         return {"ifaces": ["preview"],
-                "html": self.context.preview()}
+                "html": content()}
 
 
 class PreviewMenu(MenuItem):

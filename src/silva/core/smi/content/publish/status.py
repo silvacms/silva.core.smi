@@ -2,11 +2,15 @@
 # Copyright (c) 2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 
+import re
+import lxml.html.diff
+
 from five import grok
 from zope.interface import Interface
+from zope.interface import alsoProvides
 from zope import schema
+from zope.component import getMultiAdapter
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-from zope.traversing.browser import absoluteURL
 
 from Products.Silva.Versioning import VersioningError
 from silva.core.interfaces import IVersion, IVersionManager
@@ -14,12 +18,12 @@ from silva.core.interfaces import IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow
 from silva.core.smi.content.publish import Publish
 from silva.translations import translate as _
-from silva.ui.rest import RedirectToContentPreview, RedirectToPreview
+from silva.ui.rest import RedirectToPage
+from silva.ui.rest import PageREST
+from silva.core.views.interfaces import IPreviewLayer
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
 
-# TODO
-# - messages
 
 @apply
 def version_status_vocabulary():
@@ -132,8 +136,36 @@ class ViewVersionAction(silvaforms.Action):
                 _(u"Select only one version to view it."),
                 type='error')
             return silvaforms.FAILURE
-        version = selected[0].getContentData().getContent().context
-        raise RedirectToContentPreview(version)
+        version_id = selected[0].getContentData().getContent().id
+        raise RedirectToPage(form.context, 'publish/view/%s' % version_id)
+
+
+class ViewVersionScreen(PageREST):
+    grok.adapts(Publish, IVersionedContent)
+    grok.require('silva.ReadSilvaContent')
+    grok.name('view')
+
+    def __init__(self, *args):
+        super(ViewVersionScreen, self).__init__(*args)
+        self.__version = None
+
+    def publishTraverse(self, request, name):
+        match = re.compile('^(\d+)$').match(name)
+        if match:
+            version = self.context._getOb(match.group(1), None)
+            if IVersion.providedBy(version):
+                self.__version = version
+                alsoProvides(self.request, IPreviewLayer)
+                return self
+        return super(ViewVersionScreen, self).publishTraverse(request, name)
+
+    def payload(self):
+        assert self.__version is not None
+        view = getMultiAdapter(
+            (self.context, self.request), name='content.html')
+        view.version = self.__version
+        return {"ifaces": ["preview"],
+                "html": view()}
 
 
 class CompareVersionAction(silvaforms.Action):
@@ -148,11 +180,51 @@ class CompareVersionAction(silvaforms.Action):
                 _(u"Select exactly two different versions to compare them."),
                 type='error')
             return silvaforms.FAILURE
-        id1 = selected[0].getContentData().getContent().context.getId()
-        id2 = selected[1].getContentData().getContent().context.getId()
-        raise RedirectToPreview(
-            absoluteURL(form.context, form.request) +
-            '/compare_versions.html?version1=%s&version2=%s' % (id1, id2))
+        id1 = selected[0].getContentData().getContent().id
+        id2 = selected[1].getContentData().getContent().id
+        raise RedirectToPage(form.context, 'publish/compare/%s-%s' % (id1, id2))
+
+
+class CompareVersionScreen(PageREST):
+    """Screen to compare two versions
+    """
+    grok.adapts(Publish, IVersionedContent)
+    grok.require('silva.ReadSilvaContent')
+    grok.name('compare')
+
+    def __init__(self, *args):
+        super(CompareVersionScreen, self).__init__(*args)
+        self.__version1 = None
+        self.__version2 = None
+
+    def publishTraverse(self, request, name):
+        match = re.compile('^(\d+)-(\d+)$').match(name)
+        if match:
+            version1 = self.context._getOb(match.group(1), None)
+            version2 = self.context._getOb(match.group(2), None)
+            if IVersion.providedBy(version1) and IVersion.providedBy(version2):
+                self.__version1 = version1
+                self.__version2 = version2
+                alsoProvides(self.request, IPreviewLayer)
+                return self
+        return super(CompareVersionScreen, self).publishTraverse(request, name)
+
+    def payload(self):
+        assert self.__version1 is not None
+        assert self.__version2 is not None
+
+        version1_view = getMultiAdapter(
+            (self.context, self.request), name='content.html')
+        version1_view.content = self.__version1
+        version1_html = version1_view()
+
+        version2_view = getMultiAdapter(
+            (self.context, self.request), name='content.html')
+        version2_view.content = self.__version2
+        version2_html = version2_view()
+
+        return {"ifaces": ["preview"],
+                "html": lxml.html.diff.htmldiff(version2_html, version1_html)}
 
 
 class DeleteVersionAction(silvaforms.Action):
