@@ -70,7 +70,8 @@ class NewVersionMenu(PublicationMenuItem):
     accesskey = u'n'
 
     def available(self):
-        return self.content.get_editable() is None
+        return (self.content.get_editable() is None and
+                self.content.get_approved_version() is None)
 
 
 class NewVersionAction(PublicationAction):
