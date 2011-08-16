@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+
 from five import grok
 from zope.interface import Interface
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+from zope.traversing.browser import absoluteURL
+
 from DateTime import DateTime
-from datetime import datetime
 from AccessControl.security import checkPermission
 
 from Products.Silva.Versioning import VersioningError
@@ -15,7 +18,7 @@ from silva.core.interfaces import IPublicationWorkflow, PublicationWorkflowError
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenu, MenuItem
-from silva.ui.rest import Screen, RedirectToContentPreview
+from silva.ui.rest import Screen, RedirectToContentPreview, RedirectToPreview
 from zeam.form import autofields
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction, IDefaultAction
@@ -25,8 +28,6 @@ from zeam.form.base import makeAdaptiveDataManager
 
 # TODO
 # - messages
-# - compare
-# - throw events ?
 
 
 class Publish(silvaforms.SMIComposedForm):
@@ -406,6 +407,8 @@ def version_status_vocabulary():
 
 
 class IPublicationStatusInfo(Interface):
+    id = schema.TextLine(
+        title=_(u'Version'))
     modification_time = schema.Datetime(
         title=_('Modification time'))
     publication_time = schema.Datetime(
@@ -426,6 +429,10 @@ class PublicationStatusInfo(grok.Adapter):
     def __init__(self, context):
         self.context = context
         self.manager = IVersionManager(self.context)
+
+    @property
+    def id(self):
+        return self.context.getId()
 
     @property
     def modification_time(self):
@@ -460,10 +467,6 @@ class PublicationStatusInfo(grok.Adapter):
 
     def copy_for_editing(self):
         return self.manager.make_editable()
-
-# XXX : TODO...
-# class Compare(silvaforms.Action):
-#     pass
 
 
 class CopyForEditingAction(silvaforms.Action):
@@ -507,6 +510,25 @@ class ViewVersionAction(silvaforms.Action):
         raise RedirectToContentPreview(version)
 
 
+class CompareVersionAction(silvaforms.Action):
+    """Compare two different versions.
+    """
+    title = _('Compare')
+    descripton = _('select and compare two different versions')
+
+    def __call__(self, form, selected, deselected):
+        if len(selected) != 2:
+            form.send_message(
+                _(u"Select exactly two different versions to compare them."),
+                type='error')
+            return silvaforms.FAILURE
+        id1 = selected[0].getContentData().getContent().context.getId()
+        id2 = selected[1].getContentData().getContent().context.getId()
+        raise RedirectToPreview(
+            absoluteURL(form.context, form.request) +
+            '/compare_versions.html?version1=%s&version2=%s' % (id1, id2))
+
+
 class DeleteVersionAction(silvaforms.Action):
     """Permanently remove version.
     """
@@ -543,7 +565,8 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
             DeleteVersionAction(identifier='delete')),
         silvaforms.TableMultiActions(
             CopyForEditingAction(identifier='copy'),
-            ViewVersionAction(identifier='view')))
+            ViewVersionAction(identifier='view'),
+            CompareVersionAction(identifier='compare')))
 
     def getItems(self):
         versions = IPublicationWorkflow(self.context).get_versions(False)
