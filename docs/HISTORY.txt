@@ -1,5 +1,13 @@
 Changelog
 =========
+
+2.3.2-bethel.3 (2011-08-17)
+---------------------------
+
+* allow any container to be a localsite (Bethel's policy allows certain local
+  utilities to be placed within folders, as such they need to have the localsite
+  capability)
+
 2.3.2-bethel.2 (2011-08-05)
 ---------------------------
 
