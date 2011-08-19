@@ -263,7 +263,7 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     ignoreContent = False
 
     batchSize = 10
-    batchFactory = IPublicationStatusInfo
+    batchItemFactory = IPublicationStatusInfo
 
     tableFields = silvaforms.Fields(IPublicationStatusInfo)
     tableActions = silvaforms.TableMultiActions(
