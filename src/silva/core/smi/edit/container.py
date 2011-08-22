@@ -133,6 +133,10 @@ class AddingView(silvasmi.SMIPage):
         super(AddingView, self).__init__(context, request)
 
     def publishTraverse(self, request, name):
+        # If we traverse to a head request, treat it properly.
+        if request.method in ('HEAD',):
+            if hasattr(self, request.method):
+                return self, (request.method,)
         if name in self.context.get_silva_addables_allowed_in_container():
             factory = queryUtility(IFactory, name=name)
             if factory is not None:
