@@ -136,6 +136,7 @@ class SMINavigationListingForContainer(SMINavigationListing):
 def get_sidebar_cache():
     return getUtility(ICacheManager).get_cache_from_region('sidebar', 'shared')
 
+
 def sidebar_cache_key(content):
     #cache based on the publication AND the server (since absolute_urls are
     # being generated
@@ -147,6 +148,7 @@ def sidebar_cache_key(content):
         # (or does not yet have) a REQUEST.
         parts.append(content.REQUEST['SERVER_URL'])
     return  ''.join(parts)
+
 
 @grok.subscribe(ISilvaObject, IInvalidateSidebarEvent)
 def invalidate_sidebar_cache(obj, event):
