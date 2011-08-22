@@ -139,8 +139,14 @@ def get_sidebar_cache():
 def sidebar_cache_key(content):
     #cache based on the publication AND the server (since absolute_urls are
     # being generated
-    return "/".join(content.get_publication().getPhysicalPath()) + \
-            content.REQUEST['SERVER_URL']
+    parts = ["/".join(content.get_publication().getPhysicalPath())]
+    if hasattr(content, 'REQUEST'):
+        #sometimes the content does not have a REQUEST attr.  This can happen
+        # within testing layers which are adding content to the Silva root,
+        # where the the testing app itself never had
+        # (or does not yet have) a REQUEST.
+        parts.append(content.REQUEST['SERVER_URL'])
+    return  ''.join(parts)
 
 @grok.subscribe(ISilvaObject, IInvalidateSidebarEvent)
 def invalidate_sidebar_cache(obj, event):

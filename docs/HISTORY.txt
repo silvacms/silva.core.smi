@@ -4,8 +4,11 @@ Changelog
 2.3.4dev-bethel.1 (unreleased)
 ------------------------------
 
-- merge current state of 2.3.4 (changeset:   508:a9b4b90e6b9f) with 
+* merge current state of 2.3.4 (changeset:   508:a9b4b90e6b9f) with 
   2.3-bethel-content-layout
+
+* adjust sidebar_cache_key() to check for REQUEST attr (it is not always
+  present)
 
 2.3.4 (unreleased)
 ------------------
