@@ -137,7 +137,10 @@ def get_sidebar_cache():
     return getUtility(ICacheManager).get_cache_from_region('sidebar', 'shared')
 
 def sidebar_cache_key(content):
-    return "/".join(content.get_publication().getPhysicalPath())
+    #cache based on the publication AND the server (since absolute_urls are
+    # being generated
+    return "/".join(content.get_publication().getPhysicalPath()) + \
+            content.REQUEST['SERVER_URL']
 
 @grok.subscribe(ISilvaObject, IInvalidateSidebarEvent)
 def invalidate_sidebar_cache(obj, event):

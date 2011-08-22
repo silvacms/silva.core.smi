@@ -31,6 +31,8 @@ from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.interface import Interface
 from zope.traversing.browser import absoluteURL
 
+from Products.Silva.roleinfo import READER_ROLES
+
 
 
 class SMIAbsoluteURL(AbsoluteURL):
@@ -175,6 +177,14 @@ class SMIPathBar(silvaviews.ContentProvider):
 
     def zmi_url(self):
         return self.view.url(name='manage_main')
+    
+    def can_access_object(self, obj):
+        """tests user against roles available on obj to see if
+           user is at least a reader on that object"""
+        these_roles = obj.sec_get_all_roles()
+        return len([val for val in READER_ROLES if val in these_roles])
+    #tal:omit-tag="python: not len([val for val in context.roles_helper() if val in roles])"
+        
 
 
 class SMITab(SMIView):
