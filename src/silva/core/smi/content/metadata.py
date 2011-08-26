@@ -214,7 +214,8 @@ class EditableMetadataForm(MetadataEditForm):
         return self.context.get_editable()
 
     def available(self):
-        return bool(self.context.get_unapproved_version())
+        return (bool(self.context.get_unapproved_version()) and
+                super(EditableMetadataForm, self).available())
 
 
 class PreviewableMetadataForm(MetadataEditForm):

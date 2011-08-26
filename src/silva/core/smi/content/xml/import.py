@@ -70,6 +70,7 @@ class ImportForm(silvaforms.SMIForm):
             if importer.isFullmediaArchive(data['archive']):
                 imported, failures = importer.importFromZip(
                     data['archive'],
+                    self.request,
                     data.getDefault('replace'))
             else:
                 importer = IArchiveFileImporter(self.context)
