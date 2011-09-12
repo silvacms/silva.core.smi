@@ -79,6 +79,7 @@ class ExportForm(silvaforms.SMIForm):
         if not errors:
             url = self.url() + '/++rest++silva.ui/content/export/download'
             query_string = "?" + urllib.urlencode(self.request.form)
+            print url + query_string
             raise RedirectToUrl(url + query_string)
         return silvaforms.FAILURE
 

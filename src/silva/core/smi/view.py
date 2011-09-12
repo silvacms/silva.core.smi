@@ -8,25 +8,15 @@ from zope.traversing.browser import absoluteURL
 
 from silva.core.interfaces import IViewableObject
 from silva.translations import translate as _
-from silva.ui.menu import MenuItem, ViewMenu
-from silva.ui.rest import UIREST
+from silva.ui.menu import LinkMenuItem, ViewMenu
 
 
-class DisplayMenu(MenuItem):
+class DisplayMenu(LinkMenuItem):
     grok.adapts(ViewMenu, IViewableObject)
     grok.order(20)
     name = _('View')
-    description = _(u'view content in a new (popup) window')
-    action = 'view'
+    description = _(u'view content in a new window')
     accesskey = u';'
 
-
-class ViewREST(UIREST):
-    grok.name('silva.ui.actions.view')
-    grok.context(IViewableObject)
-
-    def POST(self):
-        data = {'content':
-                    {'ifaces': ['view'],
-                     'url': absoluteURL(self.context, self.request)}}
-        return self.json_response(data)
+    def get_url(self, context, request):
+        return absoluteURL(context, request)
