@@ -1,17 +1,12 @@
 from five import grok
 
 from zope.interface import Interface
-from zope.component import getUtility
 from zope.traversing.browser import absoluteURL
-from zope.intid.interfaces import IIntIds
 
-from silva.core.interfaces import (IRoot, IPublication, IContainer,
-    IVersionedContent, IInvalidateSidebarEvent, ISilvaObject)
+from silva.core.interfaces import IRoot, IContainer, IVersionedContent
 from silva.core.smi import interfaces
-from silva.core.cache.interfaces import ICacheManager
 from silva.core.views import views as silvaviews
 from Products.Silva.icon import get_icon_url
-from string import Template
 
 
 class SMINavCommon(object):
@@ -58,10 +53,36 @@ class SMINavigation(silvaviews.ContentProvider, SMINavCommon):
         return self.layout.static['up_publication.gif']()
 
 
-class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):
-    """ Base class for listings of navigation
+class SMINavigationListingForContainer(silvaviews.ContentProvider):
+    """ Content Provider for listing of container
     """
-    grok.baseclass()
+    grok.context(IContainer)
+    grok.name('navigation_listing')
+    grok.layer(interfaces.ISMILayer)
+
+    def render(self):
+        return self.context.service_sidebar.render(
+            self.context, self.view.tab_name, request=self.request)
+
+
+class SMINavigationListingForNonContainer(
+    silvaviews.ContentProvider, SMINavCommon):
+    """ Content provider for listing of non-container
+    """
+    grok.name('navigation_listing')
+    grok.layer(interfaces.ISMILayer)
+
+    def update(self):
+        self.content_type = self.context.meta_type.startswith('Silva ') and \
+            self.context.meta_type[6:].lower() or \
+            self.context.meta_type
+
+    def items(self):
+        default_doc_list = self.default_document() and \
+            [self.default_document()] or []
+        return default_doc_list + \
+            self.context.get_ordered_publishables() + \
+            self.context.get_non_publishables()
 
     def get_item_tab_url(self, item):
         return "%s/edit/%s" % (item.absolute_url(), self.view.tab_name,)
@@ -80,90 +101,6 @@ class SMINavigationListing(silvaviews.ContentProvider, SMINavCommon):
     def should_link_to_tab_status(self, item):
         return IVersionedContent.providedBy(item) or \
             IContainer.providedBy(item)
-
-
-class MyTemplate(Template):
-    delimiter = '%'
-
-
-class SMINavigationListingForContainer(SMINavigationListing):
-    """ Content Provider for listing of container
-    """
-    grok.context(IContainer)
-    grok.name('navigation_listing')
-    grok.layer(interfaces.ISMILayer)
-
-    _template = grok.PageTemplate(
-        filename="navigation_templates/sminavigationlistingforcontainer.tmp.pt")
-
-    def update(self):
-        self.intids = getUtility(IIntIds)
-
-    def get_item_tab_url(self, item):
-        return "%s/edit/%%{tabname}" % self.get_macro_url(item)
-
-    def get_macro_url(self, ob):
-        root_path = self.tree_root.getPhysicalPath()
-        path = ob.getPhysicalPath()
-        return "%{root_url}/" + "/".join(path[len(root_path):])
-
-    def get_item_class(self, item):
-        id = self.intids.register(item)
-        return "%%item_select_%d" % id
-
-    def __post_process_template(self, content):
-        repl = {'root_url': absoluteURL(self.tree_root, self.request),
-                'tabname': self.view.tab_name,
-                'item_select_%d' % \
-                    self.intids.register(self.context.get_container()):
-                    'selected'}
-        tpl = MyTemplate(content)
-        return tpl.safe_substitute(repl)
-
-    def items(self):
-        return [(-1, self.tree_root)] + self.tree_root.get_container_tree()
-
-    def render(self):
-        def render_template():
-            return self._template.render(self)
-
-        cache = get_sidebar_cache()
-        content = cache.get(sidebar_cache_key(self.context),
-                            createfunc=render_template)
-        return self.__post_process_template(content)
-
-
-def get_sidebar_cache():
-    return getUtility(ICacheManager).get_cache_from_region('sidebar', 'shared')
-
-def sidebar_cache_key(content):
-    return "/".join(content.get_publication().getPhysicalPath())
-
-@grok.subscribe(ISilvaObject, IInvalidateSidebarEvent)
-def invalidate_sidebar_cache(obj, event):
-    cache = get_sidebar_cache()
-    if IPublication.providedBy(obj) and not IRoot.providedBy(obj):
-        cache.remove(sidebar_cache_key(obj.aq_inner.aq_parent))
-    cache.remove(sidebar_cache_key(obj))
-
-
-class SMINavigationListingForNonContainer(SMINavigationListing):
-    """ Content provider for listing of non-container
-    """
-    grok.name('navigation_listing')
-    grok.layer(interfaces.ISMILayer)
-
-    def update(self):
-        self.content_type = self.context.meta_type.startswith('Silva ') and \
-            self.context.meta_type[6:].lower() or \
-            self.context.meta_type
-
-    def items(self):
-        default_doc_list = self.default_document() and \
-            [self.default_document()] or []
-        return default_doc_list + \
-            self.context.get_ordered_publishables() + \
-            self.context.get_non_publishables()
 
     @property
     def container(self):
