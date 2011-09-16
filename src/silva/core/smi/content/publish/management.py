@@ -253,7 +253,7 @@ class PendingApprovalRequestForm(silvaforms.SMISubForm):
 
 
 class IWithdrawalMessage(interface.Interface):
-    message = schema.Text(title=_('add message on withdrawal'),
+    message = schema.Text(title=_('Add message on withdrawal'),
             description=_('The message may be viewed by local users.'),
             default=u'',
             required=False)
@@ -261,7 +261,7 @@ class IWithdrawalMessage(interface.Interface):
 
 class WithdrawApprovalRequestForm(PendingApprovalRequestForm):
     fields = silvaforms.Fields(IWithdrawalMessage)
-    label = _('withdraw request')
+    label = _('Withdraw request')
 
     def available(self):
         if checkPermission('silva.ApproveSilvaContent', self.context):
@@ -285,7 +285,7 @@ class WithdrawApprovalRequestForm(PendingApprovalRequestForm):
 
 
 class IRejectionMessage(interface.Interface):
-    message = schema.Text(title=_('add message on rejection'),
+    message = schema.Text(title=_('Add message on rejection'),
             description=_('The message may be viewed by local users.'),
             default=u'',
             required=False)
