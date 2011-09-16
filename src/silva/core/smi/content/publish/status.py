@@ -109,7 +109,7 @@ class CopyForEditingAction(silvaforms.Action):
     def __call__(self, form, selected, deselected):
         if len(selected) != 1:
             form.send_message(
-                _(u"Select only one copy to copy it for editing."),
+                _(u"Please select one version to copy."),
                 type='error')
             return silvaforms.FAILURE
         content = selected[0].getContentData().getContent()
@@ -133,7 +133,7 @@ class ViewVersionAction(silvaforms.Action):
     def __call__(self, form, selected, deselected):
         if len(selected) != 1:
             form.send_message(
-                _(u"Select only one version to view it."),
+                _(u"Please select one version to view it."),
                 type='error')
             return silvaforms.FAILURE
         version_id = selected[0].getContentData().getContent().id
@@ -238,6 +238,11 @@ class DeleteVersionAction(silvaforms.Action):
         if not len(deselected):
             form.send_message(
                 _(u"Cannot delete all versions."),
+                type='error')
+            return silvaforms.FAILURE
+        if not len(selected):
+            form.send_message(
+                _(u"No version selected, nothing deleted."),
                 type='error')
             return silvaforms.FAILURE
         for line in selected:
