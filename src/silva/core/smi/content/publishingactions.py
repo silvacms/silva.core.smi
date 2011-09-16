@@ -173,7 +173,7 @@ class RevokeApprovalAction(PublicationAction):
 class PublishMenu(PublicationMenuItem):
     grok.order(10)
 
-    name = _(u'Publish Now')
+    name = _(u'Publish now')
     description = _(u'publish now this content')
     action = 'publish'
     accesskey = u'p'
