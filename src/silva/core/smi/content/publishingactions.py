@@ -85,7 +85,7 @@ class NewVersionAction(PublicationAction):
 class RequestApprovalMenu(PublicationMenuItem):
     grok.order(10)
 
-    name = _(u'Request Approval')
+    name = _(u'Request approval')
     description = _(u'request approval for immediate publication')
     action = 'requestapproval'
     accesskey = u'r'
@@ -109,7 +109,7 @@ class RequestApprovalAction(PublicationAction):
 class WithdrawApprovalRequestMenu(PublicationMenuItem):
     grok.order(40)
 
-    name = _(u'Withdraw Request')
+    name = _(u'Withdraw request')
     description = _(u'withdraw a request for approval')
     action = 'withdrawrequest'
     accesskey = u'w'
@@ -131,7 +131,7 @@ class WithdrawApprovalRequestAction(PublicationAction):
 class RejectApprovalRequestMenu(PublicationMenuItem):
     grok.order(80)
 
-    name = _(u'Reject Request')
+    name = _(u'Reject request')
     description = _(u'reject a request for approval')
     action = 'rejectrequest'
     accesskey = u'w'
@@ -153,7 +153,7 @@ class RejectApprovalRequestAction(PublicationAction):
 class RevokeApprovalMenu(PublicationMenuItem):
     grok.order(81)
 
-    name = _(u'Revoke Approval')
+    name = _(u'Revoke approval')
     description = _(u'un-approve this version in order to edit it')
     action = 'revokeapproval'
     accesskey = u'r'
