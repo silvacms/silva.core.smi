@@ -3,7 +3,6 @@
 
 from datetime import datetime
 import mimetypes
-import urllib
 
 from five import grok
 from zope import schema
@@ -15,7 +14,7 @@ from silva.core.interfaces import IContainer, IContentExporterRegistry
 from silva.core.smi.content.container import ContainerMenu, Container
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem
-from silva.ui.rest import REST, RedirectToUrl
+from silva.ui.rest import ContentException
 from zeam.form import silva as silvaforms
 
 from Products.Silva.silvaxml import xmlexport
@@ -51,6 +50,44 @@ class IExportFields(Interface):
         description=_(u"Select the format which will be used for the export."))
 
 
+class ExportAction(silvaforms.LinkAction):
+    grok.implements(silvaforms.IDefaultAction)
+
+    title = _(u"Export")
+    description = _(u"export content")
+    accesskey = 'ctrl+e'
+
+    def __call__(self, form):
+        data, errors = form.extractData()
+        if errors:
+            raise BadRequest('invalid export parameters')
+
+        settings = xmlexport.ExportSettings()
+        settings.setWithSubPublications(
+            data.getWithDefault('include_sub_publications'))
+        settings.setLastVersion(
+            data.getWithDefault('export_newest_version_only'))
+
+        exporter = getUtility(IContentExporterRegistry).get(
+            form.context, data.getWithDefault('export_format'))
+        filename = '%s_export_%s.%s' % (
+            form.context.id,
+            datetime.now().strftime("%Y-%m-%d"),
+            exporter.extension)
+        output = exporter.export(settings)
+
+        content_type, content_encoding = mimetypes.guess_type(filename)
+        if not content_type:
+            content_type = 'application/octet-stream'
+        response = form.request.response
+        response.setHeader('Content-Type', content_type)
+        if content_encoding:
+            response.setHeader('Content-Encoding', content_encoding)
+        response.setHeader(
+            'Content-Disposition', 'attachment;filename=%s' % filename)
+        raise ContentException(output)
+
+
 class ExportForm(silvaforms.SMIForm):
     """Export form for containers.
     """
@@ -63,25 +100,11 @@ class ExportForm(silvaforms.SMIForm):
     fields = silvaforms.Fields(IExportFields)
     fields['export_format'].mode = 'radio'
     fields['export_format'].defaultValue = default_format
-    actions = silvaforms.Actions(silvaforms.CancelAction())
+    actions = silvaforms.Actions(silvaforms.CancelAction(), ExportAction())
 
     postOnly = False
     ignoreContent=True
     ignoreRequest=False
-
-    @silvaforms.action(
-        title=_(u"Export"),
-        description=_(u"export as an zip archive"),
-        implements=silvaforms.IDefaultAction,
-        accesskey='ctrl+e')
-    def export(self):
-        data, errors = self.extractData()
-        if not errors:
-            url = self.url() + '/++rest++silva.ui/content/export/download'
-            query_string = "?" + urllib.urlencode(self.request.form)
-            print url + query_string
-            raise RedirectToUrl(url + query_string)
-        return silvaforms.FAILURE
 
 
 class ExportMenu(MenuItem):
@@ -91,43 +114,5 @@ class ExportMenu(MenuItem):
 
     name = _(u'Export')
     screen = ExportForm
-
-
-class ExportDownload(REST):
-    grok.adapts(ExportForm, IContainer)
-    grok.require('silva.ManageSilvaContentSettings')
-    grok.name('download')
-
-    def update(self):
-        form = self.__parent__
-        data, errors = form.extractData()
-        if errors:
-            raise BadRequest('invalid export parameters')
-        settings = xmlexport.ExportSettings()
-        settings.setWithSubPublications(
-            data.getWithDefault('include_sub_publications'))
-        settings.setLastVersion(
-            data.getWithDefault('export_newest_version_only'))
-
-        exporter = getUtility(IContentExporterRegistry).get(
-            self.context, data.getWithDefault('export_format'))
-        self.filename = '%s_export_%s.%s' % (
-            form.context.id,
-            datetime.now().strftime("%Y-%m-%d"),
-            exporter.extension)
-        self.output = exporter.export(settings)
-
-    def GET(self):
-        self.update()
-        content_type, content_encoding = mimetypes.guess_type(self.filename)
-        if not content_type:
-            content_type = 'application/octet-stream'
-        response = self.request.response
-        response.setHeader('Content-Type', content_type)
-        if content_encoding:
-            response.setHeader('Content-Encoding', content_encoding)
-        response.setHeader(
-            'Content-Disposition', 'attachment;filename=%s' % self.filename)
-        return self.output
 
 

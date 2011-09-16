@@ -6,16 +6,17 @@ from five import grok
 
 from silva.core.interfaces.errors import ExternalReferenceError
 from silva.translations import translate as _
-from silva.ui.rest.errors import ErrorREST
+from silva.core.views.views import Page
 
 
-class ExternalReferenceErrorPage(ErrorREST):
+class ExternalReferenceErrorPage(Page):
     """ Page to render broken references errors.
 
     It redirects to break references form if the user as the necessary rights to
     break references.
     """
     grok.context(ExternalReferenceError)
+    grok.name('error.html')
 
     title = _('External reference exported')
 
