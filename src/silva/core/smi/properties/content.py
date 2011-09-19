@@ -34,7 +34,7 @@ class SettingsButton(smi.SMIMiddleGroundButton):
 
 
 class LocalSiteButton(smi.SMIMiddleGroundButton):
-    grok.context(interfaces.IPublication)
+    grok.context(interfaces.IContainer)
     grok.order(70)
     grok.require('zope2.ViewManagementScreens')
 

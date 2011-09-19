@@ -65,6 +65,18 @@ class SMINavigationListingForContainer(silvaviews.ContentProvider):
             self.context, self.view.tab_name, request=self.request)
 
 
+    #cache based on the publication AND the server (since absolute_urls are
+    # being generated
+    parts = ["/".join(content.get_publication().getPhysicalPath())]
+    if hasattr(content, 'REQUEST'):
+        #sometimes the content does not have a REQUEST attr.  This can happen
+        # within testing layers which are adding content to the Silva root,
+        # where the the testing app itself never had
+        # (or does not yet have) a REQUEST.
+        parts.append(content.REQUEST['SERVER_URL'])
+    return  ''.join(parts)
+
+
 class SMINavigationListingForNonContainer(
     silvaviews.ContentProvider, SMINavCommon):
     """ Content provider for listing of non-container
