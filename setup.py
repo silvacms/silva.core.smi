@@ -6,7 +6,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.3.4dev-bethel.1'
+version = '2.3.4dev-bethel.2'
 
 tests_require = [
     'BeautifulSoup',
