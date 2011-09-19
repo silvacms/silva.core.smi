@@ -28,6 +28,11 @@ class SMIAction(silvaforms.Action):
         sm = getSecurityManager()
         return sm.checkPermission('Approve Silva content', form.context)
 
+    def send_editor_messages(self):
+        service_messages = getattr(self.context, 'service_messages', None)
+        if service_messages is not None:
+            service_messages.send_pending_messages()
+
     def redirect(self, form):
         url_parts = [absoluteURL(form.context, form.request), 'edit']
         tab_name = getattr(form, 'tab_name', None)
@@ -86,6 +91,7 @@ class RequestApproval(SMIAction):
         form.send_message(
             _(u"Approval requested for immediate publication."),
             type="feedback")
+        self.send_editor_messages()
         return self.redirect(form)
 
 
@@ -114,6 +120,7 @@ class WithdrawApprovalRequest(SMIAction):
             u"(automatically generated message)")
         form.send_message(
             _(u"Withdrew request for approval."), type="feedback")
+        self.send_editor_messages()
         return self.redirect(form)
 
 
@@ -142,6 +149,7 @@ class RejectApprovalRequest(SMIAction):
             u"(automatically generated message).")
         form.send_message(
             _(u"Rejected request for approval."), type="feedback")
+        self.send_editor_messages()
         return self.redirect(form)
 
 
@@ -159,6 +167,7 @@ class RevokeApproval(SMIAction):
         form.context.sec_update_last_author_info()
         form.send_message(
             _(u'Revoked approval.'), type=u"feedback")
+        self.send_editor_messages()
         return self.redirect(form)
 
 
@@ -188,6 +197,7 @@ class Publish(SMIAction):
         form.context.set_unapproved_version_publication_datetime(DateTime())
         form.context.approve_version()
         form.send_message(_(u"Version approved."), type=u"feedback")
+        self.send_editor_messages()
         return self.redirect(form)
 
 
