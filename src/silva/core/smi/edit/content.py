@@ -28,8 +28,8 @@ class SMIAction(silvaforms.Action):
         sm = getSecurityManager()
         return sm.checkPermission('Approve Silva content', form.context)
 
-    def send_editor_messages(self):
-        service_messages = getattr(self.context, 'service_messages', None)
+    def send_editor_messages(self, form):
+        service_messages = getattr(form.context, 'service_messages', None)
         if service_messages is not None:
             service_messages.send_pending_messages()
 
@@ -91,7 +91,7 @@ class RequestApproval(SMIAction):
         form.send_message(
             _(u"Approval requested for immediate publication."),
             type="feedback")
-        self.send_editor_messages()
+        self.send_editor_messages(form)
         return self.redirect(form)
 
 
@@ -120,7 +120,7 @@ class WithdrawApprovalRequest(SMIAction):
             u"(automatically generated message)")
         form.send_message(
             _(u"Withdrew request for approval."), type="feedback")
-        self.send_editor_messages()
+        self.send_editor_messages(form)
         return self.redirect(form)
 
 
@@ -149,7 +149,7 @@ class RejectApprovalRequest(SMIAction):
             u"(automatically generated message).")
         form.send_message(
             _(u"Rejected request for approval."), type="feedback")
-        self.send_editor_messages()
+        self.send_editor_messages(form)
         return self.redirect(form)
 
 
@@ -167,7 +167,7 @@ class RevokeApproval(SMIAction):
         form.context.sec_update_last_author_info()
         form.send_message(
             _(u'Revoked approval.'), type=u"feedback")
-        self.send_editor_messages()
+        self.send_editor_messages(form)
         return self.redirect(form)
 
 
@@ -197,7 +197,7 @@ class Publish(SMIAction):
         form.context.set_unapproved_version_publication_datetime(DateTime())
         form.context.approve_version()
         form.send_message(_(u"Version approved."), type=u"feedback")
-        self.send_editor_messages()
+        self.send_editor_messages(form)
         return self.redirect(form)
 
 

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.3.4dev-bethel.3 (2011-09-21)
+------------------------------
+
+* merge current state of 2.3.4, to fix the publish now and related buttons
+
 2.3.4dev-bethel.2 (2011-09-19)
 ------------------------------
 
