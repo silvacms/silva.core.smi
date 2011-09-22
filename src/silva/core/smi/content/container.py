@@ -197,10 +197,10 @@ class RenameActionREST(FolderActionREST):
 
         with manager.renamer() as renamer:
             for position in range(total):
-                id = int(form['values.%d.id' % position])
+                id = int(form.get('values.%d.id' % position))
                 content = get_content(id)
-                identifier = form['values.%d.identifier' % position]
-                title = form['values.%d.title' % position]
+                identifier = form.get('values.%d.identifier' % position)
+                title = form.get('values.%d.title' % position)
                 renamed_content = renamer.add((content, identifier, title))
                 if renamed_content is None:
                     failures.append(content)
@@ -341,7 +341,7 @@ class NewVersionActionREST(FolderActionREST):
         return {}
 
 
-class Order(UIREST):
+class OrderREST(UIREST):
     grok.context(IContainer)
     grok.name('silva.ui.listing.order')
     grok.require('silva.ChangeSilvaContent')

@@ -19,7 +19,7 @@ from silva.core.interfaces import IPublicationWorkflow
 from silva.core.smi.content.publish import Publish
 from silva.translations import translate as _
 from silva.ui.rest import RedirectToPage
-from silva.ui.rest import PageREST
+from silva.ui.rest import PageWithLayoutREST
 from silva.core.views.interfaces import IPreviewLayer
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
@@ -140,7 +140,7 @@ class ViewVersionAction(silvaforms.Action):
         raise RedirectToPage(form.context, 'publish/view/%s' % version_id)
 
 
-class ViewVersionScreen(PageREST):
+class ViewVersionScreen(PageWithLayoutREST):
     grok.adapts(Publish, IVersionedContent)
     grok.require('silva.ReadSilvaContent')
     grok.name('view')
@@ -159,13 +159,12 @@ class ViewVersionScreen(PageREST):
                 return self
         return super(ViewVersionScreen, self).publishTraverse(request, name)
 
-    def payload(self):
+    def content(self):
         assert self.__version is not None
         view = getMultiAdapter(
             (self.context, self.request), name='content.html')
         view.version = self.__version
-        return {"ifaces": ["preview"],
-                "html": view()}
+        return view()
 
 
 class CompareVersionAction(silvaforms.Action):
@@ -185,7 +184,7 @@ class CompareVersionAction(silvaforms.Action):
         raise RedirectToPage(form.context, 'publish/compare/%s-%s' % (id1, id2))
 
 
-class CompareVersionScreen(PageREST):
+class CompareVersionScreen(PageWithLayoutREST):
     """Screen to compare two versions
     """
     grok.adapts(Publish, IVersionedContent)
@@ -209,7 +208,7 @@ class CompareVersionScreen(PageREST):
                 return self
         return super(CompareVersionScreen, self).publishTraverse(request, name)
 
-    def payload(self):
+    def content(self):
         assert self.__version1 is not None
         assert self.__version2 is not None
 
@@ -223,8 +222,7 @@ class CompareVersionScreen(PageREST):
         version2_view.content = self.__version2
         version2_html = version2_view()
 
-        return {"ifaces": ["preview"],
-                "html": lxml.html.diff.htmldiff(version2_html, version1_html)}
+        return lxml.html.diff.htmldiff(version2_html, version1_html)
 
 
 class DeleteVersionAction(silvaforms.Action):
