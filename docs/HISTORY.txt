@@ -1,10 +1,14 @@
 Changelog
 =========
 
-2.3.4 (unreleased)
+2.3.4 (2011/10/04)
 ------------------
 
-* ...
+* Fix HEAD requests on add forms.
+
+* Properly send editor messages if they are pending.
+
+* Use service_sidebar to render the sidebar in the forms and views.
 
 2.3.3 (2011-07-27)
 ------------------
