@@ -6,11 +6,13 @@ from five import grok
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
+from infrae.comethods import comethod
+
 from silva.core.messages.interfaces import IMessageService
 from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
-from silva.core.interfaces import IPublicationWorkflow, PublicationWorkflowError
+from silva.core.interfaces import IPublicationWorkflow, PublicationError
 from silva.ui.rest.base import Screen, PageREST, UIREST
-from silva.ui.rest.container import ContentSerializer, ContentCounter
+from silva.ui.rest.container import ContentSerializer
 from silva.ui.rest.container import FolderActionREST
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
 from silva.translations import translate as _
@@ -58,32 +60,12 @@ class DeleteActionREST(FolderActionREST):
     grok.name('silva.ui.listing.delete')
 
     def payload(self):
-        success = ContentCounter(self)
-        failures = ContentCounter(self)
-        manager = IContainerManager(self.context)
-
-        with manager.deleter() as deleter:
-            for identifier, content in self.get_selected_content():
-                if deleter.add(content):
-                    success.append(content)
-                else:
-                    failures.append(content)
-
-        # Compute notification message
-        if success:
-            if failures:
-                self.notify(
-                    _(u'Deleted ${deleted} but could not delete ${not_deleted}.',
-                      mapping={'deleted': success,
-                               'not_deleted': failures}))
-            else:
-                self.notify(
-                    _(u'Deleted ${deleted}.',
-                      mapping={'deleted': success}))
-        elif failures:
-            self.notify(
-                _(u'Could not delete ${not_deleted}.',
-                  mapping={'not_deleted': failures}))
+        with IContainerManager(self.context).deleter() as deleter:
+            with self.notifier(
+                deleter,
+                u"Deleted ${contents}.",
+                u"Could not delete ${contents}: ${reason}.") as notifier:
+                notifier.map(self.get_selected_contents())
         return {}
 
 
@@ -91,58 +73,21 @@ class PasteActionREST(FolderActionREST):
     grok.name('silva.ui.listing.paste')
 
     def payload(self):
-        copied_failures = ContentCounter(self)
-        copied_success = ContentCounter(self)
-        moved_failures = ContentCounter(self)
-        moved_success = ContentCounter(self)
-
         manager = IContainerManager(self.context)
 
         with manager.copier() as copier:
-            for identifier, content in self.get_selected_content('copied'):
-                copy = copier.add(content)
-                if copy is None:
-                    copied_failures.append(content)
-                else:
-                    copied_success.append(copy)
+            with self.notifier(
+                copier,
+                u"Pasted as a copy ${contents}",
+                u'Could not copy ${contents}: ${reason}.') as notifier:
+                notifier.map(self.get_selected_contents('copied'))
 
         with manager.mover() as mover:
-            for identifier, content in self.get_selected_content('cutted'):
-                moved_content = mover.add(content)
-                if moved_content is None:
-                    moved_failures.append(content)
-                else:
-                    moved_success.append(moved_content)
-
-        # Notifications
-        if copied_success:
-            if copied_failures:
-                self.notify(
-                    _(u'Pasted as a copy ${copied} but could not copy ${not_copied}.',
-                      mapping={'copied': copied_success,
-                               'not_copied': copied_failures}))
-            else:
-                self.notify(
-                    _(u'Pasted as a copy ${copied}.',
-                      mapping={'copied': copied_success}))
-        elif copied_failures:
-            self.notify(
-                _(u'Could not copy ${not_copied}.',
-                  mapping={'not_copied': copied_failures}))
-        if moved_success:
-            if moved_failures:
-                self.notify(
-                    _(u"Moved ${moved} but could not move ${not_moved}.",
-                      mapping={'moved': moved_success,
-                               'not_moved': moved_failures}))
-            else:
-                self.notify(
-                    _(u'Moved ${moved}.',
-                      mapping={'moved': moved_success}))
-        elif moved_failures:
-            self.notify(
-                _(u'Could not move ${not_moved}.',
-                  mapping={'not_moved': moved_failures}))
+            with self.notifier(
+                mover,
+                u'Moved ${contents}.',
+                u'Could not move ${contents}: ${reason}.') as notifier:
+                notifier.map(self.get_selected_contents('cutted'))
 
         return {}
 
@@ -151,193 +96,109 @@ class PasteAsGhostActionREST(FolderActionREST):
     grok.name('silva.ui.listing.pasteasghost')
 
     def payload(self):
-        success = ContentCounter(self)
-        failures = ContentCounter(self)
-
-        manager = IContainerManager(self.context)
-
-        with manager.ghoster() as ghoster:
-            for identifier, content in self.get_selected_content('copied'):
-                ghost = ghoster.add(content)
-                if ghost is None:
-                    failures.append(content)
-                else:
-                    success.append(ghost)
-
-        # Notifications
-        if success:
-            if failures:
-                self.notify(
-                    _(u"Created ghost for ${ghosted} but could do it for ${not_ghosted}",
-                      mapping={'ghosted': success,
-                               'not_ghosted': failures}))
-            else:
-                self.notify(
-                    _(u"Created ghost for ${ghosted}.",
-                      mapping={'ghosted': success}))
-        elif failures:
-            self.notify(
-                _(u"Could not create ghost for ${not_ghosted}.",
-                  mapping={'not_ghosted': failures}))
+        with IContainerManager(self.context).ghoster() as ghoster:
+            with self.notifier(
+                ghoster,
+                u"Created ghost for ${contents}.",
+                u"Could not create ghost for ${contents}: ${reason}.") as notifier:
+                notifier.map(self.get_selected_contents('copied'))
         return {}
 
 
 class RenameActionREST(FolderActionREST):
     grok.name('silva.ui.listing.rename')
 
-    def payload(self):
-        success = ContentCounter(self)
-        failures = ContentCounter(self)
-
-        manager = IContainerManager(self.context)
-
+    def get_renaming_information(self):
         form = self.request.form
         total = int(form.get('values', 0))
-        get_content = getUtility(IIntIds).getObject
 
-        with manager.renamer() as renamer:
-            for position in range(total):
-                id = int(form.get('values.%d.id' % position))
-                content = get_content(id)
-                identifier = form.get('values.%d.identifier' % position)
-                title = form.get('values.%d.title' % position)
-                renamed_content = renamer.add((content, identifier, title))
-                if renamed_content is None:
-                    failures.append(content)
-                else:
-                    success.append(renamed_content)
+        for index in range(total):
+            for content in self.get_contents(form.get('values.%d.id' % index)):
+                # This will loop at best one time, none if there is a problem
+                identifier = form.get('values.%d.identifier' % index)
+                title = form.get('values.%d.title' % index)
+                yield (content, identifier, title)
 
-        # Notifications
-        if success:
-            if failures:
-                self.notify(
-                    _(u'Renamed ${renamed}, but could not rename ${not_renamed}.',
-                      mapping={'renamed': success,
-                               'not_renamed': failures}))
-            else:
-                self.notify(
-                    _(u'Renamed ${renamed}.',
-                      mapping={'renamed': success}))
-        elif failures:
-            self.notify(
-                _(u'Could not rename ${not_renamed}.',
-                  mapping={'not_renamed': failures}))
-
+    def payload(self):
+        with IContainerManager(self.context).renamer() as renamer:
+            with self.notifier(
+                renamer,
+                u"Renamed ${contents}.",
+                u"Could not rename ${contents}: ${reason}.") as notifier:
+                notifier.map(self.get_renaming_information())
         return {}
 
 
-class PublishActionREST(FolderActionREST):
+class PublicationFolderActionREST(FolderActionREST):
+    grok.baseclass()
+
+    def workflow_action(self, workflow):
+        raise NotImplementedError
+
+    @comethod
+    def workflow_processor(self):
+        content = yield
+        while content is not None:
+            workflow = IPublicationWorkflow(content, None)
+            if workflow is not None:
+                try:
+                    self.workflow_action(workflow)
+                except PublicationError as error:
+                    result = error
+                else:
+                    result = content
+            else:
+                result = PublicationError(
+                    _(u"This action is not applicable on this content"),
+                    content)
+            content = yield result
+
+
+class PublishActionREST(PublicationFolderActionREST):
     grok.name('silva.ui.listing.publish')
 
+    def workflow_action(self, workflow):
+        workflow.publish()
+
     def payload(self):
-        success = ContentCounter(self)
-        failures = ContentCounter(self)
-
-        for identifier, content in self.get_selected_content(recursive=True):
-            workflow = IPublicationWorkflow(content, None)
-            if workflow is not None:
-                try:
-                    workflow.publish()
-                except PublicationWorkflowError:
-                    failures.append(content)
-                else:
-                    success.append(content)
-            else:
-                failures.append(content)
-
-        # Notifications
-        if success:
-            if failures:
-                self.notify(
-                    _(u'Published ${published}, but could not publish ${not_published}.',
-                      mapping={'published': success,
-                               'not_published': failures}))
-            else:
-                self.notify(
-                    _(u'Published ${published}.',
-                      mapping={'published': success}))
-        elif failures:
-            self.notify(
-                _(u'Could not publish ${not_published}.',
-                  mapping={'not_published': failures}))
-
+        with self.workflow_processor() as processor:
+            with self.notifier(
+                processor,
+                u"Published ${contents}.",
+                u"Could not publish ${contents}: ${reason}.") as notifier:
+                notifier.map(self.get_selected_contents(recursive=True))
         return {}
 
 
-class CloseActionREST(FolderActionREST):
+class CloseActionREST(PublicationFolderActionREST):
     grok.name('silva.ui.listing.close')
 
+    def workflow_action(self, workflow):
+        workflow.close()
+
     def payload(self):
-        success = ContentCounter(self)
-        failures = ContentCounter(self)
-
-        for identifier, content in self.get_selected_content(recursive=True):
-            workflow = IPublicationWorkflow(content, None)
-            if workflow is not None:
-                try:
-                    workflow.close()
-                except PublicationWorkflowError:
-                    failures.append(content)
-                else:
-                    success.append(content)
-            else:
-                failures.append(content)
-
-        # Notifications
-        if success:
-            if failures:
-                self.notify(
-                    _(u'Closed ${closed}, but could not close ${not_closed}.',
-                      mapping={'closed': success,
-                               'not_closed': failures}))
-            else:
-                self.notify(
-                    _(u'Closed ${closed}.',
-                      mapping={'closed': success}))
-        elif failures:
-            self.notify(
-                _(u'Could not close ${not_closed}.',
-                  mapping={'not_closed': failures}))
-
+        with self.workflow_processor() as processor:
+            with self.notifier(
+                processor,
+                u"Closed ${contents}.",
+                u"Could not close ${contents}: ${reason}.") as notifier:
+                notifier.map(self.get_selected_contents(recursive=True))
         return {}
 
 
-class NewVersionActionREST(FolderActionREST):
+class NewVersionActionREST(PublicationFolderActionREST):
     grok.name('silva.ui.listing.newversion')
 
+    def workflow_action(self, workflow):
+        workflow.new_version()
+
     def payload(self):
-        success = ContentCounter(self)
-        failures = ContentCounter(self)
-
-        for ignored, content in self.get_selected_content():
-            workflow = IPublicationWorkflow(content, None)
-            if workflow is not None:
-                try:
-                    workflow.new_version()
-                except PublicationWorkflowError:
-                    failures.append(content)
-                else:
-                    success.append(content)
-            else:
-                failures.append(content)
-
-        # Notifications
-        if success:
-            if failures:
-                self.notify(
-                    _(u'New version(s) created for ${newversion}, '
-                      u'but could do it for ${not_newversion}.',
-                      mapping={'newversion': success,
-                               'not_newversion': failures}))
-            else:
-                self.notify(
-                    _(u'New version(s) created for ${newversion}.',
-                      mapping={'newversion': success}))
-        elif failures:
-            self.notify(
-                _(u'Could not create new version(s) for ${not_newversion}.',
-                  mapping={'not_newversion': failures}))
-
+        with self.workflow_processor() as processor:
+            with self.notifier(
+                processor,
+                u"New version(s) created for ${contents}.",
+                u"Could not create new version(s) for ${contents}: ${reason}.") as notifier:
+                notifier.map(self.get_selected_contents())
         return {}
 
 

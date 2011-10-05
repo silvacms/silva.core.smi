@@ -10,7 +10,7 @@ from zope.component import getUtility
 
 from silva.core.interfaces import IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow
-from silva.core.interfaces import PublicationWorkflowError
+from silva.core.interfaces import PublicationError
 from silva.core.messages.interfaces import IMessageService
 from silva.translations import translate as _
 from silva.ui.rest import UIREST
@@ -45,9 +45,9 @@ class PublicationAction(UIREST):
         self.workflow = IPublicationWorkflow(self.context)
         try:
             self.process()
-        except PublicationWorkflowError as error:
+        except PublicationError as error:
             # Notify failure.
-            self.send_notification(error.message, type="error")
+            self.send_notification(error.reason, type="error")
             return self.json_response({
                 'ifaces': ['notifications'],
                 'notifications': self.get_notifications()})
