@@ -124,7 +124,7 @@ class RenameActionREST(FolderActionREST):
             with self.notifier(
                 renamer,
                 u"Renamed ${contents}.",
-                u"Could not rename ${contents}: ${reason}.") as notifier:
+                u"Could not rename ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_renaming_information())
         return {}
 
@@ -165,7 +165,7 @@ class PublishActionREST(PublicationFolderActionREST):
             with self.notifier(
                 processor,
                 u"Published ${contents}.",
-                u"Could not publish ${contents}: ${reason}.") as notifier:
+                u"Could not publish ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents(recursive=True))
         return {}
 
@@ -181,7 +181,7 @@ class CloseActionREST(PublicationFolderActionREST):
             with self.notifier(
                 processor,
                 u"Closed ${contents}.",
-                u"Could not close ${contents}: ${reason}.") as notifier:
+                u"Could not close ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents(recursive=True))
         return {}
 
@@ -197,7 +197,7 @@ class NewVersionActionREST(PublicationFolderActionREST):
             with self.notifier(
                 processor,
                 u"New version(s) created for ${contents}.",
-                u"Could not create new version(s) for ${contents}: ${reason}.") as notifier:
+                u"Could not create new version(s) for ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents())
         return {}
 
