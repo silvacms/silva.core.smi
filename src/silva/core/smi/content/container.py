@@ -64,7 +64,7 @@ class DeleteActionREST(FolderActionREST):
             with self.notifier(
                 deleter,
                 u"Deleted ${contents}.",
-                u"Could not delete ${contents}: ${reason}.") as notifier:
+                u"Could not delete ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents())
         return {}
 
@@ -79,14 +79,14 @@ class PasteActionREST(FolderActionREST):
             with self.notifier(
                 copier,
                 u"Pasted as a copy ${contents}",
-                u'Could not copy ${contents}: ${reason}.') as notifier:
+                u"Could not copy ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents('copied'))
 
         with manager.mover() as mover:
             with self.notifier(
                 mover,
-                u'Moved ${contents}.',
-                u'Could not move ${contents}: ${reason}.') as notifier:
+                u"Moved ${contents}.",
+                u"Could not move ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents('cutted'))
 
         return {}
@@ -100,7 +100,7 @@ class PasteAsGhostActionREST(FolderActionREST):
             with self.notifier(
                 ghoster,
                 u"Created ghost for ${contents}.",
-                u"Could not create ghost for ${contents}: ${reason}.") as notifier:
+                u"Could not create ghost for ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents('copied'))
         return {}
 
