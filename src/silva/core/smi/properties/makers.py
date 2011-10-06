@@ -75,7 +75,7 @@ def availableMarkersForContent(context):
 
 class IDisplayUsedInterfaces(Interface):
 
-    usedInterface = schema.List(
+    usedInterface = schema.Set(
         title=_(u"used interfaces"),
         value_type=schema.Choice(
             source=usedInterfacesForContent),
@@ -84,7 +84,7 @@ class IDisplayUsedInterfaces(Interface):
 
 class IRemoveCustomizationMarker(Interface):
 
-    usedMarkers = schema.List(
+    usedMarkers = schema.Set(
         title=_(u"used markers"),
         value_type=schema.Choice(
             source=usedMarkersForContent))
@@ -162,7 +162,7 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
         return len(markerField.valueField.getChoices(self.context))
 
     @silvaforms.action(
-        _(u"remove"),
+        _(u"remove marker"),
         description=_(u"remove the selected marker(s) from the content"),
         implements=IRemoverAction)
     def remove(self):
