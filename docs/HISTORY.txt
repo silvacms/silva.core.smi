@@ -1,10 +1,10 @@
 Changelog
 =========
 
-2.3.5 (unreleased)
+2.3.5 (2011/10/06)
 ------------------
 
-* ...
+* Fix customization markers remove form.
 
 2.3.4 (2011/10/04)
 ------------------
