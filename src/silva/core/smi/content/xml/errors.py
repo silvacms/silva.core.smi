@@ -21,7 +21,6 @@ class ExternalReferenceErrorPage(Page):
     title = _('External reference exported')
 
     def update(self):
-        origin, target, exported = self.context.error.args
-        self.origin = origin.get_silva_object()
-        self.target = target.get_silva_object()
-        self.exported = exported.get_silva_object()
+        self.origin = self.content.error.content.get_silva_object()
+        self.target = self.content.error.target.get_silva_object()
+        self.exported = self.content.error.exported.get_silva_object()

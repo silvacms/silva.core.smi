@@ -6,8 +6,6 @@ from datetime import datetime
 
 from five import grok
 from zope import schema, interface
-from zope.component import getUtility
-from zope.intid.interfaces import IIntIds
 
 from DateTime import DateTime
 from AccessControl.security import checkPermission
@@ -15,13 +13,13 @@ from AccessControl.security import checkPermission
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IVersioning, IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow
-from silva.core.interfaces import VersioningError
+from silva.core.interfaces.errors import VersioningError
 from silva.core.smi.content.publish import Publish, IPublicationFields
 from silva.translations import translate as _
+
 from zeam.form import autofields
 from zeam.form import silva as silvaforms
-from zeam.form.silva.interfaces import IRemoverAction, IDefaultAction
-from zeam.form.silva.interfaces import IRESTCloseOnSuccessAction
+from zeam.form.silva.interfaces import IRemoverAction
 from zeam.form.ztk.actions import EditAction
 
 
@@ -228,49 +226,6 @@ class DefaultRequestApprovalFields(autofields.AutoFields):
     autofields.order(10)
     fields = silvaforms.Fields(IPublicationInformation)
     fields['publication_datetime'].defaultValue = lambda f: datetime.now()
-
-
-class MultiApproveAction(EditAction):
-    grok.implements(IDefaultAction, IRESTCloseOnSuccessAction)
-    title = _(u"Approve")
-
-    def __call__(self, form):
-        data, errors = form.extractData()
-        if errors:
-            return silvaforms.FAILURE
-
-        get_content = getUtility(IIntIds).getObject
-        count = 0
-        for id in form.request.form.get('form.prefix.contents', []):
-            content = get_content(int(id))
-            try:
-                self.applyData(form, form.dataManager(content), data)
-                IPublicationWorkflow(content).approve()
-            except VersioningError as e:
-                form.send_message(e.reason(), type='error')
-            else:
-                count +=1
-        if count:
-            form.send_message(
-                _("${count} version(s) approved.", mapping={'count': count}),
-                type='feedback')
-            return silvaforms.SUCCESS
-        return silvaforms.FAILURE
-
-
-class ApproveForFuturePopupForm(silvaforms.RESTPopupForm):
-    grok.context(IContainer)
-    grok.name('silva.core.smi.approveforfuture')
-
-    fields = autofields.FieldsCollector(IPublicationFields)
-    dataManager = autofields.FieldsDataManager()
-    actions = silvaforms.Actions(silvaforms.CancelAction(),
-                                 MultiApproveAction(identifier='approve'))
-
-    label = _('Approve content for future')
-    description = _(u'Approve selected content for the future')
-    ignoreContent = True
-    ignoreRequest = False
 
 
 class RequestApprovalMessage(autofields.AutoFields):

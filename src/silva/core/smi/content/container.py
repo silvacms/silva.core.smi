@@ -10,7 +10,8 @@ from infrae.comethods import comethod
 
 from silva.core.messages.interfaces import IMessageService
 from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
-from silva.core.interfaces import IPublicationWorkflow, PublicationError
+from silva.core.interfaces import IPublicationWorkflow
+from silva.core.interfaces.errors import VersioningError, PublicationError
 from silva.ui.rest.base import Screen, PageREST, UIREST
 from silva.ui.rest.container import ContentSerializer
 from silva.ui.rest.container import FolderActionREST
@@ -143,13 +144,13 @@ class PublicationFolderActionREST(FolderActionREST):
             if workflow is not None:
                 try:
                     self.workflow_action(workflow)
-                except PublicationError as error:
+                except VersioningError as error:
                     result = error
                 else:
                     result = content
             else:
                 result = PublicationError(
-                    _(u"This action is not applicable on this content"),
+                    _(u"This action is not applicable on this content."),
                     content)
             content = yield result
 
