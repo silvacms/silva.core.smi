@@ -739,6 +739,22 @@ input[type="checkbox"] + input[type="hidden"] + input.field-textline {
   width: 94%; /* shortens field-textline when in a multi-actioned field */
 }
 
+form.zeam-form div.field-collection-line {
+  padding: 10px 0px;
+  border-bottom: 1px solid #555;
+}
+
+form.zeam-form div.field-collection div.multi-actions {
+  margin: 0px;
+  padding: 5px 0px;
+}
+
+form.zeam-form div.field-collection span.field-error {
+  color: #cc0000;
+  background: transparent;
+}
+
+
 /* manipulator button style from which all others derive */
 input.button, input.action, input.canceler, button.button, input.manipulator {
   margin: 0 1px;
@@ -1519,19 +1535,19 @@ button.calendar-button {
 
 .viewport-clear { clear: both;}
 
-.zeam-form span.footer-fields {
+form.zeam-form span.footer-fields {
   line-height: 1.6em;
   float: right;
 }
 
 /* --- valid css hack for ie6 and ie7 that require fixed width on select */
 *:first-child+html .zeam-form span.footer-fields select,
-* html .zeam-form span.footer-fields select {
+* html form.zeam-form span.footer-fields select {
   width: 130px;
   float: right;
 }
 
-.zeam-form .footer-fields span.error {
+form.zeam-form .footer-fields span.error {
   background-color: #f7d1d1;
   padding: 0.1em 0.5em;
   color: #a00;
