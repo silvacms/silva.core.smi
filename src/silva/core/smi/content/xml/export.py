@@ -33,20 +33,20 @@ def default_format(form):
 
 class IExportFields(Interface):
     include_sub_publications = schema.Bool(
-        title=_(u"include sub publications?"),
+        title=_(u"Include sub publications?"),
         description=_(u"Check to export all sub publications. "),
         default=False,
         required=False)
 
     export_newest_version_only = schema.Bool(
-        title=_(u"export only newest versions?"),
+        title=_(u"Export only newest versions?"),
         description=_(u"If not checked all versions are exported."),
         default=True,
         required=False)
 
     export_format = schema.Choice(
         source=export_formats,
-        title=_(u"select an export format"),
+        title=_(u"Select an export format"),
         description=_(u"Select the format which will be used for the export."))
 
 
