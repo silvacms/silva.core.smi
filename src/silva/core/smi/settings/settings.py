@@ -65,8 +65,6 @@ class ConvertToFolderAction(silvaforms.Action):
 
     def __call__(self, form):
         form.context.to_folder()
-        # XXX needed ?
-        form.context.sec_update_last_author_info()
         form.send_message(_("Changed into folder"), type="feedback")
         return silvaforms.SUCCESS
 
@@ -81,7 +79,6 @@ class ConvertToPublicationAction(silvaforms.Action):
 
     def __call__(self, form):
         form.context.to_publication()
-        form.context.sec_update_last_author_info()
         form.send_message(_("Changed into publication"), type="feedback")
         return silvaforms.SUCCESS
 
@@ -142,8 +139,12 @@ class FeedsForm(silvaforms.SMISubForm):
     fields['allow'].defaultValue = get_feeds_status
     fields['atom_url'].mode = silvaforms.DISPLAY
     fields['atom_url'].defaultValue = get_feed_url('atom.xml')
+    fields['atom_url'].available = get_feeds_status
+    fields['atom_url'].target = '_blank'
     fields['rss_url'].mode = silvaforms.DISPLAY
     fields['rss_url'].defaultValue = get_feed_url('rss.xml')
+    fields['rss_url'].available = get_feeds_status
+    fields['rss_url'].target = '_blank'
 
     ignoreContent = True
     ignoreRequest = False
