@@ -84,7 +84,9 @@ class MetadataForm(silvaforms.SMISubForm):
         return service.getMetadata(self.getContent())
 
     def available(self):
-        return self.binding is not None
+        if self.binding is None:
+            return False
+        return len(self.binding.getSetNames(category=self.parent.category)) != 0
 
     def update(self):
         if not self.available():
