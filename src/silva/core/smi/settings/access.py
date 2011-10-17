@@ -47,7 +47,7 @@ class AccessMenu(MenuItem):
 
 class LookupUserPopupAction(silvaforms.PopupAction):
     title = _(u"Lookup users...")
-    description = _(u"search for users to assign them roles")
+    description = _(u"Search for users to assign them roles")
     action = 'silva.core.smi.lookupuser'
     accesskey = u'ctrl+l'
 
@@ -56,8 +56,8 @@ class ILookupUserSchema(interface.Interface):
     """Lookup a new user
     """
     user = schema.TextLine(
-        title=_(u"username"),
-        description=_(u"username or part of the username to lookup"),
+        title=_(u"Username"),
+        description=_(u"Username or part of the username to lookup"),
         required=True)
 
 
@@ -127,15 +127,12 @@ class UserRole(silvaforms.SMISubFormGroup):
     grok.order(20)
     grok.view(Access)
 
-    #label = _(u'manage users roles')
-    #description = _(u"Find, add and remove roles for users.")
-
 
 class IGrantRoleSchema(interface.Interface):
     """A role for a user.
     """
     role = schema.Choice(
-        title=_(u"role to grant:"),
+        title=_(u"Role to grant:"),
         source=role_vocabulary,
         required=True)
 
@@ -143,7 +140,7 @@ class IGrantRoleSchema(interface.Interface):
 class GrantAccessAction(silvaforms.Action):
 
     title = _(u"Grant role")
-    description = _(u"grant the selected role to selected users(s)")
+    description = _(u"Grant the selected role to selected users(s)")
 
     def available(self, form):
         return len(form.lines) != 0
@@ -181,7 +178,7 @@ class RevokeAccessAction(silvaforms.Action):
     grok.implements(IRemoverAction)
 
     title = _(u"Revoke role")
-    description=_(u"revoke the role of selected user(s)")
+    description=_(u"Revoke the role of selected user(s)")
 
     def available(self, form):
         return reduce(
@@ -217,13 +214,13 @@ class RevokeAccessAction(silvaforms.Action):
 class IUserAuthorization(interface.Interface):
 
     identifier = schema.TextLine(
-        title=_(u"username"))
+        title=_(u"Username"))
     acquired_role = schema.Choice(
-        title=_(u"role defined above"),
+        title=_(u"Role defined above"),
         source=role_vocabulary,
         required=False)
     local_role = schema.Choice(
-        title=_(u"role defined here"),
+        title=_(u"Role defined here"),
         source=role_vocabulary,
         required=False)
 
@@ -235,7 +232,7 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     grok.order(20)
     grok.view(UserRole)
 
-    label = _(u"user roles")
+    label = _(u"User roles")
     emptyDescription = _(u'No roles have been assigned.')
     ignoreContent = False
     ignoreRequest = True
@@ -264,7 +261,7 @@ class LookupUserResultForm(UserAccessForm):
     """
     grok.order(10)
 
-    label = _(u"user clipboard")
+    label = _(u"User clipboard")
     emptyDescription = _(u'In order to assign roles to users, first lookup '
                          u'users so they\'re listed on this user clipboard. '
                          u'Then assign the users roles. Any users on the '
@@ -302,11 +299,11 @@ class IAccessMinimumRoleSchema(interface.Interface):
     """A role for a user.
     """
     acquired = schema.Bool(
-        title=_(u"is the role acquired from above?"),
+        title=_(u"Is the role acquired from above?"),
         required=False)
     minimum_role = schema.Choice(
-        title=_(u"minimum role"),
-        description=_(u"minimum required role needed to access this content"),
+        title=_(u"Minimum role"),
+        description=_(u"Minimum required role needed to access this content"),
         source=authenticated_role_vocabulary,
         required=False)
 
@@ -319,7 +316,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     grok.order(100)
     grok.view(Access)
 
-    label = _(u"public view access restriction")
+    label = _(u"Public view access restriction")
     description = _(u"Setting an access restriction here affects "
                     u"content on this and lower levels.")
     ignoreRequest = True
@@ -331,7 +328,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
 
     @silvaforms.action(
         _(u"Acquire restriction"),
-        description=_(u"set the access restriction to acquire its "
+        description=_(u"Set the access restriction to acquire its "
                       u"setting from the parent container."),
         available=lambda form: not form.getContent().is_acquired(),
         implements=IRemoverAction)
@@ -351,7 +348,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
     @silvaforms.action(
         _(u"Set restriction"),
         description=_(
-            u"restrict access to this content to the selected role"))
+            u"Restrict access to this content to the selected role"))
     def restrict(self):
         data, errors = self.extractData()
         if errors:
