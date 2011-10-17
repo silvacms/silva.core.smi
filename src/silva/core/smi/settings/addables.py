@@ -32,13 +32,13 @@ def acquire_addables(form):
 
 class IAddablesSchema(Interface):
     acquire = schema.Bool(
-        title=_(u"acquire"),
+        title=_(u"Acquire"),
         description=_(u"If checked, inherit the addables from above. "
                       u"Uncheck this to change the allowed addables below."),
         required=False,
         default=True)
     addables = schema.Set(
-        title=_(u"addables"),
+        title=_(u"Addables"),
         description=_(u"If 'acquire' is not checked, these settings will "
                       u"determine the items allowed in this publication. "
                       u"Otherwise the addables are acquired from the "
