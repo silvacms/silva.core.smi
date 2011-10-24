@@ -103,8 +103,8 @@ class CopyForEditingAction(silvaforms.Action):
     """Copy a version to use as new editable version.
     """
     title = _('Copy for editing')
-    description = _('create a new editable version of '
-                    'the selected old one')
+    description = _('Create a new editable version of '
+                    'the selected old one.')
 
     def __call__(self, form, selected, deselected):
         if len(selected) != 1:
@@ -128,7 +128,7 @@ class ViewVersionAction(silvaforms.Action):
     """Preview a particular version.
     """
     title = _('View')
-    description = _('view this particular version')
+    description = _('View this particular version.')
 
     def __call__(self, form, selected, deselected):
         if len(selected) != 1:
@@ -171,7 +171,7 @@ class CompareVersionAction(silvaforms.Action):
     """Compare two different versions.
     """
     title = _('Compare')
-    descripton = _('select and compare two different versions')
+    descripton = _('Select and compare two different versions.')
 
     def __call__(self, form, selected, deselected):
         if len(selected) != 2:
@@ -230,7 +230,7 @@ class DeleteVersionAction(silvaforms.Action):
     """
     grok.implements(IRemoverAction)
     title = _("Delete")
-    description = _("there's no undo")
+    description = _("There's no undo.")
 
     def __call__(self, form, selected, deselected):
         if not len(deselected):

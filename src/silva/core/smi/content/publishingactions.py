@@ -65,7 +65,7 @@ class NewVersionMenu(PublicationMenuItem):
     grok.order(100)
 
     name = _(u'New version')
-    description = _(u'work on a new version while the previous stays online')
+    description = _(u'Work on a new version while the previous stays online.')
     action = 'newversion'
     accesskey = u'n'
 
@@ -86,7 +86,7 @@ class RequestApprovalMenu(PublicationMenuItem):
     grok.order(10)
 
     name = _(u'Request approval')
-    description = _(u'request approval for immediate publication')
+    description = _(u'Request approval for immediate publication.')
     action = 'requestapproval'
     accesskey = u'r'
 
@@ -110,7 +110,7 @@ class WithdrawApprovalRequestMenu(PublicationMenuItem):
     grok.order(40)
 
     name = _(u'Withdraw request')
-    description = _(u'withdraw a request for approval')
+    description = _(u'Withdraw a request for approval.')
     action = 'withdrawrequest'
     accesskey = u'w'
 
@@ -154,7 +154,7 @@ class RevokeApprovalMenu(PublicationMenuItem):
     grok.order(81)
 
     name = _(u'Revoke approval')
-    description = _(u'un-approve this version in order to edit it')
+    description = _(u'Un-approve this version in order to edit it.')
     action = 'revokeapproval'
     accesskey = u'r'
 
@@ -174,7 +174,7 @@ class PublishMenu(PublicationMenuItem):
     grok.order(10)
 
     name = _(u'Publish now')
-    description = _(u'publish now this content')
+    description = _(u'Publish now this content.')
     action = 'publish'
     accesskey = u'p'
 
