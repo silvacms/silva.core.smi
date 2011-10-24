@@ -9,12 +9,18 @@ from silva.core.views.interfaces import ISilvaURL
 from silva.translations import translate as _
 from silva.ui.menu import ViewMenu, MenuItem
 from silva.ui.rest import PageREST, Screen
+from silva.ui.interfaces import IUIScreen
 from zope.component import getMultiAdapter
 
+
+class IPreviewScreen(IUIScreen):
+    """Marker used to mark edit tab.
+    """
 
 
 class Preview(PageREST):
     grok.adapts(Screen, IViewableObject)
+    grok.implements(IPreviewScreen)
     grok.name('preview')
     grok.require('silva.ReadSilvaContent')
 
@@ -26,6 +32,7 @@ class Preview(PageREST):
 
 class DirectlyRenderedPreview(PageREST):
     grok.adapts(Screen, IDirectlyRendered)
+    grok.implements(IPreviewScreen)
     grok.name('preview')
     grok.require('silva.ReadSilvaContent')
 
@@ -41,4 +48,5 @@ class PreviewMenu(MenuItem):
     grok.order(10)
     name = _('Preview')
     description = _(u'view content while staying in the admin interface')
-    screen = Preview
+    screen = 'preview'
+    interface = IPreviewScreen
