@@ -25,30 +25,27 @@ from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
 
 
-@apply
-def version_status_vocabulary():
-    terms = [
+version_status_vocabulary = SimpleVocabulary([
         SimpleTerm(value="unapproved", title=_(u"Unapproved")),
         SimpleTerm(value="approved", title=_(u"Approved")),
         SimpleTerm(value="published", title=_(u"Published")),
         SimpleTerm(value="last_closed", title=_(u"Last closed")),
-        SimpleTerm(value="closed", title=_(u"Closed"))]
-    return SimpleVocabulary(terms)
+        SimpleTerm(value="closed", title=_(u"Closed"))])
 
 
 class IPublicationStatusInfo(Interface):
     id = schema.TextLine(
-        title=_(u'Version'))
+        title=_(u'#'))
     modification_time = schema.Datetime(
-        title=_('Modification time'))
+        title=_('Modification'))
     publication_time = schema.Datetime(
-        title=_('Publication time'))
+        title=_('Publication'))
     expiration_time = schema.Datetime(
-        title=_('Expiration time'))
+        title=_('Expiration'))
     last_author = schema.TextLine(
-        title=_('Last author'))
+        title=_('Author'))
     version_status = schema.Choice(
-        title=_('Version status'),
+        title=_('Status'),
         source=version_status_vocabulary)
 
 
@@ -116,7 +113,7 @@ class CopyForEditingAction(silvaforms.Action):
         try:
             content.copy_for_editing()
         except VersioningError as e:
-            form.send_message(e.reason(), type='error')
+            form.send_message(e.reason, type='error')
             return silvaforms.FAILURE
         form.send_message(
             _("Reverted to previous version."),
@@ -247,7 +244,7 @@ class DeleteVersionAction(silvaforms.Action):
             try:
                 line.getContentData().getContent().delete()
             except VersioningError as e:
-                form.send_message(e.reason(), type='error')
+                form.send_message(e.reason, type='error')
         form.send_message(_(u"Version(s) deleted."), type='feedback')
         return silvaforms.SUCCESS
 
@@ -257,7 +254,7 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     """
     grok.context(IVersionedContent)
     grok.view(Publish)
-    grok.order(30)
+    grok.order(100)
 
     label = _(u"Manage versions")
     mode = silvaforms.DISPLAY

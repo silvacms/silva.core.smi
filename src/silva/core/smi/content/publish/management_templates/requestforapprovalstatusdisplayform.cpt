@@ -1,0 +1,42 @@
+<form name="#"
+      tal:define="form view.getComposedForm()"
+      tal:attributes="name view.prefix"
+      i18n:domain="silva">
+  <div class="form-head">
+    <h4 tal:condition="view.label" tal:content="view.label">label</h4>
+    <p tal:condition="view.description"
+       tal:content="structure view.description">
+      Description
+    </p>
+  </div>
+
+  <div class="form-content"
+       tal:condition="view.lineWidgets">
+    <dl class="form-section"
+        tal:repeat="line view.lineWidgets">
+      <tal:widgets tal:define="widgets view.widgetsByKey(line)">
+        <dt class="form-label">
+          <label tal:content="widgets.user_id.title"></label>:
+          <span tal:replace="widgets.user_id.render()"/>
+          <label tal:content="widgets.date.title"></label>:
+          <span tal:replace="widgets.date.render()"/>
+          <label tal:content="widgets.status.title"></label>:
+          <span tal:replace="widgets.status.render()"/>
+        </dt>
+        <dd class="form-field"
+            tal:content="widgets.message.render()"></dd>
+      </tal:widgets>
+    </dl>
+    <div class="form-batch"
+         tal:condition="view.batching">
+      <tal:batch tal:content="structure view.batching" /> &nbsp;
+    </div>
+  </div>
+  <div class="form-content"
+       tal:condition="not view.lineWidgets">
+    <p class="form-section"
+       tal:content="view.emptyDescription">
+      There are no items.
+    </p>
+  </div>
+</form>
