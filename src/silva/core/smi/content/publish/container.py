@@ -11,19 +11,27 @@ from silva.core.interfaces import IPublicationWorkflow
 from silva.core.interfaces.errors import VersioningError, PublicationError
 from silva.core.smi.content.publish import IPublicationFields
 from silva.translations import translate as _
+from silva.ui.rest.container import get_container_changes
 from silva.ui.rest.container.generator import ContentGenerator
 from silva.ui.rest.container.notifier import ContentNotifier
 
 from zeam.form import autofields
 from zeam.form.silva.interfaces import IDefaultAction
 from zeam.form.silva.interfaces import IRESTCloseOnSuccessAction
+from zeam.form.silva.interfaces import IRESTExtraPayloadProvider
 from zeam.form.ztk.actions import EditAction
 from zeam.form import silva as silvaforms
 
 
 class MultiApproveAction(EditAction):
-    grok.implements(IDefaultAction, IRESTCloseOnSuccessAction)
+    grok.implements(
+        IDefaultAction,
+        IRESTCloseOnSuccessAction,
+        IRESTExtraPayloadProvider)
     title = _(u"Approve")
+
+    def get_extra_payload(self, form):
+        return get_container_changes(form)
 
     @comethod
     def approver(self, form, data):
