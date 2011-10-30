@@ -118,7 +118,8 @@ class RenameActionREST(FolderActionREST):
                 # This will loop at best one time, none if there is a problem
                 identifier = form.get('values.%d.identifier' % index)
                 title = form.get('values.%d.title' % index)
-                yield (content, identifier, title)
+                if identifier is not None or title is not None:
+                    yield (content, identifier, title)
 
     def payload(self):
         with IContainerManager(self.context).renamer() as renamer:
