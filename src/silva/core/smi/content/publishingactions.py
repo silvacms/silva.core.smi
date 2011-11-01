@@ -54,10 +54,11 @@ class PublicationAction(UIREST):
 
         # Refresh screen on success
         path = self.request.form.get('screen', 'content').split('/')
+        del self.request.PARENTS[-1] # Remove the current item and traverse
         component = lookupREST(self.context, self.request, 'silva.ui')
         while path:
             part = path.pop(0)
-            component = component.publishTraverse(self.request, part)
+            component = self.request.traverseName(component, part)
         return component.GET()
 
 
