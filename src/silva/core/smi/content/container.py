@@ -59,6 +59,7 @@ class ContainerMenu(ExpendableMenuItem):
 
 class DeleteActionREST(FolderActionREST):
     grok.name('silva.ui.listing.delete')
+    grok.require('silva.ChangeSilvaContent')
 
     def payload(self):
         with IContainerManager(self.context).deleter() as deleter:
@@ -72,6 +73,7 @@ class DeleteActionREST(FolderActionREST):
 
 class PasteActionREST(FolderActionREST):
     grok.name('silva.ui.listing.paste')
+    grok.require('silva.ChangeSilvaContent')
 
     def payload(self):
         manager = IContainerManager(self.context)
@@ -95,6 +97,7 @@ class PasteActionREST(FolderActionREST):
 
 class PasteAsGhostActionREST(FolderActionREST):
     grok.name('silva.ui.listing.pasteasghost')
+    grok.require('silva.ChangeSilvaContent')
 
     def payload(self):
         with IContainerManager(self.context).ghoster() as ghoster:
@@ -108,6 +111,7 @@ class PasteAsGhostActionREST(FolderActionREST):
 
 class RenameActionREST(FolderActionREST):
     grok.name('silva.ui.listing.rename')
+    grok.require('silva.ChangeSilvaContent')
 
     def get_renaming_information(self):
         form = self.request.form
@@ -199,7 +203,59 @@ class NewVersionActionREST(PublicationFolderActionREST):
             with self.notifier(
                 processor,
                 u"New version(s) created for ${contents}.",
-                u"Could not create new version(s) for ${contents}: ${reason}") as notifier:
+                u"Could not create new version(s) for "
+                u"${contents}: ${reason}") as notifier:
+                notifier.map(self.get_selected_contents())
+        return {}
+
+
+class RejectRequestActionREST(PublicationFolderActionREST):
+    grok.name('silva.ui.listing.rejectrequest')
+
+    def workflow_action(self, workflow):
+        workflow.reject_request()
+
+    def payload(self):
+        with self.workflow_processor() as processor:
+            with self.notifier(
+                processor,
+                u"Publication rejected for ${contents}.",
+                u"Could not reject publication for "
+                u" ${contents}: ${reason}") as notifier:
+                notifier.map(self.get_selected_contents())
+        return {}
+
+
+class WithdrawRequestActionREST(PublicationFolderActionREST):
+    grok.name('silva.ui.listing.withdrawrequest')
+
+    def workflow_action(self, workflow):
+        workflow.withdraw_request()
+
+    def payload(self):
+        with self.workflow_processor() as processor:
+            with self.notifier(
+                processor,
+                u"Publication request withdrawn for ${contents}.",
+                u"Could not withdraw publication request for "
+                u"${contents}: ${reason}") as notifier:
+                notifier.map(self.get_selected_contents())
+        return {}
+
+
+class RequestApprovalActionREST(PublicationFolderActionREST):
+    grok.name('silva.ui.listing.requestapproval')
+
+    def workflow_action(self, workflow):
+        workflow.request_approval()
+
+    def payload(self):
+        with self.workflow_processor() as processor:
+            with self.notifier(
+                processor,
+                u"Approval for publication requested for ${contents}.",
+                u"Could not request approval for publication for "
+                u"${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents())
         return {}
 

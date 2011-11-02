@@ -101,8 +101,7 @@ class RequestApprovalAction(PublicationAction):
     grok.name('silva.ui.actions.requestapproval')
 
     def process(self):
-        self.workflow.request_approval(
-            u"Request immediate publication of this content. ")
+        self.workflow.request_approval()
         self.send_notification(
             _(u"Approval requested for immediate publication."))
 
@@ -124,8 +123,7 @@ class WithdrawApprovalRequestAction(PublicationAction):
     grok.name('silva.ui.actions.withdrawrequest')
 
     def process(self):
-        self.workflow.withdraw_request(
-            u"Approval was withdrawn (automatically generated message).")
+        self.workflow.withdraw_request()
         self.send_notification(_(u"Withdrew request for approval."))
 
 
@@ -146,8 +144,7 @@ class RejectApprovalRequestAction(PublicationAction):
     grok.name('silva.ui.actions.rejectrequest')
 
     def process(self):
-        self.workflow.reject_request(
-            u"Approval was rejected (automatically generated message).")
+        self.workflow.reject_request()
         self.send_notification(_(u"Rejected request for approval."))
 
 
