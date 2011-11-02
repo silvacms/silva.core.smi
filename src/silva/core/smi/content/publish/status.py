@@ -16,9 +16,10 @@ from Products.Silva.Versioning import VersioningError
 from silva.core.interfaces import IVersion, IVersionManager
 from silva.core.interfaces import IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow
-from silva.core.smi.content.publish import Publish, PublishMenu
+from silva.core.smi.content.publish import Publish
+from silva.core.smi.content import ICompareResources
 from silva.translations import translate as _
-from silva.ui.menu import MenuItem
+from silva.fanstatic import need
 from silva.ui.rest import ActionResult
 from silva.ui.rest import PageWithLayoutREST, PageREST
 from zeam.form import silva as silvaforms
@@ -247,6 +248,7 @@ class CompareVersionPage(PageWithLayoutREST):
         version2_view.content = self.__parent__.version2
         version2_html = version2_view()
 
+        need(ICompareResources)
         return lxml.html.diff.htmldiff(version2_html, version1_html)
 
 
