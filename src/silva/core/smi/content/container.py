@@ -254,7 +254,24 @@ class RequestApprovalActionREST(PublicationFolderActionREST):
             with self.notifier(
                 processor,
                 u"Approval for publication requested for ${contents}.",
-                u"Could not request approval for publication for "
+                u"Could not request publication approval for "
+                u"${contents}: ${reason}") as notifier:
+                notifier.map(self.get_selected_contents())
+        return {}
+
+
+class RevokeApprovalActionREST(PublicationFolderActionREST):
+    grok.name('silva.ui.listing.revokeapproval')
+
+    def workflow_action(self, workflow):
+        workflow.revoke_approval()
+
+    def payload(self):
+        with self.workflow_processor() as processor:
+            with self.notifier(
+                processor,
+                u"Approval canceled for ${contents}.",
+                u"Could not cancel approval for "
                 u"${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents())
         return {}
