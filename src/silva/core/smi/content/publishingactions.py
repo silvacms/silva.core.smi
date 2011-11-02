@@ -69,6 +69,7 @@ class NewVersionMenu(PublicationMenuItem):
     description = _(u'Work on a new version while the previous stays online.')
     action = 'newversion'
     accesskey = u'n'
+    icon = 'document'
 
     def available(self):
         return (self.content.get_editable() is None and
@@ -90,6 +91,7 @@ class RequestApprovalMenu(PublicationMenuItem):
     description = _(u'Request approval for immediate publication.')
     action = 'requestapproval'
     accesskey = u'r'
+    icon = 'check'
 
     def available(self):
         return bool(not self.can_approve_content() and
@@ -113,6 +115,7 @@ class WithdrawApprovalRequestMenu(PublicationMenuItem):
     description = _(u'Withdraw a request for approval.')
     action = 'withdrawrequest'
     accesskey = u'w'
+    icon = 'close'
 
     def available(self):
         return bool(not self.can_approve_content() and
@@ -134,6 +137,7 @@ class RejectApprovalRequestMenu(PublicationMenuItem):
     description = _(u'reject a request for approval')
     action = 'rejectrequest'
     accesskey = u'w'
+    icon = 'close'
 
     def available(self):
         return bool(self.can_approve_content() and
@@ -155,6 +159,7 @@ class RevokeApprovalMenu(PublicationMenuItem):
     description = _(u'Un-approve this version in order to edit it.')
     action = 'revokeapproval'
     accesskey = u'r'
+    icon = 'cancel'
 
     def available(self):
         return bool(self.content.get_approved_version())
@@ -175,6 +180,7 @@ class PublishMenu(PublicationMenuItem):
     description = _(u'Publish now this content.')
     action = 'publish'
     accesskey = u'p'
+    icon = 'check'
 
     def available(self):
         return bool(self.can_approve_content() and
