@@ -14,7 +14,7 @@ from silva.core.interfaces import IContainer, IContentExporterRegistry
 from silva.core.smi.content.container import ContainerMenu, Container
 from silva.translations import translate as _
 from silva.ui.menu import MenuItem
-from silva.ui.rest import ContentException
+from silva.ui.rest import RESTResult
 from zeam.form import silva as silvaforms
 
 from Products.Silva.silvaxml import xmlexport
@@ -76,16 +76,19 @@ class ExportAction(silvaforms.LinkAction):
             exporter.extension)
         output = exporter.export(settings)
 
-        content_type, content_encoding = mimetypes.guess_type(filename)
-        if not content_type:
-            content_type = 'application/octet-stream'
-        response = form.request.response
-        response.setHeader('Content-Type', content_type)
-        if content_encoding:
-            response.setHeader('Content-Encoding', content_encoding)
-        response.setHeader(
-            'Content-Disposition', 'attachment;filename=%s' % filename)
-        raise ContentException(output)
+        def payload(rest):
+            content_type, content_encoding = mimetypes.guess_type(filename)
+            if not content_type:
+                content_type = 'application/octet-stream'
+            response = rest.response
+            response.setHeader('Content-Type', content_type)
+            if content_encoding:
+                response.setHeader('Content-Encoding', content_encoding)
+            response.setHeader(
+                'Content-Disposition', 'attachment;filename=%s' % filename)
+            return output
+
+        raise RESTResult(payload)
 
 
 class ExportForm(silvaforms.SMIForm):
