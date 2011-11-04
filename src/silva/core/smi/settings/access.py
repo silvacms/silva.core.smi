@@ -118,8 +118,8 @@ class LookupUserForm(silvaforms.RESTPopupForm):
                     u"names to limit the number of results.")
     fields = silvaforms.Fields(ILookupUserSchema)
     actions = silvaforms.Actions(
-        LookupUserAction(),
-        silvaforms.CancelAction())
+        silvaforms.CancelAction(),
+        LookupUserAction())
 
 
 class UserRole(silvaforms.SMISubFormGroup):

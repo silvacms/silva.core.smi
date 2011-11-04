@@ -4,7 +4,6 @@
 
 from AccessControl import getSecurityManager
 
-from infrae.rest import lookupREST
 from five import grok
 from zope.component import getUtility
 
@@ -15,6 +14,7 @@ from silva.core.messages.interfaces import IMessageService
 from silva.translations import translate as _
 from silva.ui.rest import UIREST
 from silva.ui.menu import ActionMenu, MenuItem
+from silva.ui.rest.exceptions import RESTRedirectHandler
 
 
 class PublicationMenuItem(MenuItem):
@@ -53,13 +53,9 @@ class PublicationAction(UIREST):
                 'notifications': self.get_notifications()})
 
         # Refresh screen on success
-        path = self.request.form.get('screen', 'content').split('/')
-        del self.request.PARENTS[-1] # Remove the current item and traverse
-        component = lookupREST(self.context, self.request, 'silva.ui')
-        while path:
-            part = path.pop(0)
-            component = self.request.traverseName(component, part)
-        return component.GET()
+        return RESTRedirectHandler(
+            'silva.ui/' + self.request.form.get('screen', 'content'),
+            True).publish(self)
 
 
 class NewVersionMenu(PublicationMenuItem):
