@@ -259,7 +259,10 @@ class LastClosedMetadataForm(MetadataReadOnlyForm):
     label = _('Last closed version content properties')
 
     def getContent(self):
-        return self.context.get_last_closed()
+        version_id = self.context.get_last_closed_version()
+        if version_id is None:
+            return None
+        return self.context._getOb(version_id)
 
     def available(self):
         return (not bool(self.context.get_next_version()) and
