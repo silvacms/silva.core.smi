@@ -4,7 +4,7 @@
 
 from five import grok
 
-from infrae.comethods import comethod
+from infrae.comethods import cofunction
 
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IPublicationWorkflow
@@ -33,7 +33,7 @@ class MultiApproveAction(EditAction):
     def get_extra_payload(self, form):
         return get_container_changes(form)
 
-    @comethod
+    @cofunction
     def approver(self, form, data):
         content = yield
         while content is not None:

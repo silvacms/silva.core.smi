@@ -6,7 +6,7 @@ from five import grok
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
-from infrae.comethods import comethod
+from infrae.comethods import cofunction
 
 from silva.core.messages.interfaces import IMessageService
 from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
@@ -141,7 +141,7 @@ class PublicationFolderActionREST(FolderActionREST):
     def workflow_action(self, workflow):
         raise NotImplementedError
 
-    @comethod
+    @cofunction
     def workflow_processor(self):
         content = yield
         while content is not None:
