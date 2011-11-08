@@ -85,7 +85,8 @@ class ImportForm(silvaforms.SMIForm):
                     data.getDefault('replace'))
         except zipfile.BadZipfile as error:
             self.send_message(
-                _('Invalid file: ${error}', mapping={'error': str(error)}),
+                _('Invalid import file: ${error}.',
+                  mapping={'error': str(error)}),
                 type=u"error")
         else:
             if imported:
