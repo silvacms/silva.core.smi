@@ -90,12 +90,12 @@ class ImportForm(silvaforms.SMIForm):
         else:
             if imported:
                 self.send_message(
-                    _('added ${succeeded}',
+                    _('Imported ${succeeded}.',
                       mapping={'succeeded': ', '.join(imported)}),
                     type=u"feedback")
             if failures:
                 self.send_message(
-                    _('could not add: ${failed}',
+                    _('Could not import: ${failed}.',
                       mapping={'failed': ', '.join(failures)}),
                     type=u"error")
 
