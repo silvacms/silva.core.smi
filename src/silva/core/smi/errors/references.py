@@ -52,9 +52,12 @@ class BreakReferencesForm(silvaforms.PopupForm):
             'Break silva references', self.context)
 
     def updateForm(self):
+        # XXX Hack properties to get URL working
+        self.__parent__ = self.context
+        self.__name__ = 'error.html'
         # Force form url to our content form.
         result = super(BreakReferencesForm, self).updateForm()
-        result['content']['form_url'] = '/'.join(
+        result['content']['submit_url'] = '/'.join(
             (absoluteURL(self.content, self.request),
              '++rest++silva.core.smi.breakreferences'))
         self.response.setStatus(400)
