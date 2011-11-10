@@ -6,10 +6,11 @@
 from setuptools import setup, find_packages
 import os
 
-version = '3.0dev'
+version = '3.0b1'
 
 tests_require = [
     'BeautifulSoup',
+    'Products.Silva [test]',
     ]
 
 setup(name='silva.core.smi',
@@ -34,10 +35,10 @@ setup(name='silva.core.smi',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        'Products.Silva',
         'Zope2',
         'five.grok',
-        'infrae.rest',
+        'infrae.comethods',
+        'lxml',
         'megrok.chameleon',
         'setuptools',
         'silva.core.cache',
@@ -48,10 +49,11 @@ setup(name='silva.core.smi',
         'silva.core.references',
         'silva.core.services',
         'silva.core.views',
+        'silva.fanstatic',
         'silva.translations',
         'silva.ui',
         'z3c.schema',
-        'zeam.form.base',
+        'zeam.form.autofields',
         'zeam.form.silva',
         'zeam.form.ztk',
         'zope.cachedescriptors',
@@ -60,7 +62,6 @@ setup(name='silva.core.smi',
         'zope.intid',
         'zope.schema',
         'zope.traversing',
-        'zeam.form.autofields',
         ],
       tests_require=tests_require,
       extras_require={'test': tests_require},

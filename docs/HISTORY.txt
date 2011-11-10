@@ -1,10 +1,10 @@
 Changelog
 =========
 
-2.3.3 (unreleased)
+3.0b1 (2011/11/10)
 ------------------
 
-* ...
+* Rebuild SMI on top of ``silva.ui``. Almost everything changed.
 
 2.3.2 (2010-02-07)
 ------------------
