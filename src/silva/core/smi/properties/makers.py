@@ -82,7 +82,7 @@ class IDisplayUsedInterfaces(Interface):
         required=False)
 
 
-class IRemoveCustomizationMarker(Interface):
+class IUsedMarkers(Interface):
 
     usedMarkers = schema.List(
         title=_(u"used markers"),
@@ -155,7 +155,7 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
     grok.context(ISilvaObject)
 
     label = _(u"remove a marker")
-    fields = silvaforms.Fields(IRemoveCustomizationMarker)
+    fields = silvaforms.Fields(IUsedMarkers)
 
     def available(self):
         markerField = self.fields['usedMarkers']
