@@ -84,7 +84,7 @@ class IDisplayUsedInterfaces(Interface):
 
 class IUsedMarkers(Interface):
 
-    usedMarkers = schema.List(
+    usedMarkers = schema.Set(
         title=_(u"used markers"),
         value_type=schema.Choice(
             source=usedMarkersForContent))
