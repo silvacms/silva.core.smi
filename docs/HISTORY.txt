@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.3.4dev-bethel.4 (unreleased)
+2.3.4dev-bethel.4 (2012-02-16)
 ------------------------------
 
 * extend the customization tab to support markers on IVersions of

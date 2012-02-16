@@ -42,6 +42,7 @@ def interfaceTerm(interface):
     title = interface.__doc__
     if '\n' in title:
         title = title.split('\n', 1)[0].strip()
+        title = interface.__identifier__ + ': ' + title
     if not title:
         title = interface.__identifier__
     return SimpleTerm(token=interface.__identifier__,
