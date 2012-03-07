@@ -17,12 +17,12 @@ from silva.translations import translate as _
 from silva.ui.menu import MenuItem
 from silva.ui.rest import RESTResult
 from zeam.form import silva as silvaforms
-from zeam.form.ztk.interfaces import ISourceFactory
+from zeam.form.ztk.interfaces import IFormSourceBinder
 
 from zExceptions import BadRequest
 
 
-@grok.provider(ISourceFactory)
+@grok.provider(IFormSourceBinder)
 def exporters_vocabulary(form):
     """List available exporter (this works only with Zeam form).
     """
