@@ -137,7 +137,7 @@ class AddCustomizationMarker(silvaforms.SMISubForm):
 
     def available(self):
         markerField = self.fields['availablesMarkers']
-        return len(markerField.valueField.getChoices(self.context))
+        return len(markerField.valueField.getChoices(self))
 
     @silvaforms.action(
         _(u"Add marker"),
@@ -166,7 +166,7 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
 
     def available(self):
         markerField = self.fields['usedMarkers']
-        return len(markerField.valueField.getChoices(self.context))
+        return len(markerField.valueField.getChoices(self))
 
     @silvaforms.action(
         _(u"Remove"),
