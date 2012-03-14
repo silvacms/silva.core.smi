@@ -16,6 +16,7 @@ from Products.Silva.Versioning import VersioningError
 from silva.core.interfaces import IVersion, IVersionManager
 from silva.core.interfaces import IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow
+from silva.core.views.interfaces import ISilvaURL
 from silva.core.smi.content.publish import Publish
 from silva.core.smi.content import ICompareResources
 from silva.translations import translate as _
@@ -139,7 +140,7 @@ class ViewVersionAction(silvaforms.Action):
 
         def payload(rest):
             return {'ifaces': ['redirect'],
-                    'screen': '/publish/view/' + version}
+                    'screen': 'publish/view/' + version}
 
         raise ActionResult(payload)
 
@@ -162,21 +163,9 @@ class ViewVersion(PageREST):
         return super(ViewVersion, self).publishTraverse(request, name)
 
     def payload(self):
-        url = absoluteURL(self, self.request) + '/preview'
+        assert self.version is not None
+        url = getMultiAdapter((self.version, self.request), ISilvaURL).preview()
         return {'ifaces': ['preview'], 'html_url': url}
-
-
-class ViewVersionPage(PageWithLayoutREST):
-    grok.adapts(ViewVersion, IVersionedContent)
-    grok.require('silva.ReadSilvaContent')
-    grok.name('preview')
-
-    def content(self):
-        assert self.__parent__.version is not None
-        view = getMultiAdapter(
-            (self.context, self.request), name='content.html')
-        view.content = self.__parent__.version
-        return view()
 
 
 class CompareVersionAction(silvaforms.Action):
@@ -196,7 +185,7 @@ class CompareVersionAction(silvaforms.Action):
 
         def payload(rest):
             return {'ifaces': ['redirect'],
-                    'screen': '/publish/compare/%s-%s' % (id1, id2)}
+                    'screen': 'publish/compare/%s-%s' % (id1, id2)}
 
         raise ActionResult(payload)
 
