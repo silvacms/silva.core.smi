@@ -12,7 +12,8 @@ from grokcore.view.interfaces import IGrokView
 from silva.core import conf as silvaconf
 from silva.core.interfaces import IContent
 from silva.core.layout.interfaces import ICustomizableLayer
-from silva.core.layout.jquery.interfaces import IJQueryUIResources
+from silva.core.layout.jquery.interfaces import (IJQueryUIResources,
+                                                 IJQueryWaypoints)
 from silva.core.views.interfaces import INonCachedLayer
 from silva.core.views.interfaces import IViewlet, IViewletManager
 
@@ -22,7 +23,8 @@ class ISMIView(IGrokView):
     """
 
 
-class ISMILayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources):
+class ISMILayer(ICustomizableLayer, INonCachedLayer, IJQueryUIResources, 
+                IJQueryWaypoints):
     """SMI Layer.
     """
     silvaconf.resource('smi.js')
