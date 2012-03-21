@@ -28,7 +28,7 @@ class Adding(REST):
             if factory is not None:
                 form = factory(self.context, request)
                 # Set parent for security check.
-                form.__name__ = '/'.join((self.__name__, name))
+                form.__name__ = name
                 form.__parent__ = self
                 return form
         # If it is not addable, it is not an addable.
