@@ -6,6 +6,9 @@ Changelog
 
 * added jquery.waypoint to smi
 
+* fixed issue with cusomization tab for versioned objects
+  (in particular the DisplayUsedMarkersViewable subform)
+
 2.3.4dev-bethel.4 (2012-02-16)
 ------------------------------
 

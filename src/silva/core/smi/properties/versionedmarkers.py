@@ -61,7 +61,7 @@ class DisplayUsedInterfaces(makers.DisplayUsedInterfaces):
            version
         """
         c = context.get_previewable()
-        super(DisplayUsedInterfaces, self).__init__(context, parent, request)
+        super(DisplayUsedInterfaces, self).__init__(c, parent, request)
 
 
 class DisplayUsedMarkersViewable(silvaforms.SMISubForm):
@@ -83,6 +83,8 @@ class DisplayUsedMarkersViewable(silvaforms.SMISubForm):
         self.version = context.get_viewable()
         if not self.version:
             self.version = context.get_last_closed()
+        if not self.version:
+            self.version = context.get_editable()
         if self.version:
             context = self.version
             
