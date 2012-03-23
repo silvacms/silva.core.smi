@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.3.4dev-bethel.5 (unreleased)
+2.3.4dev-bethel.5 (2012-03-23)
 ------------------------------
 
 * added jquery.waypoint to smi
