@@ -24,11 +24,11 @@ class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     """
     grok.adapts(Settings, ISilvaObject)
     grok.name('customization')
-    grok.require('silva.ManageSilvaContent')
+    grok.require('silva.ManageSilvaContentSettings')
 
     label = _(u"Customization markers")
     description = _(u"This screen lets you tag content with markers "
-                    u"which can alter how content is displayed.")
+                    u"which can alter how content is displayed and behaves.")
 
 
 class CustomizationMenu(MenuItem):
@@ -119,7 +119,7 @@ class DisplayUsedInterfaces(silvaforms.SMISubForm):
      grok.order(10)
      grok.context(ISilvaObject)
 
-     label = _(u"Interfaces in use which affect the rendering of content")
+     label = _(u"Interfaces in use which affect the behavior of the content")
      fields = silvaforms.Fields(IDisplayUsedInterfaces)
      mode = silvaforms.DISPLAY
      dataManager = silvaforms.makeAdaptiveDataManager(IDisplayUsedInterfaces)
@@ -132,7 +132,7 @@ class AddCustomizationMarker(silvaforms.SMISubForm):
     grok.order(20)
     grok.context(ISilvaObject)
 
-    label = _(u"Add a marker to alter the rendering")
+    label = _(u"Add a marker to alter the behavior")
     fields = silvaforms.Fields(IAddCustomizationMarker)
 
     def available(self):
