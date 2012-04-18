@@ -49,7 +49,7 @@ class AddableMenuItem(object):
     def describe(self, page, path, actives):
         info = {'name': self.name,
                 'screen': '/'.join((path, self.name))}
-        if actives and actives[0].__name__ == info['screen']:
+        if actives and actives[0].__name__ == self.name:
             info['active'] = True
         return info
 
