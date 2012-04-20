@@ -9,10 +9,10 @@ from zope.component import getUtility
 
 from silva.core.interfaces import IVersionedContent
 from silva.core.interfaces import IPublicationWorkflow
-from silva.core.interfaces import PublicationError
+from silva.core.interfaces import VersioningError
 from silva.core.messages.interfaces import IMessageService
 from silva.translations import translate as _
-from silva.ui.rest import UIREST
+from silva.ui.rest import UIREST, SMITransaction
 from silva.ui.menu import ActionMenu, MenuItem
 from silva.ui.rest.exceptions import RESTRedirectHandler
 
@@ -44,13 +44,16 @@ class PublicationAction(UIREST):
     def POST(self):
         self.workflow = IPublicationWorkflow(self.context)
         try:
-            self.process()
-        except PublicationError as error:
+            with SMITransaction(self):
+                self.process()
+        except VersioningError as error:
             # Notify failure.
-            self.send_notification(error.reason, type="error")
             return self.json_response({
-                'ifaces': ['notifications'],
-                'notifications': self.get_notifications()})
+                    'content': {},
+                    'notifications': [{
+                        'message': self.translate(error.reason),
+                        'category': 'error',
+                        'autoclose': 4000},]})
 
         # Refresh screen on success
         return RESTRedirectHandler(
