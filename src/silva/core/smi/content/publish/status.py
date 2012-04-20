@@ -139,8 +139,8 @@ class ViewVersionAction(silvaforms.Action):
         version = selected[0].getContentData().getContent().id
 
         def payload(rest):
-            return {'ifaces': ['redirect'],
-                    'screen': 'publish/view/' + version}
+            return {'content': {'ifaces': ['redirect'],
+                                'screen': 'publish/view/' + version}}
 
         raise ActionResult(payload)
 
@@ -184,8 +184,8 @@ class CompareVersionAction(silvaforms.Action):
         id2 = selected[1].getContentData().getContent().id
 
         def payload(rest):
-            return {'ifaces': ['redirect'],
-                    'screen': 'publish/compare/%s-%s' % (id1, id2)}
+            return {'content': {'ifaces': ['redirect'],
+                                'screen': 'publish/compare/%s-%s' % (id1, id2)}}
 
         raise ActionResult(payload)
 
