@@ -13,6 +13,7 @@ from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
 from silva.core.interfaces import IPublicationWorkflow
 from silva.core.interfaces.errors import VersioningError, PublicationError
 from silva.ui.rest.base import Screen, PageREST, UIREST
+from silva.ui.rest.helper import get_notifications
 from silva.ui.rest.container import ContentSerializer
 from silva.ui.rest.container import FolderActionREST
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
@@ -312,7 +313,8 @@ class OrderREST(UIREST):
                   mapping={'position': position + 1}),
                 type='error')
 
-        return self.json_response({
-                'content': success,
-                'notifications': self.get_notifications()})
+        data = {'content': success}
+        get_notifications(self, data)
+
+        return self.json_response(data)
 
