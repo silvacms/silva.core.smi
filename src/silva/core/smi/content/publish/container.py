@@ -8,7 +8,7 @@ from infrae.comethods import cofunction
 
 from silva.core.interfaces import IContainer
 from silva.core.interfaces import IPublicationWorkflow
-from silva.core.interfaces.errors import VersioningError, PublicationError
+from silva.core.interfaces.errors import VersioningError
 from silva.core.smi.content.publish import IPublicationFields
 from silva.translations import translate as _
 from silva.ui.rest.container import get_container_changes
@@ -31,7 +31,9 @@ class MultiApproveAction(EditAction):
     title = _(u"Approve")
 
     def get_extra_payload(self, form):
-        return get_container_changes(form)
+        form.need(lambda form, data: get_container_changes(
+                form, data.setdefault('extra', {})))
+        return {}
 
     @cofunction
     def approver(self, form, data):
@@ -40,7 +42,7 @@ class MultiApproveAction(EditAction):
             result = None
             workflow = IPublicationWorkflow(content, None)
             if workflow is None:
-                result = PublicationError(
+                result = VersioningError(
                     _(u"This action is not applicable on this content."),
                     content)
             else:

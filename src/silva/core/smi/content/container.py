@@ -11,7 +11,7 @@ from infrae.comethods import cofunction
 from silva.core.messages.interfaces import IMessageService
 from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
 from silva.core.interfaces import IPublicationWorkflow
-from silva.core.interfaces.errors import VersioningError, PublicationError
+from silva.core.interfaces.errors import VersioningError
 from silva.ui.rest.base import Screen, PageREST, UIREST
 from silva.ui.rest.helper import get_notifications
 from silva.ui.rest.container import ContentSerializer
@@ -155,7 +155,7 @@ class PublicationFolderActionREST(FolderActionREST):
                 else:
                     result = content
             else:
-                result = PublicationError(
+                result = VersioningError(
                     _(u"This action is not applicable on this content."),
                     content)
             content = yield result
