@@ -6,6 +6,7 @@ import operator
 
 from five import grok
 from silva.core.cache.store import SessionStore
+from silva.core.interfaces import UnauthorizedRoleAssignement
 from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
 from silva.core.interfaces import ISilvaObject
 from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
@@ -16,8 +17,6 @@ from silva.core.smi.settings import SettingsMenu, Settings
 from zeam.form import silva as silvaforms
 from zope import interface, schema, component
 from zope.cachedescriptors.property import CachedProperty
-
-from Products.Silva.Security import UnauthorizedRoleAssignement
 
 from zeam.form.silva.interfaces import (
     IRESTCloseOnSuccessAction, IRESTRefreshAction, IRemoverAction)
@@ -165,11 +164,13 @@ class GrantAccessAction(silvaforms.Action):
                     _('User "${username}" already has the role "${role}".',
                       mapping=mapping),
                     type="error")
-        except UnauthorizedRoleAssignement:
+        except UnauthorizedRoleAssignement as error:
             form.send_message(
                 _(u'Sorry, you are not allowed to grant the role "${role}" '
-                  u'to user "${username}".',
-                  mapping=mapping),
+                  u'to user "${username}": ${reason}.',
+                  mapping={'role': error.role,
+                           'username': error.identifier,
+                           'reason': error.reason}),
                 type="error")
         return silvaforms.SUCCESS
 
@@ -201,12 +202,13 @@ class RevokeAccessAction(silvaforms.Action):
                     _(u'User "${username}" doesn\'t have any local role.',
                       mapping={'username': username}),
                     type="error")
-        except UnauthorizedRoleAssignement, error:
+        except UnauthorizedRoleAssignement as error:
             form.send_message(
                 _(u'Sorry, you are not allowed to remove the role "${role}" '
-                  u'from user "${userid}".',
-                  mapping={'role': error.args[0],
-                           'userid': error.args[1]}),
+                  u'from user "${username}": ${reason}.',
+                  mapping={'role': error.role,
+                           'username': error.identifier,
+                           'reason': error.reason}),
                 type="error")
         return silvaforms.SUCCESS
 
