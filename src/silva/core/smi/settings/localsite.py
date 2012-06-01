@@ -37,7 +37,7 @@ class LocalSiteForm(silvaforms.SMIForm):
 
     def can_be_a_local_site(self):
         return IPublication.providedBy(self.context) and \
-            not self.manager.isSite()
+            not self.manager.is_site()
 
     @silvaforms.action(
         _("Make local site"),
@@ -45,7 +45,7 @@ class LocalSiteForm(silvaforms.SMIForm):
         available=lambda form: form.can_be_a_local_site())
     def make_site(self):
         try:
-            self.manager.makeSite()
+            self.manager.make_site()
         except ValueError, e:
             self.send_message(str(e), type=u"error")
             return silvaforms.FAILURE
@@ -55,7 +55,7 @@ class LocalSiteForm(silvaforms.SMIForm):
 
     def can_be_normal_again(self):
         return IPublication.providedBy(self.context) and \
-            self.manager.isSite() and \
+            self.manager.is_site() and \
             not IRoot.providedBy(self.context)
 
     @silvaforms.action(
@@ -65,7 +65,7 @@ class LocalSiteForm(silvaforms.SMIForm):
         implements=IRemoverAction)
     def delete_site(self):
         try:
-            self.manager.deleteSite()
+            self.manager.delete_site()
         except ValueError, e:
             self.send_message(str(e), type=u"error")
             return silvaforms.FAILURE
