@@ -7,7 +7,7 @@ from AccessControl import getSecurityManager
 from five import grok
 from zope.component import getUtility
 
-from silva.core.interfaces import IVersionedContent
+from silva.core.interfaces import IVersionedObject
 from silva.core.interfaces import IPublicationWorkflow
 from silva.core.interfaces import VersioningError
 from silva.core.messages.interfaces import IMessageService
@@ -21,7 +21,7 @@ class PublicationMenuItem(MenuItem):
     """Base menu item for publication actions.
     """
     grok.baseclass()
-    grok.adapts(ActionMenu, IVersionedContent)
+    grok.adapts(ActionMenu, IVersionedObject)
     grok.require('silva.ChangeSilvaContent')
 
     def can_approve_content(self):
@@ -31,7 +31,7 @@ class PublicationMenuItem(MenuItem):
 
 class PublicationAction(UIREST):
     grok.baseclass()
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.require('silva.ChangeSilvaContent')
 
     def process(self, workflow):

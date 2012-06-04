@@ -14,7 +14,7 @@ from zope.traversing.browser import absoluteURL
 
 from Products.Silva.Versioning import VersioningError
 from silva.core.interfaces import IVersion, IVersionManager
-from silva.core.interfaces import IVersionedContent
+from silva.core.interfaces import IVersionedObject
 from silva.core.interfaces import IPublicationWorkflow
 from silva.core.views.interfaces import ISilvaURL
 from silva.core.smi.content.publish import Publish
@@ -146,7 +146,7 @@ class ViewVersionAction(silvaforms.Action):
 
 
 class ViewVersion(PageREST):
-    grok.adapts(Publish, IVersionedContent)
+    grok.adapts(Publish, IVersionedObject)
     grok.require('silva.ReadSilvaContent')
     grok.name('view')
 
@@ -193,7 +193,7 @@ class CompareVersionAction(silvaforms.Action):
 class CompareVersionScreen(PageREST):
     """Screen to compare two versions
     """
-    grok.adapts(Publish, IVersionedContent)
+    grok.adapts(Publish, IVersionedObject)
     grok.require('silva.ReadSilvaContent')
     grok.name('compare')
 
@@ -218,7 +218,7 @@ class CompareVersionScreen(PageREST):
 
 
 class CompareVersionPage(PageWithLayoutREST):
-    grok.adapts(CompareVersionScreen, IVersionedContent)
+    grok.adapts(CompareVersionScreen, IVersionedObject)
     grok.require('silva.ReadSilvaContent')
     grok.name('view')
 
@@ -272,7 +272,7 @@ class DeleteVersionAction(silvaforms.Action):
 class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     """ Manage versions.
     """
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(Publish)
     grok.order(100)
 

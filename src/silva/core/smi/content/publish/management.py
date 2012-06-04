@@ -12,7 +12,7 @@ from DateTime import DateTime
 from AccessControl.security import checkPermission
 
 from silva.core.interfaces import IContainer
-from silva.core.interfaces import IVersioning, IVersionedContent
+from silva.core.interfaces import IVersioning, IVersionedObject
 from silva.core.interfaces import IPublicationWorkflow
 from silva.core.interfaces import IRequestForApprovalStatus
 from silva.core.interfaces.errors import VersioningError
@@ -42,8 +42,8 @@ class IPublicationInformation(interface.Interface):
                     _(u"Expiration datetime cannot be before publication."))
 
 
-class VersionedContentPublicationInformation(grok.Adapter):
-    grok.context(IVersionedContent)
+class VersionedObjectPublicationInformation(grok.Adapter):
+    grok.context(IVersionedObject)
     grok.implements(IPublicationInformation)
 
     @apply
@@ -91,7 +91,7 @@ class ContainerPublicationInformation(grok.Adapter):
 
 
 class ApprovalForms(silvaforms.SMISubFormGroup):
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(Publish)
     grok.order(10)
 
@@ -132,7 +132,7 @@ class RequestApprovalAction(PublicationAction):
 
 
 class RequestApprovalForm(silvaforms.SMISubForm):
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(ApprovalForms)
     grok.order(20)
 
@@ -186,7 +186,7 @@ class ApproveAction(PublicationAction):
 
 
 class PublicationForm(silvaforms.SMISubForm):
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(ApprovalForms)
     grok.order(20)
 
@@ -219,7 +219,7 @@ class IRequestForApprovalStatusMessage(interface.Interface):
 
 
 class RequestForApprovalStatusDisplayForm(silvaforms.SMISubTableForm):
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(ApprovalForms)
     grok.order(50)
 
@@ -285,7 +285,7 @@ class RequestApprovalMessageFields(autofields.AutoFields):
 
 class PendingApprovalRequestForm(silvaforms.SMISubForm):
     grok.baseclass()
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(ApprovalForms)
     grok.order(30)
 
@@ -366,7 +366,7 @@ class RejectApprovalRequestForm(PendingApprovalRequestForm):
 class ManualCloseForm(silvaforms.SMISubForm):
     """ Close the public version.
     """
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(Publish)
     grok.order(40)
 

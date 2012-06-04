@@ -5,7 +5,7 @@
 
 from five import grok
 from zope.interface import Interface
-from silva.core.interfaces import IVersionedContent
+from silva.core.interfaces import IVersionedObject
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenu, ExpendableMenuItem
 from silva.ui.rest import Screen
@@ -15,7 +15,7 @@ from zeam.form import silva as silvaforms
 class Publish(silvaforms.SMIComposedForm):
     """Publish tab.
     """
-    grok.adapts(Screen, IVersionedContent)
+    grok.adapts(Screen, IVersionedObject)
     grok.require('silva.ChangeSilvaContent')
     grok.name('publish')
 
@@ -23,7 +23,7 @@ class Publish(silvaforms.SMIComposedForm):
 
 
 class PublishMenu(ExpendableMenuItem):
-    grok.adapts(ContentMenu, IVersionedContent)
+    grok.adapts(ContentMenu, IVersionedObject)
     grok.require('silva.ChangeSilvaContent')
     grok.order(30)
     name = _('Publish')

@@ -6,7 +6,7 @@
 from five import grok
 from AccessControl.security import checkPermission
 
-from silva.core.interfaces import IVersionedContent
+from silva.core.interfaces import IVersionedObject
 from silva.core.views import views as silvaviews
 from silva.core.smi.content.publish import Publish
 from zeam.form import silva as silvaforms
@@ -15,7 +15,7 @@ from zeam.form import silva as silvaforms
 class PublicationInfo(silvaviews.Viewlet):
     """Portlet giving information about the publication status.
     """
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(Publish)
     grok.viewletmanager(silvaforms.SMIFormPortlets)
     grok.order(10)
