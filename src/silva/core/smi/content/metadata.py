@@ -8,7 +8,7 @@ from zope.component import getUtility, getMultiAdapter
 from zope.cachedescriptors.property import CachedProperty
 from zope.traversing.browser import absoluteURL
 
-from silva.core.interfaces import (ISilvaObject, IVersion, IVersionedContent,
+from silva.core.interfaces import (ISilvaObject, IVersion, IVersionedObject,
     IAuthorizationManager)
 from silva.core.interfaces import IIconResolver
 from silva.core.references.interfaces import IReferenceService
@@ -208,7 +208,7 @@ class MetadataReadOnlyForm(MetadataForm):
 class EditableMetadataForm(MetadataEditForm):
     """Metadata of the editable version.
     """
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(MetadataFormGroup)
     grok.order(10)
 
@@ -223,7 +223,7 @@ class EditableMetadataForm(MetadataEditForm):
 class PreviewableMetadataForm(MetadataEditForm):
     """metadata of previewable version.
     """
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.view(MetadataFormGroup)
     grok.order(20)
     label = _('Approved version content properties')
@@ -239,7 +239,7 @@ class PreviewableMetadataForm(MetadataEditForm):
 class ViewableMetadataForm(MetadataReadOnlyForm):
     """metadata of the viewable version
     """
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.order(30)
     label = _('Public version content properties')
 
@@ -254,7 +254,7 @@ class ViewableMetadataForm(MetadataReadOnlyForm):
 class LastClosedMetadataForm(MetadataReadOnlyForm):
     """Metadata of the last closed version
     """
-    grok.context(IVersionedContent)
+    grok.context(IVersionedObject)
     grok.order(30)
     label = _('Last closed version content properties')
 
@@ -280,7 +280,7 @@ class NonVersionedContentMetadataForm(MetadataEditForm):
         return self.context
 
     def available(self):
-        return (not IVersionedContent.providedBy(self.context) and
+        return (not IVersionedObject.providedBy(self.context) and
                 super(NonVersionedContentMetadataForm, self).available())
 
 
