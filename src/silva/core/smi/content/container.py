@@ -46,8 +46,20 @@ class Container(PageREST):
             "ifaces": ["listing"],
             "content": serializer(self.context),
             "items": {
-                "publishables": map(serializer, self.get_publishable_content()),
-                "assets": map(serializer, self.get_non_publishable_content())}}
+                "publishables": {
+                    "ifaces": ["listing-items"],
+                    "items": map(
+                        serializer,
+                        self.get_publishable_content()),
+                    },
+                "assets": {
+                    "ifaces": ["listing-items"],
+                    "items": map(
+                        serializer,
+                        self.get_non_publishable_content()),
+                    }
+                }
+            }
 
 
 class ContainerMenu(ExpendableMenuItem):
