@@ -3,7 +3,7 @@
 # See also LICENSE.txt
 
 from five import grok
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from zope.intid.interfaces import IIntIds
 
 from infrae.comethods import cofunction
@@ -12,9 +12,9 @@ from silva.core.messages.interfaces import IMessageService
 from silva.core.interfaces import IContainer, IContainerManager, IOrderManager
 from silva.core.interfaces import IPublicationWorkflow
 from silva.core.interfaces.errors import VersioningError
+from silva.ui.interfaces import IJSView
 from silva.ui.rest.base import Screen, PageREST, UIREST
 from silva.ui.rest.helper import get_notifications
-from silva.ui.rest.container import ContentSerializer
 from silva.ui.rest.container import FolderActionREST
 from silva.ui.menu import ExpendableMenuItem, ContentMenu
 from silva.translations import translate as _
@@ -25,41 +25,10 @@ class Container(PageREST):
     grok.name('content')
     grok.require('silva.ReadSilvaContent')
 
-    def get_publishable_content(self):
-        """Return all the publishable content of the container.
-        """
-        default = self.context.get_default()
-        if default is not None:
-            yield default
-        for content in self.context.get_ordered_publishables():
-            yield content
-
-    def get_non_publishable_content(self):
-        """Return all the non-publishable content of the container.
-        """
-        for content in self.context.get_non_publishables():
-            yield content
-
     def payload(self):
-        serializer = ContentSerializer(self, self.request)
-        return {
-            "ifaces": ["listing"],
-            "content": serializer(self.context),
-            "items": {
-                "publishables": {
-                    "ifaces": ["listing-items"],
-                    "items": map(
-                        serializer,
-                        self.get_publishable_content()),
-                    },
-                "assets": {
-                    "ifaces": ["listing-items"],
-                    "items": map(
-                        serializer,
-                        self.get_non_publishable_content()),
-                    }
-                }
-            }
+        view = getMultiAdapter(
+            (self.context, self.request), IJSView, name='container')
+        return view(self)
 
 
 class ContainerMenu(ExpendableMenuItem):
