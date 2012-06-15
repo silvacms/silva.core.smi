@@ -12,14 +12,15 @@
     <p i18n:translate="">This content is referenced by:</p>
     <div class="item"
       tal:repeat="reference viewlet.references">
-      <a title="edit content" rel="content" class="open-screen"
+      <a title="edit content" rel="content" class="open-screen edit-screen"
          i18n:attributes="title"
          tal:attributes="href reference.path">
         <img alt="edit content"
              i18n:attributes="alt"
              tal:attributes="src static['edit.png']()" />
       </a>
-      <a tal:attributes="href reference.url;
+      <a rel="preview" class="open-screen"
+         tal:attributes="href reference.path;
                          title reference.path">
         <img tal:replace="structure reference.icon" />
         <p tal:content="reference.title"/>

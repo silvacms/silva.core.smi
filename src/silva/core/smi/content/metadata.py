@@ -13,7 +13,7 @@ from silva.core.interfaces import (ISilvaObject, IVersion, IVersionedObject,
 from silva.core.interfaces import IIconResolver
 from silva.core.references.interfaces import IReferenceService
 from silva.core.views import views as silvaviews
-from silva.core.views.interfaces import ISilvaURL
+from silva.core.views.interfaces import IContentURL
 from silva.translations import translate as _
 from silva.ui.menu import ContentMenu, MenuItem
 from silva.ui.rest import Screen
@@ -303,7 +303,8 @@ class ContentReferencedBy(silvaviews.Viewlet):
                 source_versions.append(source.id)
                 source = source.get_silva_object()
 
-            edit_url = absoluteURL(source, self.request) + '/edit'
+            url = getMultiAdapter((source, self.request), IContentURL)
+            edit_url = str(url) + '/edit'
             if edit_url in references and source_versions:
                 previous_versions = references[edit_url]['versions']
                 if previous_versions[-1] > source_versions[0]:
@@ -314,13 +315,9 @@ class ContentReferencedBy(silvaviews.Viewlet):
                     source_versions = previous_versions + source_versions
 
             source_title = source.get_title_or_id()
-            source_url = getMultiAdapter(
-                (source, self.request), ISilvaURL).preview()
             references[edit_url] = {
                 'title': source_title,
-                'url': source_url,
                 'path': self.view.get_content_path(source),
-                'edit_url': edit_url,
                 'icon': get_icon(source),
                 'versions': source_versions}
 
