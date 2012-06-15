@@ -301,7 +301,7 @@ class ContentReferencedBy(silvaviews.Viewlet):
             source_versions = []
             if IVersion.providedBy(source):
                 source_versions.append(source.id)
-                source = source.get_content()
+                source = source.get_silva_object()
 
             edit_url = absoluteURL(source, self.request) + '/edit'
             if edit_url in references and source_versions:
