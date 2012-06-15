@@ -31,9 +31,13 @@ class MultiApproveAction(EditAction):
     title = _(u"Approve")
 
     def get_extra_payload(self, form):
-        form.need(lambda form, data: get_container_changes(
-                form, data.setdefault('extra', {})))
-        return {}
+        form.need(
+            lambda form, data:
+                get_container_changes(form, data['content']['extra']))
+        return {'content': {
+                'ifaces': ['listing-changes'],
+                'actions': {}
+                }}
 
     @cofunction
     def approver(self, form, data):
