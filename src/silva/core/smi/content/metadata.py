@@ -6,11 +6,9 @@ import bisect
 from five import grok
 from zope.component import getUtility, getMultiAdapter
 from zope.cachedescriptors.property import CachedProperty
-from zope.traversing.browser import absoluteURL
 
-from silva.core.interfaces import (ISilvaObject, IVersion, IVersionedObject,
-    IAuthorizationManager)
-from silva.core.interfaces import IIconResolver
+from silva.core.interfaces import IIconResolver, IAuthorizationManager
+from silva.core.interfaces import ISilvaObject, IVersion, IVersionedObject
 from silva.core.references.interfaces import IReferenceService
 from silva.core.views import views as silvaviews
 from silva.core.views.interfaces import IContentURL

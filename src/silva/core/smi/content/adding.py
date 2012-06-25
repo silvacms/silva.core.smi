@@ -8,12 +8,16 @@ from zope.component import queryUtility
 from zope.component.interfaces import IFactory
 from zExceptions import NotFound
 
-from silva.core.interfaces import IAddableContents
+from silva.core.interfaces import IAddableContents, IIconResolver
 from silva.core.interfaces import IContainer
+from silva.core.views import views as silvaviews
 from silva.translations import translate as _
-from silva.ui.rest import Screen, REST
-from silva.ui.menu import ExpendableMenuItem, ContentMenu
 from silva.ui.interfaces import IMenuItem
+from silva.ui.menu import ExpendableMenuItem, ContentMenu
+from silva.ui.rest import Screen, REST
+from zeam.form import silva as silvaforms
+
+from Products.Silva.ExtensionRegistry import extensionRegistry
 
 
 class Adding(REST):
@@ -62,4 +66,19 @@ class AddMenu(ExpendableMenuItem):
     screen = Adding
 
     def get_submenu_items(self):
-        return map(AddableMenuItem, IAddableContents(self.content).get_authorized_addables())
+        return map(
+            AddableMenuItem,
+            IAddableContents(self.content).get_authorized_addables())
+
+
+class AddingInformation(silvaviews.Viewlet):
+    grok.context(IContainer)
+    grok.view(silvaforms.SMIAddForm)
+    grok.viewletmanager(silvaforms.SMIFormPortlets)
+
+    def update(self):
+        addable = extensionRegistry.get_addable(self.view._content_type)
+        self.name = addable.get('name')
+        self.description = addable.get('doc')
+        self.icon = IIconResolver(self.request).get_tag(
+            identifier=addable.get('name'))

@@ -1,0 +1,7 @@
+<div class="portlet" i18n:domain="silva">
+  <h4>
+    <tal:icon tal:replace="structure viewlet.icon" />
+    <tal:title tal:replace="viewlet.name">Content Type</tal:title>
+  </h4>
+  <p tal:content="viewlet.description">Description</p>
+</div>
