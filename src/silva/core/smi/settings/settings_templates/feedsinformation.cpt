@@ -1,0 +1,16 @@
+<div class="portlet" i18n:domain="silva">
+  <h4>
+    <tal:title>RSS/Atom Information</tal:title>
+  </h4>
+  <p tal:condition="not viewlet.activated"
+     i18n:translate="">
+    RSS/Atom is not activated for this container.
+  </p>
+  <p tal:condition="viewlet.activated"
+     i18n:translate="">
+    RSS/Atom is activated for this container. You can access the RSS
+    feed at this <a href="${viewlet.url}/rss.xml"
+    i18n:name="rss_url">URL</a>, and the Atom feed at this
+    <a href="${viewlet.url}/atom.xml" i18n:name="atom_url">URL</a>.
+  </p>
+</div>

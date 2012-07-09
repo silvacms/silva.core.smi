@@ -5,53 +5,15 @@ from five import grok
 from zope.interface import Interface
 from zope import schema
 from zope.traversing.browser import absoluteURL
-from zeam.form import silva as silvaforms
 
 from silva.core import interfaces
 from silva.core.smi.content.metadata import MetadataFormGroup
-from silva.core.smi.settings import SettingsMenu, Settings
+from silva.core.smi.settings import Settings
 from silva.translations import translate as _
-from silva.ui.menu import MenuItem
+from silva.core.views import views as silvaviews
+from zeam.form import silva as silvaforms
 
-import Acquisition
 from Products.Silva import mangle
-
-
-class AcquisitionMethod(Acquisition.Explicit):
-    """This class let you have an acquisition context on a method.
-    """
-    # for Formulamerde.
-    def __init__(self, parent, method_name):
-        self.parent = parent
-        self.method_name = method_name
-
-    def __call__(self, *args, **kwargs):
-        instance = self.parent.aq_inner
-        method = getattr(instance, self.method_name)
-        return method(*args, **kwargs)
-
-
-class OtherSettings(silvaforms.SMIComposedForm):
-    """Settings tab.
-    """
-    grok.adapts(Settings, interfaces.IContainer)
-    grok.name('settings')
-    grok.require('silva.ManageSilvaContent')
-    label = _("Settings")
-
-    def get_wanted_quota_validator(self):
-        # for Formulamerde crap.
-        return AcquisitionMethod(self.context, 'validate_wanted_quota')
-
-    get_wanted_quota_validator__roles__ = None
-
-
-class OtherSettingsMenu(MenuItem):
-    grok.adapts(SettingsMenu, interfaces.IContainer)
-    grok.order(10)
-    grok.require('silva.ManageSilvaContent')
-    name = _(u'Settings')
-    screen = OtherSettings
 
 
 class ConvertToFolderAction(silvaforms.Action):
@@ -87,7 +49,7 @@ class ConvertToForm(silvaforms.SMISubForm):
     grok.context(interfaces.IContainer)
     # XXX set it for real
     grok.require('silva.ManageSilvaContent')
-    grok.view(OtherSettings)
+    grok.view(Settings)
     grok.order(10)
     actions = silvaforms.Actions(ConvertToPublicationAction(),
         ConvertToFolderAction())
@@ -110,41 +72,22 @@ class ConvertToForm(silvaforms.SMISubForm):
             self.description = _('This Silva Folder can be converted'
                                  ' to a Publication')
 
+
 class IActivateFeedsSchema(Interface):
-    allow = schema.Bool(title=_('Allow feeds'),
+    allow = schema.Bool(
+        title=_('Allow feeds'),
         description=_('Check to provide an Atom / RSS '
                       'feed from this container.'))
-    atom_url = schema.URI(title=_(u"Atom feed URL"), required=False)
-    rss_url = schema.URI(title=_(u"RSS feed URL"), required=False)
-
-
-def get_feeds_status(form):
-    return bool(form.context.allow_feeds())
-
-def get_feed_url(name):
-
-    def get_url(form):
-        return '/'.join((absoluteURL(form.context, form.request), name),)
-
-    return get_url
 
 
 class FeedsForm(silvaforms.SMISubForm):
     grok.context(interfaces.IContainer)
-    grok.view(OtherSettings)
+    grok.view(Settings)
     grok.order(30)
     grok.require('silva.ManageSilvaContent')
 
     fields = silvaforms.Fields(IActivateFeedsSchema)
-    fields['allow'].defaultValue = get_feeds_status
-    fields['atom_url'].mode = silvaforms.DISPLAY
-    fields['atom_url'].defaultValue = get_feed_url('atom.xml')
-    fields['atom_url'].available = get_feeds_status
-    fields['atom_url'].target = '_blank'
-    fields['rss_url'].mode = silvaforms.DISPLAY
-    fields['rss_url'].defaultValue = get_feed_url('rss.xml')
-    fields['rss_url'].available = get_feeds_status
-    fields['rss_url'].target = '_blank'
+    fields['allow'].defaultValue = lambda f: bool(f.context.allow_feeds())
 
     ignoreContent = True
     ignoreRequest = False
@@ -163,6 +106,19 @@ class FeedsForm(silvaforms.SMISubForm):
         return silvaforms.SUCCESS
 
 
+
+class FeedsInformation(silvaviews.Viewlet):
+    grok.context(interfaces.IContainer)
+    grok.order(10)
+    grok.view(Settings)
+    grok.viewletmanager(silvaforms.SMIFormPortlets)
+
+    def update(self):
+        self.activated = self.context.allow_feeds()
+        self.url = absoluteURL(self.context, self.request)
+
+
+
 class IQuotaSchema(Interface):
     size = schema.TextLine(title=_('Space used in this folder'))
 
@@ -173,7 +129,7 @@ def get_used_space(form):
 
 class QuotaForm(silvaforms.SMISubForm):
     grok.context(interfaces.IContainer)
-    grok.view(OtherSettings)
+    grok.view(Settings)
     grok.order(40)
     grok.require('silva.ManageSilvaContentSettings')
 
@@ -199,10 +155,11 @@ class QuotaForm(silvaforms.SMISubForm):
 
 
 class SettingsMetadataForm(MetadataFormGroup):
-    grok.context(interfaces.IContainer)
+    grok.context(interfaces.ISilvaObject)
     grok.order(50)
-    grok.view(OtherSettings)
+    grok.view(Settings)
     category = 'settings'
     label = _('Generic Settings')
+
 
 

@@ -57,7 +57,7 @@ class BindingCache(object):
     def clear(self):
         self._cache = {}
 
-    def get_bound_element(self, set_name, element_name):
+    def get_element(self, set_name, element_name):
         id = (set_name, element_name)
         element = self._cache.get(id)
         if element is not None:
@@ -103,29 +103,24 @@ class MetadataForm(silvaforms.SMISubForm):
         return self.binding.getElementNames(set_name, mode='view')
 
     def get_element_title(self, set_name, element_name):
-        bound_element = \
-            self.binding_cache.get_bound_element(set_name, element_name)
-        return bound_element.Title()
+        element = self.binding_cache.get_element(set_name, element_name)
+        return element.Title()
 
     def get_element_description(self, set_name, element_name):
-        bound_element = \
-            self.binding_cache.get_bound_element(set_name, element_name)
-        return bound_element.Description()
+        element = self.binding_cache.get_element(set_name, element_name)
+        return element.Description()
 
     def is_element_required(self, set_name, element_name):
-        bound_element = \
-            self.binding_cache.get_bound_element(set_name, element_name)
-        return bound_element.isRequired()
+        element = self.binding_cache.get_element(set_name, element_name)
+        return element.isRequired()
 
     def is_element_hidden(self, set_name, element_name):
-        bound_element = \
-            self.binding_cache.get_bound_element(set_name, element_name)
-        return bool(bound_element.field.get_value('hidden'))
+        element = self.binding_cache.get_element(set_name, element_name)
+        return bool(element.field.get_value('hidden'))
 
     def is_element_acquireable(self, set_name, element_name):
-        bound_element = \
-            self.binding_cache.get_bound_element(set_name, element_name)
-        return bound_element.isAcquireable()
+        element = self.binding_cache.get_element(set_name, element_name)
+        return element.isAcquireable()
 
     def is_element_editable(self, set_name, element_name):
         if not is_role_greater_or_equal(self.user_role, 'Author'):
@@ -150,9 +145,8 @@ class MetadataForm(silvaforms.SMISubForm):
         return self.binding.renderElementView(set_name, element_name)
 
     def html_id(self, set_name, element_name):
-        bound_element = \
-            self.binding_cache.get_bound_element(set_name, element_name)
-        return getattr(bound_element.field, 'html_id', None)
+        element = self.binding_cache.get_element(set_name, element_name)
+        return getattr(element.field, 'html_id', None)
 
     def is_allowed(self, set_name):
         minimal_role = self.binding.getSet(set_name).getMinimalRole()
