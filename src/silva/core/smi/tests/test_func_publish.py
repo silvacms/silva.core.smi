@@ -33,7 +33,7 @@ class TestDocumentRequestApproval(unittest.TestCase):
         factory.manage_addMockupVersionedContent('document', 'Document')
 
     def test_editor_should_not_see_request_approval_form(self):
-        browser = self.layer.get_selenium_browser(publish_settings)
+        browser = self.layer.get_web_browser(publish_settings)
         browser.login('editor')
         browser.open('/root/document/edit')
 
@@ -42,7 +42,7 @@ class TestDocumentRequestApproval(unittest.TestCase):
         self.assertFalse(browser.inspect.request_approval_form)
 
     def test_author_should_see_request_approval_form(self):
-        browser = self.layer.get_selenium_browser(publish_settings)
+        browser = self.layer.get_web_browser(publish_settings)
         browser.login('author')
         browser.open('/root/document/edit')
 
@@ -51,7 +51,7 @@ class TestDocumentRequestApproval(unittest.TestCase):
         self.assertFalse(browser.inspect.request_approval_form)
 
     def test_request_approval_submit(self):
-        browser = self.layer.get_selenium_browser(publish_settings)
+        browser = self.layer.get_web_browser(publish_settings)
         browser.login('author')
         browser.open('/root/document/edit')
 
@@ -70,7 +70,7 @@ class TestDocumentRequestApproval(unittest.TestCase):
             browser.inspect.feedback)
 
     def test_withdrawal_form_should_not_show(self):
-        browser = self.layer.get_selenium_browser(publish_settings)
+        browser = self.layer.get_web_browser(publish_settings)
         browser.login('author')
         browser.open('/root/document/edit')
 

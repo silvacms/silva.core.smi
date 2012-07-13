@@ -25,7 +25,7 @@ class FeedsTestCase(unittest.TestCase):
         self.assertEqual(xml_browser.open('/root/folder/rss.xml'), 404)
 
         # We can enable it in settings
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('manager')
         browser.open('/root/folder/edit')
 

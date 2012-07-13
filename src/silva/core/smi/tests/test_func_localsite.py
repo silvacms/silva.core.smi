@@ -23,7 +23,7 @@ class LocalSiteTestCase(unittest.TestCase):
     def test_localsite_simple(self):
         """We just activate/deactivate as a local site a publication.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('manager')
 
         browser.open('/root/publication/edit')
@@ -60,7 +60,7 @@ class LocalSiteTestCase(unittest.TestCase):
     def test_localsite_still_in_use(self):
         """We test to disable a local site but it's in use.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('manager')
 
         browser.open('/root/publication/edit')
@@ -108,7 +108,7 @@ class LocalSiteTestCase(unittest.TestCase):
         and Silva Forum, the configuration form should render
         correctly, if a user decide to access it.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('manager')
 
         browser.open('/root/folder/edit')

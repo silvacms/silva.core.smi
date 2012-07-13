@@ -19,7 +19,7 @@ class ReaderFolderTestCase(unittest.TestCase):
     def test_folder_access(self):
         """A reader cannot create a folder, however he can look into it.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('reader')
 
 
@@ -29,7 +29,7 @@ class AuthorFolderTestCase(unittest.TestCase):
     def test_folder(self):
         """Create a folder and check its tabs.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('author')
 
         self.assertTrue('add' in browser.inspect.content_tabs)

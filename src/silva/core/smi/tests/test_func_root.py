@@ -14,7 +14,7 @@ class ReaderRootTestCase(unittest.TestCase):
     def test_root(self):
         """A reader can't add anything.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('reader')
 
         browser.open('/root/edit')
@@ -38,7 +38,7 @@ class AuthorRootTestCase(unittest.TestCase):
     def test_root(self):
         """A reader can't add anything.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('author')
 
         browser.open('/root/edit')
@@ -64,7 +64,7 @@ class EditorRootTestCase(unittest.TestCase):
     def test_root(self):
         """An editor can edit stuff.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('editor')
 
         browser.open('/root/edit')
@@ -92,7 +92,7 @@ class ChiefEditorRootTestCase(unittest.TestCase):
     def test_root(self):
         """A Chief editor can edit and do some configuration.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('chiefeditor')
 
         browser.open('/root/edit')
@@ -119,7 +119,7 @@ class ManagerRootTestCase(unittest.TestCase):
     def test_root(self):
         """A Manager have full access.
         """
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('chiefeditor')
 
         browser.open('/root/edit')

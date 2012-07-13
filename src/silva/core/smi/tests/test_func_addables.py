@@ -5,6 +5,7 @@
 import unittest
 from Products.Silva.testing import FunctionalLayer, smi_settings
 
+
 class ChiefEditorAddablesTestCase(unittest.TestCase):
     """ChiefEditor (and Manager) have a setting tab and a addable one.
     """
@@ -18,7 +19,7 @@ class ChiefEditorAddablesTestCase(unittest.TestCase):
         factory.manage_addFolder('folder', 'Folder')
 
     def test_addables(self):
-        browser = self.layer.get_selenium_browser(smi_settings)
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login(self.username)
 
         browser.open('/root/edit')
