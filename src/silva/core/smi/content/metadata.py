@@ -170,7 +170,7 @@ class MetadataEditForm(MetadataForm):
             self.prefix += '-' + self.parent.category
 
     @silvaforms.action(
-        _('Save'),
+        _('Save changes'),
         implements=silvaforms.IDefaultAction,
         available=lambda form: not form.binding.read_only,
         accesskey='ctrl+s')
