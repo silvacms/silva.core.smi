@@ -14,7 +14,7 @@
     </div>
     <div class="form-body">
       <tal:section tal:repeat="element_name view.get_element_names(set_name)">
-        <div class="form-section form-novalidation ${error and 'form-error' or ''} ${not is_editable and 'form-readonly' or ''}"
+        <div class="form-section ui-helper-clearfix form-novalidation ${error and 'form-error' or ''} ${not is_editable and 'form-readonly' or ''}"
              tal:define="error path:view/errors/?set_name/?element_name | nothing;
                          identifier (set_name, element_name);
                          is_hidden view.is_element_hidden(*identifier);
@@ -46,11 +46,6 @@
               </p>
             </div>
             <div class="form-field">
-              <div class="form-error-detail"
-                   tal:condition="error"
-                   tal:content="error">
-                Error message
-              </div>
               <tal:value tal:condition="not is_editable">
                 <p class="form-acquired"
                    tal:omit-tag="not is_acquired"
@@ -78,6 +73,13 @@
                   <tal:value tal:replace="structure view.render_element_view(*identifier)" />
                 </p>
               </tal:edit>
+            </div>
+            <div class="form-error-message">
+              <div class="form-error-detail"
+                   tal:condition="error"
+                   tal:content="error">
+                Error message
+              </div>
             </div>
           </tal:field>
         </div>
