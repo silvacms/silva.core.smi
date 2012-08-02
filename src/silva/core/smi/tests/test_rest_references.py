@@ -34,6 +34,7 @@ class BreakReferenceTestCase(unittest.TestCase):
         self.assertIsNot(self.root._getOb('file'), None)
         with self.layer.get_browser() as browser:
             browser.login(self.user)
+            browser.set_request_header('X-Requested-With', 'XMLHttpRequest')
             self.assertEqual(
                 browser.open(
                     '/root/++rest++silva.ui.listing.delete',
@@ -66,6 +67,7 @@ class ManagerBreakReferenceTestCase(BreakReferenceTestCase):
         self.assertIsNot(self.root._getOb('file'), None)
         with self.layer.get_browser() as browser:
             browser.login(self.user)
+            browser.set_request_header('X-Requested-With', 'XMLHttpRequest')
             self.assertEqual(
                 browser.open(
                     '/root/++rest++silva.ui.listing.delete',
