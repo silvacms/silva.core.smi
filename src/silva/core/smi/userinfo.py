@@ -43,19 +43,19 @@ class IUserInfo(interface.Interface):
     userid = schema.TextLine(
         title=_(u"User identifier"),
         description=_(
-            u"identifier used to authenticate"),
+            u"User identifier used to authenticate."),
         required=False)
     fullname = schema.TextLine(
         title=_(u"Fullname"),
-        description=_(u"user full name"),
+        description=_(u"User full name."),
         required=True)
     email = RFC822MailAddress(
         title=_(u"Email address"),
-        description=_(u"contact email address"),
+        description=_(u"Contact email address for the user."),
         required=True)
     language = schema.Choice(
         title=_(u"Preferred language"),
-        description=_(u"language to use the for Silva interface"),
+        description=_(u"Language to use in the Silva interface."),
         source=language_source,
         required=False)
 

@@ -1,6 +1,7 @@
 <div class="portlet references" i18n:domain="silva">
   <h4 title="List of contents that refer to this content"
-    i18n:attributes="title">
+      i18n:attributes="title"
+      i18n:translate="">
     References
   </h4>
   <p tal:condition="not:viewlet.references"
