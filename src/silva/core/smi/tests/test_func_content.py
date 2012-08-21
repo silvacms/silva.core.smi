@@ -19,41 +19,6 @@ class AuthorContentTestCase(unittest.TestCase):
         self.root = self.layer.get_application()
         self.layer.login('manager')
 
-    def test_folder(self):
-        """We should be able to add/remove a folder.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-        browser.login(self.username, self.username)
-
-        self.assertEqual(browser.open('/root/edit'), 200)
-        browser.macros.create(
-            'Silva Folder',
-            id='folder',
-            title='Second Folder',
-            default_item='Silva Document')
-        self.assertEqual(
-            browser.inspect.folder_listing, ['index', 'folder'])
-
-        # The user should by the last author on the content and container.
-        self.assertEqual(
-            self.root.sec_get_last_author_info().userid(),
-            self.username)
-        self.assertEqual(
-            self.root.folder.sec_get_last_author_info().userid(),
-            self.username)
-
-        # Visit the edit page
-        self.assertEqual(
-            browser.inspect.folder_listing['folder'].click(),
-            200)
-        self.assertEqual(
-            browser.url, '/root/folder/edit/tab_edit')
-        self.assertEqual(
-            browser.inspect.breadcrumbs,
-            ['root', 'Second Folder'])
-        browser.inspect.breadcrumbs['root'].click()
-        browser.macros.delete('folder')
-
     def test_indexer(self):
         """Indexer should not be available.
         """

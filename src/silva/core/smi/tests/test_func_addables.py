@@ -24,7 +24,6 @@ class ChiefEditorAddablesTestCase(unittest.TestCase):
 
         browser.open('/root/edit')
         self.assertTrue('settings' in browser.inspect.content_tabs)
-
         self.assertEqual(browser.inspect.content_tabs['settings'].click(), 200)
 
         self.assertTrue('addables' in browser.inspect.content_subtabs)
