@@ -150,6 +150,11 @@ class FeedsForm(silvaforms.SMISubForm):
 
     label = _('Atom/rss feeds')
 
+    def available(self):
+        if not checkPermission('silva.ManageSilvaContent', self.context):
+            return False
+        return super(FeedsForm, self).available()
+
     @silvaforms.action(_('Change feed settings'),
         identifier='activatefeeds',
         description=_('change feed settings'))
