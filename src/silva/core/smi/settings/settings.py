@@ -34,7 +34,7 @@ class ConvertToFolderAction(silvaforms.Action):
 
     def __call__(self, form):
         form.context.to_folder()
-        form.send_message(_("Changed into folder"), type="feedback")
+        form.send_message(_("Changed into folder."), type="feedback")
         return silvaforms.SUCCESS
 
 
@@ -48,7 +48,7 @@ class ConvertToPublicationAction(silvaforms.Action):
 
     def __call__(self, form):
         form.context.to_publication()
-        form.send_message(_("Changed into publication"), type="feedback")
+        form.send_message(_("Changed into publication."), type="feedback")
         return silvaforms.SUCCESS
 
 
@@ -165,7 +165,6 @@ class FeedsForm(silvaforms.SMISubForm):
         self.context.set_allow_feeds(data.getWithDefault('allow'))
         self.send_message(_('Feed settings saved.'), type='feedback')
         return silvaforms.SUCCESS
-
 
 
 class FeedsInformation(silvaviews.Viewlet):

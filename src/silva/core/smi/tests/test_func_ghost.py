@@ -5,7 +5,8 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 from Products.Silva.tests.helpers import publish_object
 from silva.core.references.reference import get_content_id
 

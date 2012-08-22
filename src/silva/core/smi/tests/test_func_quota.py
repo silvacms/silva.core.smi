@@ -5,7 +5,8 @@
 import unittest
 
 from Products.Silva.tests.helpers import test_filename
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 
 
 def smi_set_quota(browser, quota, should_fail=False):

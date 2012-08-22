@@ -4,7 +4,8 @@
 
 import unittest
 import transaction
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 
 
 class LocalSiteTestCase(unittest.TestCase):
@@ -102,20 +103,6 @@ class LocalSiteTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.form_controls, ['Remove local site'])
         browser.inspect.form_controls['remove'].click()
         self.assertEqual(browser.inspect.feedback, ['Local site deactivated.'])
-
-    def test_localsite_no_publication(self):
-        """We should not have a local site ... buttons for Silva Root
-        and Silva Forum, the configuration form should render
-        correctly, if a user decide to access it.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-        browser.login('manager')
-
-        browser.open('/root/folder/edit')
-        self.assertTrue('settings' in browser.inspect.content_tabs)
-
-        browser.inspect.content_tabs['settings'].click()
-        self.assertFalse('local site' in browser.inspect.content_subtabs)
 
 
 def test_suite():

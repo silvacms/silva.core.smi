@@ -5,13 +5,14 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 
 
 class ReaderRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
-    def test_root(self):
+    def test_root_roundtrip(self):
         """A reader can't add anything.
         """
         browser = self.layer.get_web_browser(smi_settings)
@@ -36,7 +37,7 @@ class AuthorRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
     user = 'author'
 
-    def test_root(self):
+    def test_root_roundtrip(self):
         """Test root as an author.
         """
         browser = self.layer.get_web_browser(smi_settings)
@@ -62,6 +63,15 @@ class AuthorRootTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.activetabs, ['Properties'])
         self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
+
+    def test_root_settings(self):
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login('author')
+
+        self.assertEqual(browser.inspect.title, u"root")
+        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Settings'])
+        self.assertNotIn({'title': u'Container type'}, browser.inspect.form)
 
 
 class EditorRootTestCase(AuthorRootTestCase):
