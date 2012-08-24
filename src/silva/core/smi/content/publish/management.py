@@ -96,7 +96,7 @@ class ApprovalForms(silvaforms.SMISubFormGroup):
     grok.order(10)
 
     def available(self):
-        if not self.context.get_unapproved_version():
+        if self.context.is_published() or self.context.is_approved():
             return False
         return super(ApprovalForms, self).available()
 
@@ -105,6 +105,10 @@ class PublicationAction(EditAction):
     """An author request approval for a content.
     """
 
+    def create_unapproved_version(self, content):
+        if not content.get_unapproved_version():
+            content.create_copy()
+
     def __call__(self, form):
         data, errors = form.extractData()
         if errors:
@@ -112,6 +116,7 @@ class PublicationAction(EditAction):
 
         content_data = form.getContentData()
         content = content_data.getContent()
+        self.create_unapproved_version(content)
 
         self.applyData(form, content_data, data)
         return self.execute(form, content, data)
@@ -217,7 +222,6 @@ class IRequestForApprovalStatusMessage(interface.Interface):
     message = schema.Text(title=u"Message")
     status = schema.Choice(title=u"Action", source=approval_status_vocabulary)
 
-
 class RequestForApprovalStatusDisplayForm(silvaforms.SMISubTableForm):
     grok.context(IVersionedObject)
     grok.view(ApprovalForms)
@@ -239,6 +243,8 @@ class RequestForApprovalStatusDisplayForm(silvaforms.SMISubTableForm):
 
     def getItems(self):
         version_id = self.context.get_unapproved_version()
+        if version_id is None:
+            version_id = self.context.get_last_closed_version()
         version = self.context._getOb(version_id)
         messages = list(IRequestForApprovalStatus(version).messages)
         messages.reverse()
