@@ -42,7 +42,17 @@ class ReaderFolderTestCase(unittest.TestCase):
         # Go inside the folder.
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
         self.assertEqual(browser.inspect.title, u'Folder')
+        self.assertEqual(browser.inspect.tabs, ['Content'])
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
         self.assertEqual(browser.inspect.listing, [])
+        self.assertEqual(browser.inspect.actions, [])
+
+        # We go through the tabs.
+        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
+        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
 
 
 class AuthorFolderTestCase(unittest.TestCase):
@@ -65,8 +75,7 @@ class AuthorFolderTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
-        browser.inspect.tabs['Add'].click()
+        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
         self.assertIn('Silva Folder', browser.inspect.subtabs)
         self.assertEqual(browser.inspect.subtabs['silva Folder'].click(), 200)
         self.assertEqual(browser.inspect.form, ["Add a Silva Folder"])
@@ -78,6 +87,7 @@ class AuthorFolderTestCase(unittest.TestCase):
         self.assertEqual(add_form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva Folder.")
 
+        # Inspect new created content.
         self.assertEqual(browser.inspect.title, u"Test")
         self.assertEqual(
             browser.inspect.tabs,
@@ -85,7 +95,6 @@ class AuthorFolderTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.views,
             ['Preview', 'View'])
-        # We are on contents
         self.assertEqual(
             browser.inspect.activetabs,
             ['Content'])

@@ -27,7 +27,7 @@ class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     grok.require('silva.ManageSilvaContentSettings')
 
     label = _(u"Customization markers")
-    description = _(u"This screen lets you tag content with markers "
+    description = _(u"This screen lets you tag items with markers "
                     u"which can alter how content is displayed and behaves.")
 
 
@@ -119,7 +119,7 @@ class DisplayUsedInterfaces(silvaforms.SMISubForm):
      grok.order(10)
      grok.context(ISilvaObject)
 
-     label = _(u"Interfaces in use which affect the behavior of the content")
+     label = _(u"Interfaces in use which affect the behavior of the item")
      fields = silvaforms.Fields(IDisplayUsedInterfaces)
      mode = silvaforms.DISPLAY
      dataManager = silvaforms.makeAdaptiveDataManager(IDisplayUsedInterfaces)
@@ -141,7 +141,7 @@ class AddCustomizationMarker(silvaforms.SMISubForm):
 
     @silvaforms.action(
         _(u"Add marker"),
-        description=_(u"mark the content with the selected marker(s)"),
+        description=_(u"mark the item with the selected marker(s)"),
         accesskey='ctrl+a')
     def add(self):
         values, errors = self.extractData()
@@ -170,7 +170,7 @@ class RemoveCustomizationMarker(silvaforms.SMISubForm):
 
     @silvaforms.action(
         _(u"Remove"),
-        description=_(u"remove the selected marker(s) from the content"),
+        description=_(u"remove the selected marker(s) from the item"),
         accesskey='ctrl+r',
         implements=IRemoverAction)
     def remove(self):

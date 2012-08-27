@@ -1,55 +1,66 @@
 <div class="portlet" i18n:domain="silva">
 
-  <tal:info tal:condition="viewlet.have_unapproved and not viewlet.have_published and not viewlet.have_closed">
+  <tal:draft tal:condition="viewlet.have_unapproved and not viewlet.have_published and not viewlet.have_closed">
     <h4 i18n:translate="">
-      Content is a draft and never published
+      Item is a draft and never published
     </h4>
     <p tal:condition="viewlet.may_approve" i18n:translate="">
       Publication settings can be changed.
     </p>
-  </tal:info>
+  </tal:draft>
 
   <tal:change tal:condition="viewlet.may_change">
 
-    <tal:info tal:condition="viewlet.have_approved">
+    <tal:pending>
       <h4 i18n:translate="">
-        Content is approved, not published
+        Item is pending
+      </h4>
+      <p tal:condition="viewlet.may_approve" i18n:translate="">
+        This is item has been submitted for approval and is pending.
+      </p>
+    </tal:pending>
+
+    <tal:approved tal:condition="viewlet.have_approved">
+      <h4 i18n:translate="">
+        Item is approved, not published
       </h4>
       <p tal:condition="viewlet.may_approve" i18n:translate="">
         Publication settings can be changed.
       </p>
-    </tal:info>
+    </tal:approved>
 
-    <tal:info tal:condition="viewlet.have_unapproved and viewlet.have_published">
+    <tal:unapproved tal:condition="viewlet.have_unapproved and viewlet.have_published">
       <h4 i18n:translate="">Published version exists</h4>
       <p class="warning">
         <tal:block i18n:translate="">
-          Note: an older version of this content is online.
+          Note: an older version of this item is online.
         </tal:block>
         <br />
         <tal:block i18n:translate="">
           Publishing this version will replace the public version.
         </tal:block>
       </p>
-    </tal:info>
+    </tal:unapproved>
 
     <tal:notnext tal:condition="not viewlet.have_next">
 
       <tal:info tal:condition="viewlet.have_published">
-        <h4 i18n:translate="">Content is published</h4>
+        <h4 i18n:translate="">Item is published</h4>
         <p i18n:translate="">
-          This content is published (online for the public).
+          This item is published (online for the public).
         </p>
         <p i18n:translate="">
           If you wish you can make an editable copy in the
-          <a class="open-screen" rel="content" i18n:name="editor"><span i18n:translate="">editor</span></a>.
+          <a class="open-screen" rel="content" i18n:name="editor">
+            <span i18n:translate="">editor</span>
+          </a>.
         </p>
       </tal:info>
 
       <tal:info tal:condition="viewlet.have_closed and not viewlet.have_published">
-        <h4 i18n:translate="">Content is closed</h4>
+        <h4 i18n:translate="">Item is closed</h4>
         <p i18n:translate="">
-          This content was once published but is now closed.
+          This item was once published but is now closed.
         </p>
         <p i18n:translate="">
           If you wish you can make an editable copy in the

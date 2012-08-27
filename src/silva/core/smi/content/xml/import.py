@@ -23,26 +23,26 @@ class IImportFields(Interface):
     """
     archive = silvaschema.Bytes(
         title=_("File to upload"),
-        description=_(u"Locate a zip file containing Assets "
+        description=_(u"Locate a zip file containing assets "
                       u"or a zip file created by a Silva full media export."),
         required=True)
     asset_title = schema.TextLine(
         title=_(u"Title for assets"),
-        description=_(u"Set a title for all Assets created from the contents "
-                      u"of a zip file with Assets."),
+        description=_(u"Set a title for all assets created from the items "
+                      u"of a zip file with assets."),
         default=u'',
         required=False)
     sub_directories = schema.Bool(
         title=_(u"Subdirectories"),
         description=_(u"Recreate the subdirectory structure of a zip file "
-                      u"with Assets by adding Silva Folders."),
+                      u"with assets by adding folders."),
         default=False,
         required=False)
     replace = schema.Bool(
-        title=_(u"Replace content"),
-        description=_(u"Replace Content Objects with the Objects from "
-                      u"the import when they have the same ids "
-                      u"(Note: they will be replaced *even* when published)."),
+        title=_(u"Replace items"),
+        description=_(u"Replace items with the ones from the import file "
+                      u"when they have the same ids (Note: they will be "
+                      u"replaced *even* when published)."),
         default=False,
         required=False)
 

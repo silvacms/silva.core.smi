@@ -451,14 +451,11 @@ class ContentInFolderTestCase(unittest.TestCase):
         browser.macros.delete('container')
 
 
-class ContentInPublicationTestCase(ContentInFolderTestCase):
-    """For each role make each content in a folder.
-    """
-    container = 'Silva Publication'
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    #suite.addTest(unittest.makeSuite(ContentInFolderTestCase))
-    #suite.addTest(unittest.makeSuite(ContentInPublicationTestCase))
     return suite
+    suite.addTest(unittest.makeSuite(ContentInFolderTestCase))
+
+

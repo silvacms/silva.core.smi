@@ -131,6 +131,7 @@ class ManagerAddablesTestCase(ChiefEditorAddablesTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    return suite
     suite.addTest(unittest.makeSuite(ChiefEditorAddablesTestCase))
     suite.addTest(unittest.makeSuite(ManagerAddablesTestCase))
-    return suite
+

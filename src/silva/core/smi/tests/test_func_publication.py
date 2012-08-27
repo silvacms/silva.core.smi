@@ -69,8 +69,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
-        browser.inspect.tabs['Add'].click()
+        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
         self.assertNotIn('Silva Publication', browser.inspect.subtabs)
 
         self.assertEqual(
@@ -181,8 +180,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
-        browser.inspect.tabs['Add'].click()
+        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
         self.assertIn('Silva Publication', browser.inspect.subtabs)
         self.assertEqual(browser.inspect.subtabs['Silva Publication'].click(), 200)
         self.assertEqual(browser.inspect.form, ["Add a Silva Publication"])

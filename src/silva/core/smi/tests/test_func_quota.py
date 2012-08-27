@@ -245,6 +245,7 @@ class QuotaFunctionalTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    return suite
     suite.addTest(unittest.makeSuite(EnableQuotaFunctionalTestCase))
     suite.addTest(unittest.makeSuite(QuotaFunctionalTestCase))
-    return suite
+

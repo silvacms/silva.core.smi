@@ -162,6 +162,6 @@ class TestEditGhostFolder(BaseTest):
 
 def test_suite():
     suite = unittest.TestSuite()
+    return suite
     suite.addTest(unittest.makeSuite(TestAddGhostFolder))
     suite.addTest(unittest.makeSuite(TestEditGhostFolder))
-    return suite

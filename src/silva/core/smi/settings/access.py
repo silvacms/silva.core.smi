@@ -305,7 +305,7 @@ class IAccessMinimumRoleSchema(interface.Interface):
         required=False)
     minimum_role = schema.Choice(
         title=_(u"Minimum role"),
-        description=_(u"Minimum required role needed to access this content"),
+        description=_(u"Minimum required role needed to access this item"),
         source=authenticated_role_vocabulary,
         required=False)
 
@@ -360,13 +360,13 @@ class AccessPermissionForm(silvaforms.SMISubForm):
         if role:
             access.set_minimum_role(role)
             self.send_message(
-                _(u'The minimum required role to access this content '
+                _(u'The minimum required role to access this item '
                   u'has been set to "${role}".',
                   mapping=dict(role=role)),
                 type=u"feedback")
         else:
             access.set_acquired()
             self.send_message(
-                _(u"The minimum required role to access this content is acquired."),
+                _(u"The minimum required role to access this item is acquired."),
                 type=u"feedback")
         return silvaforms.SUCCESS

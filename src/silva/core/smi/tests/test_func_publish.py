@@ -292,10 +292,11 @@ class TestVersionListing(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestDocumentRequestApproval))
-    #suite.addTest(unittest.makeSuite(TestDocumentWithdraw))
-    #suite.addTest(unittest.makeSuite(TestRejectRequest))
-    #suite.addTest(unittest.makeSuite(TestManualClose))
-    #suite.addTest(unittest.makeSuite(TestVersionListing))
     return suite
+    suite.addTest(unittest.makeSuite(TestDocumentRequestApproval))
+    suite.addTest(unittest.makeSuite(TestDocumentWithdraw))
+    suite.addTest(unittest.makeSuite(TestRejectRequest))
+    suite.addTest(unittest.makeSuite(TestManualClose))
+    suite.addTest(unittest.makeSuite(TestVersionListing))
+
 

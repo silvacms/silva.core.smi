@@ -176,7 +176,7 @@ class PublishMenu(PublicationMenuItem):
     grok.order(10)
 
     name = _(u'Publish now')
-    description = _(u'Publish now this content.')
+    description = _(u'Publish now this item.')
     action = 'publish'
     accesskey = u'p'
     icon = 'check'

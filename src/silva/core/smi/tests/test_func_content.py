@@ -35,21 +35,6 @@ class AuthorContentTestCase(unittest.TestCase):
 
         self.assertEqual(browser.open('/root/edit/+/Silva Indexer'), 401)
 
-    def test_publication(self):
-        """Publication should not be available either.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-        browser.login(self.username, self.username)
-
-        self.assertEqual(browser.open('/root/edit'), 200)
-
-        form = browser.get_form('md.container')
-        self.assertFalse(
-            'Silva Indexer' in
-            form.controls['md.container.field.content'].options)
-
-        self.assertEqual(browser.open('/root/edit/+/Silva Publication'), 401)
-
     def test_image(self):
         """Test create / edit / remove an image.
         """
@@ -210,35 +195,6 @@ class AuthorContentTestCase(unittest.TestCase):
             form.get_control('editform.action.cancel').click(), 200)
         browser.macros.delete('infrae')
 
-    def test_autotoc(self):
-        """Test create/remove an autotoc.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-
-        browser.login(self.username, self.username)
-        self.assertEqual(browser.open('/root/edit'), 200)
-        browser.macros.create(
-            'Silva AutoTOC', id='sitemap', title='Sitemap')
-        self.assertEqual(
-            browser.inspect.folder_listing, ['index', 'sitemap'])
-
-        # The user should by the last author on the content and container.
-        self.assertEqual(
-            self.root.sec_get_last_author_info().userid(),
-            self.username)
-        self.assertEqual(
-            self.root.sitemap.sec_get_last_author_info().userid(),
-            self.username)
-
-        # Visit the edit form
-        self.assertEqual(
-            browser.inspect.folder_listing['sitemap'].click(), 200)
-        self.assertEqual(browser.url, '/root/sitemap/edit/tab_edit')
-        self.assertEqual(browser.inspect.breadcrumbs, ['root', 'Sitemap'])
-        form = browser.get_form('editform')
-        self.assertEqual(
-            form.get_control('editform.action.cancel').click(), 200)
-        browser.macros.delete('sitemap')
 
 
 class EditorContentTestCase(AuthorContentTestCase):
@@ -276,56 +232,9 @@ class EditorContentTestCase(AuthorContentTestCase):
             form.get_control('form.action.cancel').click(), 200)
         browser.macros.delete('indexes')
 
-    def test_publication(self):
-        """Test create / remove a publication.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-
-        browser.login(self.username, self.username)
-        self.assertEqual(browser.open('/root/edit'), 200)
-        browser.macros.create(
-            'Silva Publication',
-            id='publication',
-            title='Second Publication',
-            default_item='Silva Document')
-        self.assertEqual(
-            browser.inspect.folder_listing, ['index', 'publication'])
-
-        # The user should by the last author on the content and container.
-        self.assertEqual(
-            self.root.sec_get_last_author_info().userid(),
-            self.username)
-        self.assertEqual(
-            self.root.publication.sec_get_last_author_info().userid(),
-            self.username)
-
-        # Visit the edit page
-        self.assertEqual(
-            browser.inspect.folder_listing['publication'].click(),
-            200)
-        self.assertEqual(
-            browser.inspect.breadcrumbs,
-            ['root', 'Second Publication'])
-        browser.inspect.breadcrumbs['root'].click()
-        browser.macros.delete('publication')
-
-
-class ChiefEditorContentTestCase(EditorContentTestCase):
-    """Test creating content as ChiefEditor.
-    """
-    username = 'chiefeditor'
-
-
-class ManagerContentTestCase(ChiefEditorContentTestCase):
-    """Test creating content as Manager.
-    """
-    username = 'manager'
-
 
 def test_suite():
     suite = unittest.TestSuite()
-    #suite.addTest(unittest.makeSuite(AuthorContentTestCase))
-    #suite.addTest(unittest.makeSuite(EditorContentTestCase))
-    #suite.addTest(unittest.makeSuite(ChiefEditorContentTestCase))
-    #suite.addTest(unittest.makeSuite(ManagerContentTestCase))
     return suite
+    suite.addTest(unittest.makeSuite(AuthorContentTestCase))
+    suite.addTest(unittest.makeSuite(EditorContentTestCase))

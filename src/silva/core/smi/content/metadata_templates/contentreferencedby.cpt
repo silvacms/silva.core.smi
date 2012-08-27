@@ -1,22 +1,22 @@
 <div class="portlet references" i18n:domain="silva">
-  <h4 title="List of contents that refer to this content"
+  <h4 title="List of contents that refer to this item"
       i18n:attributes="title"
       i18n:translate="">
     References
   </h4>
   <p tal:condition="not:viewlet.references"
      i18n:translate="">
-    No content refers to this
+    No item refers to this
     <span i18n:name="content_type" tal:replace="context.meta_type" />.
   </p>
   <tal:references tal:condition="viewlet.references">
-    <p i18n:translate="">This content is referenced by:</p>
+    <p i18n:translate="">This item is referenced by:</p>
     <div class="item"
       tal:repeat="reference viewlet.references">
-      <a title="edit content" rel="content" class="open-screen edit-screen"
+      <a title="edit item" rel="content" class="open-screen edit-screen"
          i18n:attributes="title"
          tal:attributes="href reference.path">
-        <img alt="edit content"
+        <img alt="edit item"
              i18n:attributes="alt"
              tal:attributes="src static['edit.png']()" />
       </a>

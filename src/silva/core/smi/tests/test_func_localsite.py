@@ -107,5 +107,6 @@ class LocalSiteTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(LocalSiteTestCase))
     return suite
+    suite.addTest(unittest.makeSuite(LocalSiteTestCase))
+
