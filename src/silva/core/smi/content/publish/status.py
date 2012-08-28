@@ -25,6 +25,8 @@ from silva.ui.rest import ActionResult
 from silva.ui.rest import PageWithLayoutREST, PageREST
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
+from zeam.form.ztk.fields import SchemaFieldWidget
+from zeam.form.ztk.widgets.textline import TextLineSchemaField
 
 
 version_status_vocabulary = SimpleVocabulary([
@@ -269,6 +271,17 @@ class DeleteVersionAction(silvaforms.Action):
         return silvaforms.SUCCESS
 
 
+class VersioningStateWidget(SchemaFieldWidget):
+    MODE = 'versioning_state'
+    grok.adapts(TextLineSchemaField, Interface, Interface)
+    grok.name(MODE)
+
+    def getVersioningState(self):
+        version = self.form.getContent().context
+        manager = IVersionManager(version)
+        return str(manager.get_status())
+
+
 class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     """ Manage versions.
     """
@@ -286,6 +299,8 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     batchItemFactory = IPublicationStatusInfo
 
     tableFields = silvaforms.Fields(IPublicationStatusInfo)
+    tableFields['id'].mode = 'versioning_state'
+
     tableActions = silvaforms.TableMultiActions(
         DeleteVersionAction(identifier='delete'),
         CopyForEditingAction(identifier='copy'),
@@ -296,3 +311,4 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
         versions = IPublicationWorkflow(self.context).get_versions(False)
         versions.sort(key=lambda v: int(v.getId()), reverse=True)
         return versions
+
