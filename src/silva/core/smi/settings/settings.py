@@ -1,17 +1,23 @@
 # Copyright (c) 2011 Infrae. All rights reserved.
 # See also LICENSE.txt
 
+from AccessControl.security import checkPermission
+
 from five import grok
 from zope.interface import Interface
 from zope import schema
 from zope.traversing.browser import absoluteURL
+from zope.cachedescriptors.property import Lazy
 
-from silva.core import interfaces
+from silva.core.interfaces import IContainer, IPublication, IRoot
+from silva.core.interfaces import ISilvaObject, IGhostFolder
+from silva.core.interfaces.adapters import ISiteManager
 from silva.core.smi.content.metadata import MetadataFormGroup
 from silva.core.smi.settings import Settings
-from silva.translations import translate as _
 from silva.core.views import views as silvaviews
+from silva.translations import translate as _
 from zeam.form import silva as silvaforms
+from zeam.form.silva.interfaces import IRemoverAction
 
 from Products.Silva import mangle
 
@@ -22,12 +28,13 @@ class ConvertToFolderAction(silvaforms.Action):
     accesskey = 'ctrl+f'
 
     def available(self, form):
-        return interfaces.IGhostFolder.providedBy(form.context) or \
-            interfaces.IPublication.providedBy(form.context)
+        return (IGhostFolder.providedBy(form.context) or
+                (IPublication.providedBy(form.context) and
+                 not form.manager.is_site()))
 
     def __call__(self, form):
         form.context.to_folder()
-        form.send_message(_("Changed into folder"), type="feedback")
+        form.send_message(_("Changed into folder."), type="feedback")
         return silvaforms.SUCCESS
 
 
@@ -37,40 +44,89 @@ class ConvertToPublicationAction(silvaforms.Action):
     accesskey = 'ctrl+p'
 
     def available(self, form):
-        return not interfaces.IPublication.providedBy(form.context)
+        return not IPublication.providedBy(form.context)
 
     def __call__(self, form):
         form.context.to_publication()
-        form.send_message(_("Changed into publication"), type="feedback")
+        form.send_message(_("Changed into publication."), type="feedback")
         return silvaforms.SUCCESS
 
 
+class MakeLocalSiteAction(silvaforms.Action):
+    title = _("Make local site")
+
+    def available(self, form):
+        return (IPublication.providedBy(form.context) and
+                not form.manager.is_site())
+
+    def __call__(self, form):
+        try:
+            form.manager.make_site()
+        except ValueError as error:
+            form.send_message(str(error), type=u"error")
+            return silvaforms.FAILURE
+        else:
+            form.send_message(_("Local site activated."), type=u"feedback")
+            return silvaforms.SUCCESS
+
+
+class RemoveLocalSiteAction(silvaforms.Action):
+    grok.implements(IRemoverAction)
+    title = _("Remove local site")
+
+    def available(self, form):
+        return (IPublication.providedBy(form.context) and
+                form.manager.is_site())
+
+    def __call__(self, form):
+        try:
+            form.manager.delete_site()
+        except ValueError as error:
+            form.send_message(str(error), type=u"error")
+            return silvaforms.FAILURE
+        else:
+            form.send_message(_("Local site deactivated."), type=u"feedback")
+            return silvaforms.SUCCESS
+
+
 class ConvertToForm(silvaforms.SMISubForm):
-    grok.context(interfaces.IContainer)
-    # XXX set it for real
+    grok.context(IContainer)
     grok.require('silva.ManageSilvaContent')
     grok.view(Settings)
     grok.order(10)
-    actions = silvaforms.Actions(ConvertToPublicationAction(),
-        ConvertToFolderAction())
+    actions = silvaforms.Actions(
+        ConvertToPublicationAction(),
+        ConvertToFolderAction(),
+        MakeLocalSiteAction(),
+        RemoveLocalSiteAction())
     label = _('Container type')
 
     def available(self):
-        if interfaces.IRoot.providedBy(self.context):
+        if IRoot.providedBy(self.context):
+            return False
+        if not checkPermission('silva.ManageSilvaContent', self.context):
             return False
         return super(ConvertToForm, self).available()
 
-    def update(self):
-        if interfaces.IGhostFolder.providedBy(self.context):
-            self.description = _('This Ghost Folder can be converted'
-                ' to a normal Publication or Folder. All ghosted content'
-                ' will be duplicated and can then be edited.')
-        elif interfaces.IPublication.providedBy(self.context):
-            self.description = _('This Silva Publication can be converted'
-                                 ' to a Silva Folder')
-        else:
-            self.description = _('This Silva Folder can be converted'
-                                 ' to a Publication')
+    @Lazy
+    def manager(self):
+        return ISiteManager(self.context)
+
+    @Lazy
+    def description(self):
+        if IGhostFolder.providedBy(self.context):
+            return _(u'This Ghost Folder can be converted '
+                     u'to a normal Publication or Folder. All ghosted content '
+                     u'will be duplicated and can then be edited.')
+        elif IPublication.providedBy(self.context):
+            if self.manager.is_site():
+                return _(u"This Silva Publication is a local site. You need to "
+                         u"remove any local service, and the local site before "
+                         u"you can convert it to a Silva Folder.")
+            return _(u'This Silva Publication can be converted '
+                     u'to a Silva Folder, or can become a local site.')
+        return _(u'This Silva Folder can be converted '
+                 u'to a Publication.')
 
 
 class IActivateFeedsSchema(Interface):
@@ -81,7 +137,7 @@ class IActivateFeedsSchema(Interface):
 
 
 class FeedsForm(silvaforms.SMISubForm):
-    grok.context(interfaces.IContainer)
+    grok.context(IContainer)
     grok.view(Settings)
     grok.order(30)
     grok.require('silva.ManageSilvaContent')
@@ -93,6 +149,11 @@ class FeedsForm(silvaforms.SMISubForm):
     ignoreRequest = False
 
     label = _('Atom/rss feeds')
+
+    def available(self):
+        if not checkPermission('silva.ManageSilvaContent', self.context):
+            return False
+        return super(FeedsForm, self).available()
 
     @silvaforms.action(_('Change feed settings'),
         identifier='activatefeeds',
@@ -106,9 +167,8 @@ class FeedsForm(silvaforms.SMISubForm):
         return silvaforms.SUCCESS
 
 
-
 class FeedsInformation(silvaviews.Viewlet):
-    grok.context(interfaces.IContainer)
+    grok.context(IContainer)
     grok.order(10)
     grok.view(Settings)
     grok.viewletmanager(silvaforms.SMIFormPortlets)
@@ -128,7 +188,7 @@ def get_used_space(form):
 
 
 class QuotaForm(silvaforms.SMISubForm):
-    grok.context(interfaces.IContainer)
+    grok.context(IContainer)
     grok.view(Settings)
     grok.order(40)
     grok.require('silva.ManageSilvaContentSettings')
@@ -155,7 +215,7 @@ class QuotaForm(silvaforms.SMISubForm):
 
 
 class SettingsMetadataForm(MetadataFormGroup):
-    grok.context(interfaces.ISilvaObject)
+    grok.context(ISilvaObject)
     grok.order(50)
     grok.view(Settings)
     category = 'settings'

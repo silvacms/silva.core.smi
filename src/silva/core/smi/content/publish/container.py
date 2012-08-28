@@ -86,7 +86,7 @@ class ApproveForFuturePopupForm(silvaforms.RESTPopupForm):
     actions = silvaforms.Actions(silvaforms.CancelAction(),
                                  MultiApproveAction(identifier='approve'))
 
-    label = _('Approve content for future')
-    description = _(u'Approve selected content for the future')
+    label = _('Approve item for future')
+    description = _(u'Approve selected item for the future')
     ignoreContent = True
     ignoreRequest = False

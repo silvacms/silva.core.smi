@@ -29,6 +29,7 @@ class AcquisitionMethod(Acquisition.Explicit):
 
 class Settings(silvaforms.SMIComposedForm):
     grok.adapts(Screen, ISilvaObject)
+    grok.require('silva.ChangeSilvaContent')
     grok.name('settings')
 
     label = _('Settings')
@@ -43,6 +44,7 @@ class Settings(silvaforms.SMIComposedForm):
 
 class SettingsMenu(ExpendableMenuItem):
     grok.adapts(ContentMenu, ISilvaObject)
+    grok.require('silva.ChangeSilvaContent')
     grok.order(80)
     name = _('Settings')
     screen = Settings

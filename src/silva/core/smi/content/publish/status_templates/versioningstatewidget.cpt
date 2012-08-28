@@ -1,0 +1,4 @@
+<ins class="state ${widget.getVersioningState()}" />
+<div class="versioning-state-data ${widget.htmlClass()}"
+	 id="${widget.htmlId()}"
+	 tal:content="widget.inputValue()" />

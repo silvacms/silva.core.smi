@@ -5,140 +5,89 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 
 
 class ReaderRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
-    def test_root(self):
+    def test_root_roundtrip(self):
         """A reader can't add anything.
         """
         browser = self.layer.get_web_browser(smi_settings)
         browser.login('reader')
 
         browser.open('/root/edit')
-        self.assertEqual(browser.inspect.content_title, [u"root"])
-        self.assertEqual(browser.inspect.content_tabs, ['Content'])
-        self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.title, u"root")
+        self.assertEqual(browser.inspect.tabs, ['Content'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
 
         # We are on contents
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
 
         # We go through the tabs
-        self.assertEqual(browser.inspect.content_views['preview'].click(), 200)
-        self.assertEqual(browser.inspect.content_activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.content_tabs['content'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
+        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
+        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
 
 
 class AuthorRootTestCase(unittest.TestCase):
     layer = FunctionalLayer
+    user = 'author'
 
-    def test_root(self):
-        """A reader can't add anything.
+    def test_root_roundtrip(self):
+        """Test root as an author.
         """
         browser = self.layer.get_web_browser(smi_settings)
         browser.login('author')
 
-        browser.open('/root/edit')
-        self.assertEqual(browser.inspect.content_title, [u"root"])
-        self.assertEqual(browser.inspect.content_tabs, ['Content', 'Add', 'Properties'])
-        self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.title, u"root")
+        self.assertEqual(
+            browser.inspect.tabs,
+            ['Content', 'Add', 'Properties', 'Settings'])
+        self.assertEqual(
+            browser.inspect.views,
+            ['Preview', 'View'])
 
         # We are on contents
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
 
         # We go through the tabs
-        self.assertEqual(browser.inspect.content_views['preview'].click(), 200)
-        self.assertEqual(browser.inspect.content_activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.content_tabs['content'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
-        self.assertEqual(browser.inspect.content_tabs['properties'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Properties'])
+        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
+        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Settings'])
+        self.assertEqual(browser.inspect.tabs['Properties'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Properties'])
+        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
 
-
-class EditorRootTestCase(unittest.TestCase):
-    layer = FunctionalLayer
-
-    def test_root(self):
-        """An editor can edit stuff.
-        """
+    def test_root_settings(self):
         browser = self.layer.get_web_browser(smi_settings)
-        browser.login('editor')
+        browser.login('author')
 
-        browser.open('/root/edit')
-        self.assertEqual(browser.inspect.content_title, [u"root"])
-        self.assertEqual(browser.inspect.content_tabs, ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.title, u"root")
+        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Settings'])
+        self.assertNotIn({'title': u'Container type'}, browser.inspect.form)
 
-        # We are on contents
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
 
-        # We go through the tabs
-        self.assertEqual(browser.inspect.content_views['preview'].click(), 200)
-        self.assertEqual(browser.inspect.content_activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.content_tabs['content'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
-        self.assertEqual(browser.inspect.content_tabs['properties'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Properties'])
-
-        # XXX Settings.
-        # An editor can change the skin.
-
-class ChiefEditorRootTestCase(unittest.TestCase):
+class EditorRootTestCase(AuthorRootTestCase):
     layer = FunctionalLayer
+    user = 'editor'
 
-    def test_root(self):
-        """A Chief editor can edit and do some configuration.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-        browser.login('chiefeditor')
 
-        browser.open('/root/edit')
-        self.assertEqual(browser.inspect.content_title, [u"root"])
-        self.assertEqual(browser.inspect.content_tabs, ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
-
-        # We are on contents
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
-
-        # We go through the tabs
-        self.assertEqual(browser.inspect.content_views['preview'].click(), 200)
-        self.assertEqual(browser.inspect.content_activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.content_tabs['content'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
-        self.assertEqual(browser.inspect.content_tabs['properties'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Properties'])
-
-        # XXX Settings.
-
-class ManagerRootTestCase(unittest.TestCase):
+class ChiefEditorRootTestCase(EditorRootTestCase):
     layer = FunctionalLayer
+    user = 'chiefeditor'
 
-    def test_root(self):
-        """A Manager have full access.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-        browser.login('chiefeditor')
 
-        browser.open('/root/edit')
-        self.assertEqual(browser.inspect.content_title, [u"root"])
-        self.assertEqual(browser.inspect.content_tabs, ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.content_views, ['Preview', 'View'])
+class ManagerRootTestCase(ChiefEditorRootTestCase):
+    layer = FunctionalLayer
+    manager = 'manager'
 
-        # We are on contents
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
-
-        # We go through the tabs
-        self.assertEqual(browser.inspect.content_views['preview'].click(), 200)
-        self.assertEqual(browser.inspect.content_activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.content_tabs['content'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Content'])
-        self.assertEqual(browser.inspect.content_tabs['properties'].click(), 200)
-        self.assertEqual(browser.inspect.content_activetabs, ['Properties'])
-
-        # XXX Settings.
 
 def test_suite():
     suite = unittest.TestSuite()
@@ -146,4 +95,5 @@ def test_suite():
     suite.addTest(unittest.makeSuite(AuthorRootTestCase))
     suite.addTest(unittest.makeSuite(EditorRootTestCase))
     suite.addTest(unittest.makeSuite(ChiefEditorRootTestCase))
+    suite.addTest(unittest.makeSuite(ManagerRootTestCase))
     return suite

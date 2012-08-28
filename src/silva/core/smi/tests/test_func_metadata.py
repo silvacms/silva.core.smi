@@ -5,7 +5,8 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 
 
 class AuthorMetadataTestCase(unittest.TestCase):
@@ -99,22 +100,7 @@ class AuthorMetadataTestCase(unittest.TestCase):
             'hide')
 
 
-class EditorMetadataTestCase(AuthorMetadataTestCase):
-    username = 'editor'
-
-
-class ChiefEditorMetadataTestCase(EditorMetadataTestCase):
-    username = 'chiefeditor'
-
-
-class ManagerMetadataTestCase(ChiefEditorMetadataTestCase):
-    username = 'manager'
-
-
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AuthorMetadataTestCase))
-    suite.addTest(unittest.makeSuite(EditorMetadataTestCase))
-    suite.addTest(unittest.makeSuite(ChiefEditorMetadataTestCase))
-    suite.addTest(unittest.makeSuite(ManagerMetadataTestCase))
     return suite
+    suite.addTest(unittest.makeSuite(AuthorMetadataTestCase))

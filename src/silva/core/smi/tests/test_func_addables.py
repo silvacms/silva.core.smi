@@ -3,7 +3,8 @@
 # $Id$
 
 import unittest
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 
 
 class ChiefEditorAddablesTestCase(unittest.TestCase):
@@ -24,7 +25,6 @@ class ChiefEditorAddablesTestCase(unittest.TestCase):
 
         browser.open('/root/edit')
         self.assertTrue('settings' in browser.inspect.content_tabs)
-
         self.assertEqual(browser.inspect.content_tabs['settings'].click(), 200)
 
         self.assertTrue('addables' in browser.inspect.content_subtabs)
@@ -131,6 +131,7 @@ class ManagerAddablesTestCase(ChiefEditorAddablesTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    return suite
     suite.addTest(unittest.makeSuite(ChiefEditorAddablesTestCase))
     suite.addTest(unittest.makeSuite(ManagerAddablesTestCase))
-    return suite
+

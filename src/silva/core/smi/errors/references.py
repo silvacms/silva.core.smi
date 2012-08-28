@@ -85,7 +85,8 @@ class BreakReferenceContentForm(UIREST):
                 'content': {
                     'ifaces': ['message'],
                     'title': self.translate(_(u"References broken")),
-                    'message': self.translate(_("References to ${content} (${path}) have been broken.",
-                                                mapping={'content': self.context.get_title_or_id(),
-                                                         'path': self.get_content_path(self.context)}))
+                    'message': self.translate(
+                        _(u"References to ${content} (${path}) have been broken.",
+                          mapping={'content': self.context.get_title_or_id(),
+                                   'path': self.get_content_path(self.context)}))
                     }})

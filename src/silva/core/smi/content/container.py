@@ -137,7 +137,7 @@ class PublicationFolderActionREST(FolderActionREST):
                     result = content
             else:
                 result = VersioningError(
-                    _(u"This action is not applicable on this content."),
+                    _(u"This action is not applicable on this item."),
                     content)
             content = yield result
 
@@ -284,13 +284,13 @@ class OrderREST(UIREST):
                 position)):
             success = True
             self.notify(
-                _(u'Content moved in position ${position}.',
+                _(u'Item moved in position ${position}.',
                   mapping={'position': position + 1}),
                 type='feedback')
         else:
             success = False
             self.notify(
-                _(u'Could not move content in position ${position}.',
+                _(u'Could not move item in position ${position}.',
                   mapping={'position': position + 1}),
                 type='error')
 

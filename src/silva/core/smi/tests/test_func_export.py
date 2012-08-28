@@ -88,5 +88,5 @@ class TestExport(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    #suite.addTest(unittest.makeSuite(TestExport))
     return suite
+    suite.addTest(unittest.makeSuite(TestExport))

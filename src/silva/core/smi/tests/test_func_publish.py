@@ -5,7 +5,8 @@
 from datetime import datetime
 import unittest
 
-from Products.Silva.testing import smi_settings, FunctionalLayer
+from Products.Silva.ftesting import smi_settings
+from Products.Silva.testing import FunctionalLayer
 from silva.core.interfaces import IPublicationWorkflow
 
 
@@ -19,8 +20,6 @@ def publish_settings(browser):
         xpath='//form[@name="form.rejectapprovalrequestform"]')
     browser.inspect.add('manual_close_form',
         xpath='//form[@name="form.manualcloseform"]')
-    #browser.inspect.add('version_checkboxes',
-    #    css='input.form-publicationstatustableform-select', type='node')
     return browser
 
 
@@ -293,10 +292,11 @@ class TestVersionListing(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestDocumentRequestApproval))
-    #suite.addTest(unittest.makeSuite(TestDocumentWithdraw))
-    #suite.addTest(unittest.makeSuite(TestRejectRequest))
-    #suite.addTest(unittest.makeSuite(TestManualClose))
-    #suite.addTest(unittest.makeSuite(TestVersionListing))
     return suite
+    suite.addTest(unittest.makeSuite(TestDocumentRequestApproval))
+    suite.addTest(unittest.makeSuite(TestDocumentWithdraw))
+    suite.addTest(unittest.makeSuite(TestRejectRequest))
+    suite.addTest(unittest.makeSuite(TestManualClose))
+    suite.addTest(unittest.makeSuite(TestVersionListing))
+
 

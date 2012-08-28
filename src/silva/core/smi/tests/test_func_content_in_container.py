@@ -4,7 +4,8 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 from Products.Silva.tests.helpers import test_filename
 from silva.core.references.reference import get_content_id
 
@@ -450,14 +451,11 @@ class ContentInFolderTestCase(unittest.TestCase):
         browser.macros.delete('container')
 
 
-class ContentInPublicationTestCase(ContentInFolderTestCase):
-    """For each role make each content in a folder.
-    """
-    container = 'Silva Publication'
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    #suite.addTest(unittest.makeSuite(ContentInFolderTestCase))
-    #suite.addTest(unittest.makeSuite(ContentInPublicationTestCase))
     return suite
+    suite.addTest(unittest.makeSuite(ContentInFolderTestCase))
+
+

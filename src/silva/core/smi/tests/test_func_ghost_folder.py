@@ -5,7 +5,8 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer, smi_settings
+from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import smi_settings
 from silva.core.references.reference import get_content_id
 
 
@@ -161,6 +162,6 @@ class TestEditGhostFolder(BaseTest):
 
 def test_suite():
     suite = unittest.TestSuite()
+    return suite
     suite.addTest(unittest.makeSuite(TestAddGhostFolder))
     suite.addTest(unittest.makeSuite(TestEditGhostFolder))
-    return suite
