@@ -392,3 +392,19 @@ class ManualCloseForm(silvaforms.SMISubForm):
         return silvaforms.SUCCESS
 
 
+class PublishLastClosedForm(silvaforms.SMISubForm):
+    """ Publish the last closed version.
+    """
+    grok.context(IVersionedObject)
+    grok.view(Publish)
+    grok.order(41)
+
+    actions = silvaforms.Actions(PublishAction(identifier="publish-now"))
+
+    label = _(u"Publish closed version")
+    description = _(u"Make the last closed version public.")
+
+    def available(self):
+        return checkPermission('silva.ApproveSilvaContent', self.context) and \
+            self.context.get_last_closed_version() is not None and \
+            self.context.get_public_version() is None
