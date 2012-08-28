@@ -299,7 +299,7 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
     batchItemFactory = IPublicationStatusInfo
 
     tableFields = silvaforms.Fields(IPublicationStatusInfo)
-    tableFields['id'].mode = 'versioning_state'
+    tableFields['id'].mode = VersioningStateWidget.MODE
 
     tableActions = silvaforms.TableMultiActions(
         DeleteVersionAction(identifier='delete'),
