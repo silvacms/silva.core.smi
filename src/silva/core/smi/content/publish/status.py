@@ -27,6 +27,7 @@ from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
 from zeam.form.ztk.fields import SchemaFieldWidget
 from zeam.form.ztk.widgets.textline import TextLineSchemaField
+from zope.cachedescriptors.property import CachedProperty
 
 
 version_status_vocabulary = SimpleVocabulary([
@@ -276,10 +277,21 @@ class VersioningStateWidget(SchemaFieldWidget):
     grok.adapts(TextLineSchemaField, Interface, Interface)
     grok.name(MODE)
 
-    def getVersioningState(self):
+    @CachedProperty
+    def versioning_state(self):
         version = self.form.getContent().context
         manager = IVersionManager(version)
         return str(manager.get_status())
+
+    @CachedProperty
+    def link_attributes(self):
+        version = self.form.getContent().context
+        content = version.get_silva_object()
+        return {
+            'href': self.form.parent.getComposedForm().get_content_path(content),
+            'rel': 'publish/view/' + version.id,
+            'class': 'open-screen'
+        }
 
 
 class PublicationStatusTableForm(silvaforms.SMISubTableForm):

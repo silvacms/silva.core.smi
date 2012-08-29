@@ -1,6 +1,9 @@
-<div class="versioning-state-cell">
-	<ins class="state ${widget.getVersioningState()}" />
-	<div class="versioning-state-value ${widget.htmlClass()}"
-		 id="${widget.htmlId()}"
-	 	 tal:content="widget.inputValue()" />
+<div class="versioning-state-cell ${widget.htmlClass()}"
+	 id="${widget.htmlId()}">
+	<a href="${widget.link_attributes['href']}"
+	   class="${widget.link_attributes['class']}"
+	   rel="${widget.link_attributes['rel']}">
+		<ins class="state ${widget.versioning_state}" />
+		<div tal:replace="widget.inputValue()" />
+	</a>
 </div>
