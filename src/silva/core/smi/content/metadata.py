@@ -17,7 +17,7 @@ from silva.ui.menu import ContentMenu, MenuItem
 from silva.ui.rest import Screen
 from zeam.form import silva as silvaforms
 
-from Products.Silva.adapters.security import is_role_greater_or_equal
+from Products.Silva.Security.management import is_role_greater_or_equal
 from Products.SilvaMetadata.interfaces import IMetadataService
 
 
