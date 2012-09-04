@@ -319,6 +319,9 @@ class PublicationStatusTableForm(silvaforms.SMISubTableForm):
         ViewVersionAction(identifier='view'),
         CompareVersionAction(identifier='compare'))
 
+    def getItemIdentifier(self, item, position):
+        return str(item.id)
+
     def getItems(self):
         versions = IPublicationWorkflow(self.context).get_versions(False)
         versions.sort(key=lambda v: int(v.getId()), reverse=True)
