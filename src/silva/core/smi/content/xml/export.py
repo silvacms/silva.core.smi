@@ -56,7 +56,7 @@ class ExportAction(silvaforms.LinkAction):
         if errors:
             raise BadRequest('invalid export parameters')
 
-        options = {}
+        options = {'request': form.request}
         for key in data:
             options[key] = data.getWithDefault(key)
 
