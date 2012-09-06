@@ -11,7 +11,7 @@
 
   <tal:change tal:condition="viewlet.may_change">
 
-    <tal:pending>
+    <tal:pending tal:condition="False">
       <h4 i18n:translate="">
         Item is pending
       </h4>
