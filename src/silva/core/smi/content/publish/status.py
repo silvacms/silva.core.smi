@@ -16,7 +16,7 @@ from Products.Silva.Versioning import VersioningError
 from silva.core.interfaces import IVersion, IVersionManager
 from silva.core.interfaces import IVersionedObject
 from silva.core.interfaces import IPublicationWorkflow
-from silva.core.views.interfaces import ISilvaURL
+from silva.ui.interfaces import IJSView
 from silva.core.smi.content.publish import Publish
 from silva.core.smi.content import ICompareResources
 from silva.translations import translate as _
@@ -167,8 +167,9 @@ class ViewVersion(PageREST):
 
     def payload(self):
         assert self.version is not None
-        url = getMultiAdapter((self.version, self.request), ISilvaURL).preview()
-        return {'ifaces': ['preview'], 'html_url': url}
+        view = getMultiAdapter(
+            (self.version, self.request), IJSView, name='content-preview')
+        return view(self)
 
 
 class CompareVersionAction(silvaforms.Action):

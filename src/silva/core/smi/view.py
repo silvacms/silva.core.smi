@@ -4,10 +4,12 @@
 # $Id$
 
 from five import grok
-from zope.traversing.browser import absoluteURL
+from zope.component import getMultiAdapter, getUtility
 
 from silva.core.interfaces import IViewableObject
+from silva.core.views.interfaces import ISilvaURL
 from silva.translations import translate as _
+from silva.ui.interfaces import IUIService
 from silva.ui.menu import LinkMenuItem, ViewMenu
 
 
@@ -19,4 +21,8 @@ class DisplayMenu(LinkMenuItem):
     accesskey = u';'
 
     def get_url(self, context, request):
-        return absoluteURL(context, request)
+        service = getUtility(IUIService)
+        url = getMultiAdapter(
+            (context, request),
+            ISilvaURL).url(host=service.public_url or None)
+        return url
