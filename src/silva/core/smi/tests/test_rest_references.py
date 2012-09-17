@@ -1,7 +1,8 @@
 
 import unittest
 from zope.component import getUtility
-from Products.Silva.testing import FunctionalLayer
+from Products.Silva.ftesting import rest_settings
+from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from silva.core.references.interfaces import IReferenceService
 from silva.core.references.reference import BrokenReferenceError
 from silva.core.references.reference import get_content_id
@@ -13,12 +14,13 @@ class BreakReferenceTestCase(unittest.TestCase):
 
     def setUp(self):
         self.root = self.layer.get_application()
-        factory = self.root.manage_addProduct['Silva']
-        factory.manage_addFile('file', 'File')
-        factory.manage_addLink('data', 'Link to File', target=self.root.file)
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFile('file', 'File')
+            factory.manage_addLink('data', 'Link to File', target=self.root.file)
 
     def test_delete_referenced_content(self):
-        with self.layer.get_browser() as browser:
+        with self.layer.get_browser(rest_settings) as browser:
             browser.options.handle_errors = False
             browser.login(self.user)
             with self.assertRaises(BrokenReferenceError):
@@ -32,9 +34,8 @@ class BreakReferenceTestCase(unittest.TestCase):
 
         self.assertNotEqual(list(get_references_to(self.root.file)), [])
         self.assertIsNot(self.root._getOb('file'), None)
-        with self.layer.get_browser() as browser:
+        with self.layer.get_browser(rest_settings) as browser:
             browser.login(self.user)
-            browser.set_request_header('X-Requested-With', 'XMLHttpRequest')
             self.assertEqual(
                 browser.open(
                     '/root/++rest++silva.ui.listing.delete',
@@ -65,9 +66,8 @@ class ManagerBreakReferenceTestCase(BreakReferenceTestCase):
 
         self.assertNotEqual(list(get_references_to(self.root.file)), [])
         self.assertIsNot(self.root._getOb('file'), None)
-        with self.layer.get_browser() as browser:
+        with self.layer.get_browser(rest_settings) as browser:
             browser.login(self.user)
-            browser.set_request_header('X-Requested-With', 'XMLHttpRequest')
             self.assertEqual(
                 browser.open(
                     '/root/++rest++silva.ui.listing.delete',
