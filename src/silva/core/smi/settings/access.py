@@ -216,6 +216,8 @@ class RevokeAccessAction(silvaforms.Action):
 class IUserAuthorization(interface.Interface):
 
     identifier = schema.TextLine(
+        title=_(u"Identifier"))
+    name = schema.TextLine(
         title=_(u"Username"))
     acquired_role = schema.Choice(
         title=_(u"Role defined above"),
@@ -225,6 +227,12 @@ class IUserAuthorization(interface.Interface):
         title=_(u"Role defined here"),
         source=role_vocabulary,
         required=False)
+
+
+def show_username(form):
+    if not hasattr(form, 'show_username'):
+        form = form.parent
+    return form.show_username
 
 
 class UserAccessForm(silvaforms.SMISubTableForm):
@@ -246,9 +254,18 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     fields['role'].available = lambda form: len(form.lines) != 0
     tableFields = silvaforms.Fields(IUserAuthorization)
     tableFields['identifier'].mode = 'silva.icon'
+    tableFields['identifier'].available = lambda form: not show_username(form)
+    tableFields['name'].available = show_username
     tableActions = silvaforms.TableActions(
         GrantAccessAction(),
         RevokeAccessAction())
+
+    show_username = False
+
+    def update(self):
+        service = component.getUtility(IMemberService)
+        if service.get_display_usernames():
+            self.show_username = True
 
     def getItems(self):
         access = IAuthorizationManager(self.context)
