@@ -63,7 +63,7 @@ class PasteActionREST(FolderActionREST):
         with manager.copier() as copier:
             with self.notifier(
                 copier,
-                u"Pasted as a copy ${contents}",
+                u"Pasted as a copy ${contents}.",
                 u"Could not copy ${contents}: ${reason}") as notifier:
                 notifier.map(self.get_selected_contents('copied'))
 
