@@ -1,4 +1,5 @@
-# Copyright (c) 2011 Infrae. All rights reserved.
+# -*- coding: utf-8 -*-
+# Copyright (c) 2011-2012 Infrae. All rights reserved.
 # See also LICENSE.txt
 
 import bisect
@@ -10,6 +11,7 @@ from zope.cachedescriptors.property import CachedProperty
 from silva.core.interfaces import IIconResolver, IAuthorizationManager
 from silva.core.interfaces import ISilvaObject, IVersion, IVersionedObject
 from silva.core.references.interfaces import IReferenceService
+from silva.core.services.interfaces import IMetadataService
 from silva.core.views import views as silvaviews
 from silva.core.views.interfaces import IContentURL
 from silva.translations import translate as _
@@ -18,7 +20,6 @@ from silva.ui.rest import Screen
 from zeam.form import silva as silvaforms
 
 from Products.Silva.Security.management import is_role_greater_or_equal
-from Products.SilvaMetadata.interfaces import IMetadataService
 
 
 class Properties(silvaforms.SMIComposedForm):

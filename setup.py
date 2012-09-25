@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2002-2011 Infrae. All rights reserved.
+# Copyright (c) 2002-2012 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Id$
 
 from setuptools import setup, find_packages
 import os
 
-version = '3.0dev'
+version = '3.0c1'
 
 tests_require = [
-    'BeautifulSoup',
     'Products.Silva [test]',
     ]
 
@@ -35,7 +33,7 @@ setup(name='silva.core.smi',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        'Zope2',
+        'AccessControl',
         'five.grok',
         'infrae.comethods',
         'lxml',
@@ -62,6 +60,7 @@ setup(name='silva.core.smi',
         'zope.intid',
         'zope.schema',
         'zope.traversing',
+        'zope.publisher',
         ],
       tests_require=tests_require,
       extras_require={'test': tests_require},

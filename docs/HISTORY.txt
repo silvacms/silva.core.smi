@@ -1,10 +1,18 @@
 Changelog
 =========
 
-3.0 (unreleased)
-----------------
+3.0c1 (2012/09/25)
+------------------
 
-* ...
+* Update API to Silva 3.0c1.
+
+* Support ``VersionedNonPublishable`` object type.
+
+* Review the settings, access and publishable screen.
+
+* Fix various bugs.
+
+* Improve tests.
 
 3.0b1 (2011/11/10)
 ------------------
