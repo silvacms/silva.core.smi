@@ -25,8 +25,8 @@ from silva.ui.rest import ActionResult
 from silva.ui.rest import PageWithLayoutREST, PageREST
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
-from zeam.form.ztk.fields import SchemaFieldWidget
-from zeam.form.ztk.widgets.textline import TextLineSchemaField
+from zeam.form.base.widgets import FieldWidget
+from zeam.form.ztk.widgets.textline import TextLineField
 from zope.cachedescriptors.property import CachedProperty
 
 
@@ -273,9 +273,9 @@ class DeleteVersionAction(silvaforms.Action):
         return silvaforms.SUCCESS
 
 
-class VersioningStateWidget(SchemaFieldWidget):
+class VersioningStateWidget(FieldWidget):
     MODE = 'versioning_state'
-    grok.adapts(TextLineSchemaField, Interface, Interface)
+    grok.adapts(TextLineField, Interface, Interface)
     grok.name(MODE)
 
     @CachedProperty
