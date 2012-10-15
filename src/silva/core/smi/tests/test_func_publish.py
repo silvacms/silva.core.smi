@@ -6,21 +6,8 @@ from datetime import datetime
 import unittest
 
 from Products.Silva.ftesting import smi_settings
-from Products.Silva.testing import FunctionalLayer
+from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from silva.core.interfaces import IPublicationWorkflow
-
-
-def publish_settings(browser):
-    smi_settings(browser)
-    browser.inspect.add('request_approval_form',
-        xpath='//form[@name="form.requestapprovalform"]')
-    browser.inspect.add('withdrawal_form',
-        xpath='//form[@name="form.withdrawapprovalrequestform"]')
-    browser.inspect.add('rejection_form',
-        xpath='//form[@name="form.rejectapprovalrequestform"]')
-    browser.inspect.add('manual_close_form',
-        xpath='//form[@name="form.manualcloseform"]')
-    return browser
 
 
 class TestDocumentRequestApproval(unittest.TestCase):
@@ -28,34 +15,59 @@ class TestDocumentRequestApproval(unittest.TestCase):
 
     def setUp(self):
         self.root = self.layer.get_application()
-        factory = self.root.manage_addProduct['Silva']
-        factory.manage_addMockupVersionedContent('document', 'Document')
+        self.layer.login('editor')
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addMockupVersionedContent('document', 'Document')
 
-    def test_editor_should_not_see_request_approval_form(self):
-        browser = self.layer.get_web_browser(publish_settings)
+    def test_editor_available_default_forms(self):
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('editor')
-        browser.open('/root/document/edit')
 
-        self.assertTrue('publish' in browser.inspect.content_tabs)
-        browser.inspect.content_tabs['publish'].click()
-        self.assertFalse(browser.inspect.request_approval_form)
+        # Select document
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': u'Document',
+              'identifier': 'document',
+              'author': 'editor'}])
+        self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
-    def test_author_should_see_request_approval_form(self):
-        browser = self.layer.get_web_browser(publish_settings)
+        # Access publish tab
+        self.assertTrue('publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+
+        # An editor should not sheee the request approval form
+        self.assertEqual(
+            browser.inspect.form,
+            [u'Publish new version', u'Manage versions'])
+
+    def test_author_request_approval_form(self):
+        browser = self.layer.get_web_browser(smi_settings)
         browser.login('author')
-        browser.open('/root/document/edit')
 
-        self.assertTrue('publish' in browser.inspect.content_tabs)
-        browser.inspect.content_tabs['publish'].click()
-        self.assertFalse(browser.inspect.request_approval_form)
+        # Select document
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': u'Document',
+              'identifier': 'document',
+              'author': 'editor'}])
+        self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
-    def test_request_approval_submit(self):
-        browser = self.layer.get_web_browser(publish_settings)
-        browser.login('author')
-        browser.open('/root/document/edit')
+        # Access publish tab
+        self.assertTrue('publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
 
-        self.assertTrue('publish' in browser.inspect.content_tabs)
-        browser.inspect.content_tabs['publish'].click()
+        # An author should not see Publish new version form, but he
+        # should see Request approval new version.
+        self.assertEqual(
+            browser.inspect.form,
+            [u'Request approval for new version', u'Manage versions'])
+
+        form = browser.inspect.form[u'Request approval for new version']
+        self.assertEqual(
+            form.form.inspect.fields,
+            [])
+
         self.assertFalse(browser.inspect.request_approval_form)
         form = browser.get_form('form.requestapprovalform')
         browser.macros.set_datetime(
@@ -68,15 +80,6 @@ class TestDocumentRequestApproval(unittest.TestCase):
         self.assertEquals(['Approval requested.'],
             browser.inspect.feedback)
 
-    def test_withdrawal_form_should_not_show(self):
-        browser = self.layer.get_web_browser(publish_settings)
-        browser.login('author')
-        browser.open('/root/document/edit')
-
-        self.assertTrue('publish' in browser.inspect.content_tabs)
-        browser.inspect.content_tabs['publish'].click()
-        self.assertFalse(browser.inspect.withdrawal_form)
-
 
 class TestDocumentPendingApproval(unittest.TestCase):
     layer = FunctionalLayer
@@ -87,7 +90,7 @@ class TestDocumentPendingApproval(unittest.TestCase):
         factory.manage_addDocument('document', 'Document')
 
     def test_pending(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('author')
         self.assertEquals(200,
             browser.open('http://localhost/root/document/edit/tab_status'))
@@ -105,21 +108,21 @@ class TestDocumentPendingApproval(unittest.TestCase):
 class TestDocumentWithdraw(TestDocumentPendingApproval):
 
     def test_editor_should_not_see_withdraw_form(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         self.assertEquals(200,
             browser.open('http://localhost/root/document/edit/tab_status'))
         self.assertFalse(browser.inspect.withdrawal_form)
 
     def test_author_should_see_withdraw_form(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('author')
         self.assertEquals(200,
             browser.open('http://localhost/root/document/edit/tab_status'))
         self.assertTrue(browser.inspect.withdrawal_form)
 
     def test_withdrawal_form_submit(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('author')
         self.assertEquals(200,
             browser.open('http://localhost/root/document/edit/tab_status'))
@@ -138,21 +141,21 @@ class TestRejectRequest(TestDocumentPendingApproval):
     layer = FunctionalLayer
 
     def test_author_should_not_see_rejection_form(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('author')
         self.assertEquals(200,
             browser.open('http://localhost/root/document/edit/tab_status'))
         self.assertFalse(browser.inspect.rejection_form)
 
     def test_editor_should_see_rejection_form(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         self.assertEquals(200,
             browser.open('http://localhost/root/document/edit/tab_status'))
         self.assertTrue(browser.inspect.rejection_form)
 
     def test_reject_form_submit(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         self.assertEquals(200,
             browser.open('http://localhost/root/document/edit/tab_status'))
@@ -179,7 +182,7 @@ class TestManualClose(unittest.TestCase):
         factory.manage_addDocument('document', 'Document')
 
     def test_no_public_version(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         status = browser.open('http://localhost/root/document/edit/tab_status')
         self.assertEquals(200, status)
@@ -187,7 +190,7 @@ class TestManualClose(unittest.TestCase):
 
     def test_close_public_version(self):
         IPublicationWorkflow(self.root.document).approve()
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         status = browser.open('http://localhost/root/document/edit/tab_status')
         self.assertEquals(200, status)
@@ -200,7 +203,7 @@ class TestManualClose(unittest.TestCase):
 
     def test_author_does_not_see_form(self):
         IPublicationWorkflow(self.root.document).approve()
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('author')
         status = browser.open('http://localhost/root/document/edit/tab_status')
         self.assertEquals(200, status)
@@ -216,7 +219,7 @@ class TestVersionListing(unittest.TestCase):
         factory.manage_addDocument('document', 'Document')
 
     def test_simple_copy_for_editing(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         status = browser.open('http://localhost/root/document/edit/tab_status')
         self.assertEquals(200, status)
@@ -232,7 +235,7 @@ class TestVersionListing(unittest.TestCase):
         self.assertEquals(1, int(self.root.document.get_editable().id))
 
     def test_delete_fail_if_alone(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         status = browser.open('http://localhost/root/document/edit/tab_status')
         self.assertEquals(200, status)
@@ -247,7 +250,7 @@ class TestVersionListing(unittest.TestCase):
             browser.inspect.feedback)
 
     def test_delete_succeed_if_not_alone(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         status = browser.open('http://localhost/root/document/edit/tab_status')
         self.assertEquals(200, status)
@@ -268,7 +271,7 @@ class TestVersionListing(unittest.TestCase):
             browser.inspect.feedback)
 
     def test_cannot_delete_publish_version(self):
-        browser = self.layer.get_browser(publish_settings)
+        browser = self.layer.get_browser(smi_settings)
         browser.login('editor')
         status = browser.open('http://localhost/root/document/edit/tab_status')
         self.assertEquals(200, status)
@@ -292,8 +295,8 @@ class TestVersionListing(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    return suite
     suite.addTest(unittest.makeSuite(TestDocumentRequestApproval))
+    return suite
     suite.addTest(unittest.makeSuite(TestDocumentWithdraw))
     suite.addTest(unittest.makeSuite(TestRejectRequest))
     suite.addTest(unittest.makeSuite(TestManualClose))

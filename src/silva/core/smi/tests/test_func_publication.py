@@ -294,6 +294,51 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(convert.form.inspect.fields, [])
         self.assertNotIn('Convert to folder', convert.actions)
 
+    def test_publication_local_site(self):
+        """Test activating a local site on a publication.
+        """
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addPublication('publication', 'Data')
+
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': 'Data', 'identifier': 'publication'}])
+        self.assertEqual(
+            browser.inspect.listing[0].goto.click(),
+            200)
+        self.assertEqual(browser.inspect.title, u'Data')
+        self.assertIn('Settings', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertIn({'title': u'Container type'}, browser.inspect.form)
+
+        # You can activate the local site.
+        convert = browser.inspect.form['Container type']
+        self.assertEqual(convert.title, 'Container type')
+        self.assertEqual(convert.form.inspect.fields, [])
+        self.assertEqual(convert.actions, ['Convert to folder', 'Make local site'])
+        self.assertEqual(convert.actions['Make local site'].click(), 200)
+        browser.macros.assertFeedback("Local site activated.")
+
+        # After you activated the site, you can only deactivate it.
+        self.assertIn({'title': u'Container type'}, browser.inspect.form)
+        convert = browser.inspect.form['Container type']
+        self.assertEqual(convert.title, 'Container type')
+        self.assertEqual(convert.form.inspect.fields, [])
+        self.assertEqual(convert.actions, ['Remove local site'])
+        self.assertEqual(convert.actions['Remove local site'].click(), 200)
+        browser.macros.assertFeedback("Local site deactivated.")
+
+        # Once deactivated, you can reactivate it.
+        self.assertIn({'title': u'Container type'}, browser.inspect.form)
+        convert = browser.inspect.form['Container type']
+        self.assertEqual(convert.title, 'Container type')
+        self.assertEqual(convert.form.inspect.fields, [])
+        self.assertEqual(convert.actions, ['Convert to folder', 'Make local site'])
+
+
 
 class ChiefEditorPublicationTestCase(EditorPublicationTestCase):
     user = 'chiefeditor'

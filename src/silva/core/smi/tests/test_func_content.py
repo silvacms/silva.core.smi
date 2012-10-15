@@ -20,21 +20,6 @@ class AuthorContentTestCase(unittest.TestCase):
         self.root = self.layer.get_application()
         self.layer.login('manager')
 
-    def test_indexer(self):
-        """Indexer should not be available.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-        browser.login(self.username, self.username)
-
-        self.assertEqual(browser.open('/root/edit'), 200)
-
-        form = browser.get_form('md.container')
-        self.assertFalse(
-            'Silva Indexer' in
-            form.controls['md.container.field.content'].options)
-
-        self.assertEqual(browser.open('/root/edit/+/Silva Indexer'), 401)
-
     def test_image(self):
         """Test create / edit / remove an image.
         """
@@ -196,45 +181,8 @@ class AuthorContentTestCase(unittest.TestCase):
         browser.macros.delete('infrae')
 
 
-
-class EditorContentTestCase(AuthorContentTestCase):
-    """Test creating content as Editor.
-    """
-    username = 'editor'
-
-    def test_indexer(self):
-        """Test create/remove an indexer.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-
-        browser.login(self.username, self.username)
-        self.assertEqual(browser.open('/root/edit'), 200)
-        browser.macros.create(
-            'Silva Indexer', id='indexes', title='Indexes')
-        self.assertEqual(
-            browser.inspect.folder_listing, ['index', 'indexes'])
-
-        # The user should by the last author on the content and container.
-        self.assertEqual(
-            self.root.sec_get_last_author_info().userid(),
-            self.username)
-        self.assertEqual(
-            self.root.indexes.sec_get_last_author_info().userid(),
-            self.username)
-
-        # Visit the edit form
-        self.assertEqual(
-            browser.inspect.folder_listing['indexes'].click(), 200)
-        self.assertEqual(browser.url, '/root/indexes/edit/tab_edit')
-        self.assertEqual(browser.inspect.breadcrumbs, ['root', 'Indexes'])
-        form = browser.get_form('form')
-        self.assertEqual(
-            form.get_control('form.action.cancel').click(), 200)
-        browser.macros.delete('indexes')
-
-
 def test_suite():
     suite = unittest.TestSuite()
     return suite
     suite.addTest(unittest.makeSuite(AuthorContentTestCase))
-    suite.addTest(unittest.makeSuite(EditorContentTestCase))
+

@@ -320,49 +320,6 @@ class ContentInFolderTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.breadcrumbs['root'].click(), 200)
         browser.macros.delete('container')
 
-    def test_indexer(self):
-        browser = self.layer.get_web_browser(smi_settings)
-        browser.login('manager', 'manager')
-
-        self.assertEqual(browser.open('/root/edit'), 200)
-        browser.macros.create(
-            self.container,
-            id='container', title='First Container', default_item='Silva Document')
-
-        self.assertEqual(
-            browser.inspect.navigation['First Container'].click(), 200)
-
-        for user in ['manager', 'chiefeditor', 'editor']:
-            browser.login(user, user)
-            browser.macros.create(
-                'Silva Indexer', id='indexes', title='Indexes')
-            self.assertEqual(
-                browser.inspect.folder_listing, ['index', 'indexes'])
-
-            # The user should by the last author on the content and container.
-            content = self.root.container
-            self.assertEqual(content.sec_get_last_author_info().userid(), user)
-            content = self.root.container.indexes
-            self.assertEqual(content.sec_get_last_author_info().userid(), user)
-
-            # Visit the edit form
-            self.assertEqual(
-                browser.inspect.folder_listing['indexes'].click(), 200)
-            self.assertEqual(
-                browser.url, '/root/container/indexes/edit/tab_edit')
-            self.assertEqual(
-                browser.inspect.breadcrumbs,
-                ['root', 'First Container', 'Indexes'])
-            form = browser.get_form('form')
-            self.assertEqual(
-                form.get_control('form.action.cancel').click(), 200)
-
-            browser.macros.delete('indexes')
-
-        browser.login('manager', 'manager')
-        self.assertEqual(browser.inspect.breadcrumbs['root'].click(), 200)
-        browser.macros.delete('container')
-
     def test_link(self):
         browser = self.layer.get_web_browser(smi_settings)
         browser.login('manager', 'manager')
@@ -406,50 +363,6 @@ class ContentInFolderTestCase(unittest.TestCase):
         browser.login('manager', 'manager')
         self.assertEqual(browser.inspect.breadcrumbs['root'].click(), 200)
         browser.macros.delete('container')
-
-    def test_autotoc(self):
-        browser = self.layer.get_web_browser(smi_settings)
-        browser.login('manager', 'manager')
-
-        self.assertEqual(browser.open('/root/edit'), 200)
-        browser.macros.create(
-            self.container,
-            id='container', title='First Container', default_item='Silva Document')
-
-        self.assertEqual(
-            browser.inspect.navigation['First Container'].click(), 200)
-
-        for user in ['manager', 'chiefeditor', 'editor', 'author']:
-            browser.login(user, user)
-            browser.macros.create(
-                'Silva AutoTOC', id='sitemap', title='Sitemap')
-            self.assertEqual(
-                browser.inspect.folder_listing, ['index', 'sitemap'])
-
-            # The user should by the last author on the content and container.
-            content = self.root.container
-            self.assertEqual(content.sec_get_last_author_info().userid(), user)
-            content = self.root.container.sitemap
-            self.assertEqual(content.sec_get_last_author_info().userid(), user)
-
-            # Visit the edit form
-            self.assertEqual(
-                browser.inspect.folder_listing['sitemap'].click(), 200)
-            self.assertEqual(
-                browser.url, '/root/container/sitemap/edit/tab_edit')
-            self.assertEqual(
-                browser.inspect.breadcrumbs,
-                ['root', 'First Container', 'Sitemap'])
-            form = browser.get_form('editform')
-            self.assertEqual(
-                form.get_control('editform.action.cancel').click(), 200)
-
-            browser.macros.delete('sitemap')
-
-        browser.login('manager', 'manager')
-        self.assertEqual(browser.inspect.breadcrumbs['root'].click(), 200)
-        browser.macros.delete('container')
-
 
 
 

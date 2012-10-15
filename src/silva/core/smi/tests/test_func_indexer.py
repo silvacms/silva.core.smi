@@ -65,7 +65,7 @@ class AuthorIndexerTestCase(unittest.TestCase):
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addIndexer('indexer', 'Indexer')
 
-    def test_indexer_roundtrip(self):
+    def test_indexer_update(self):
         """An author cannot an an indexer, but can update it.
         """
         browser = self.layer.get_web_browser(smi_settings)
@@ -100,8 +100,129 @@ class AuthorIndexerTestCase(unittest.TestCase):
             ['Edit'])
 
 
+class EditorIndexerTestCase(unittest.TestCase):
+    layer = FunctionalLayer
+    user = 'editor'
+
+    def setUp(self):
+        self.root = self.layer.get_application()
+
+    def test_indexer_roundtrip(self):
+        """An editor can an an indexer, and update it.
+        """
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
+
+        self.assertEqual(browser.inspect.title, u"root")
+        self.assertEqual(
+            browser.inspect.tabs,
+            ['Content', 'Add', 'Properties', 'Settings'])
+        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
+        self.assertIn('Silva Indexer', browser.inspect.subtabs)
+        self.assertEqual(browser.inspect.subtabs['Silva Indexer'].click(), 200)
+        self.assertEqual(browser.inspect.form, ["Add a Silva Indexer"])
+
+        # Add an indexer
+        add_form = browser.inspect.form['Add a Silva Indexer']
+        add_form.form.inspect.fields['id'].value = 'indexer'
+        add_form.form.inspect.fields['title'].value = u'Indexer'
+        self.assertEqual(add_form.actions, ['Cancel', 'Save'])
+        self.assertEqual(add_form.actions['Save'].click(), 200)
+        browser.macros.assertFeedback(u"Added Silva Indexer.")
+
+        # Inspect new created content
+        self.assertEqual(browser.inspect.title, u'Indexer')
+        self.assertEqual(
+            browser.inspect.tabs,
+            ['Edit', 'Properties', 'Settings'])
+        self.assertEqual(
+            browser.inspect.views,
+            ['Preview', 'View'])
+        # We are on contents
+        self.assertEqual(
+            browser.inspect.activetabs,
+            ['Edit'])
+
+        # Check the edit form. There is only an update button.
+        self.assertEqual(browser.inspect.form, ['Update Silva Indexer'])
+        edit_form = browser.inspect.form['Update Silva Indexer']
+        self.assertEqual(edit_form.form.inspect.fields, [])
+        self.assertEqual(edit_form.actions, ['Back', 'Update index'])
+        self.assertEqual(edit_form.actions['Update index'].click(), 200)
+        browser.macros.assertFeedback(
+            u'Index content have been successfully updated.')
+
+        # We go through the tabs.
+        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
+        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Settings'])
+        self.assertEqual(browser.inspect.tabs['Properties'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Properties'])
+        self.assertEqual(browser.inspect.tabs['Edit'].click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Edit'])
+
+        # Go up a level.
+        self.assertEqual(browser.inspect.parent.click(), 200)
+        self.assertEqual(browser.inspect.title, u"root")
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
+
+        # We should see our auto toc
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': u'Indexer',
+              'identifier': 'indexer',
+              'author': self.user}])
+        # Select it
+        self.assertEqual(
+            browser.inspect.listing[0].identifier.click(),
+            200)
+        self.assertEqual(
+            browser.inspect.actions,
+            ['Cut', 'Copy', 'Delete', 'Rename'])
+        self.assertEqual(
+            browser.inspect.listing[0].goto_dropdown.click(),
+            200)
+        self.assertEqual(
+            browser.inspect.listing[0].goto_actions,
+            ['Preview', 'Properties'])
+
+        # Delete the indexer
+        self.assertEqual(
+            browser.inspect.actions['Delete'].click(),
+            200)
+        # Content is not deleted, you have to confirm the deletion first.
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': u'Indexer', 'identifier': 'indexer'}])
+        self.assertEqual(
+            browser.inspect.dialog,
+            [{'title': 'Confirm deletion'}])
+        self.assertEqual(
+            browser.inspect.dialog[0].buttons,
+            ['Cancel', 'Continue'])
+        self.assertEqual(
+            browser.inspect.dialog[0].buttons['Continue'].click(),
+            200)
+        self.assertEqual(
+            browser.inspect.listing,
+            [])
+        browser.macros.assertFeedback(u'Deleted "Indexer".')
+
+
+class ChiefEditorIndexerTestCase(EditorIndexerTestCase):
+    user = 'chiefeditor'
+
+
+class ManagerIndexerTestCase(ChiefEditorIndexerTestCase):
+    user = 'manager'
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ReaderIndexerTestCase))
     suite.addTest(unittest.makeSuite(AuthorIndexerTestCase))
+    suite.addTest(unittest.makeSuite(EditorIndexerTestCase))
+    suite.addTest(unittest.makeSuite(ChiefEditorIndexerTestCase))
+    suite.addTest(unittest.makeSuite(ManagerIndexerTestCase))
     return suite
