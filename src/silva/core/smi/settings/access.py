@@ -219,6 +219,8 @@ class IUserAuthorization(interface.Interface):
         title=_(u"Identifier"))
     name = schema.TextLine(
         title=_(u"Username"))
+    email = schema.TextLine(
+        title=_(u'Email'))
     acquired_role = schema.Choice(
         title=_(u"Role defined above"),
         source=role_vocabulary,
@@ -233,6 +235,11 @@ def show_username(form):
     if not hasattr(form, 'show_username'):
         form = form.parent
     return form.show_username
+
+def show_email(form):
+    if not hasattr(form, 'show_email'):
+        form = form.parent
+    return form.show_email
 
 
 class UserAccessForm(silvaforms.SMISubTableForm):
@@ -256,16 +263,20 @@ class UserAccessForm(silvaforms.SMISubTableForm):
     tableFields['identifier'].mode = 'silva.icon'
     tableFields['identifier'].available = lambda form: not show_username(form)
     tableFields['name'].available = show_username
+    tableFields['email'].available = show_email
     tableActions = silvaforms.TableActions(
         GrantAccessAction(),
         RevokeAccessAction())
 
     show_username = False
+    show_email = False
 
     def update(self):
         service = component.getUtility(IMemberService)
         if service.get_display_usernames():
             self.show_username = True
+        if service.get_display_emails():
+            self.show_email = True
 
     def getItems(self):
         access = IAuthorizationManager(self.context)
