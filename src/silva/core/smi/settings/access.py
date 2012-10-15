@@ -5,21 +5,19 @@
 import operator
 
 from five import grok
-from silva.core.cache.store import SessionStore
-from silva.core.interfaces import UnauthorizedRoleAssignement
-from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
-from silva.core.interfaces import ISilvaObject
-from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
-from silva.core.services.interfaces import IMemberService, MemberLookupError
-from silva.translations import translate as _
-from silva.ui.menu import MenuItem
-from silva.core.smi.settings import SettingsMenu, Settings
-from zeam.form import silva as silvaforms
 from zope import interface, schema, component
 from zope.cachedescriptors.property import CachedProperty
 
-from zeam.form.silva.interfaces import (
-    IRESTCloseOnSuccessAction, IRESTRefreshAction, IRemoverAction)
+from silva.core.cache.store import SessionStore
+from silva.core.interfaces import IAccessSecurity, IAuthorizationManager
+from silva.core.interfaces import ISilvaObject
+from silva.core.interfaces import UnauthorizedRoleAssignement
+from silva.core.interfaces import role_vocabulary, authenticated_role_vocabulary
+from silva.core.services.interfaces import IMemberService, MemberLookupError
+from silva.core.smi.settings import SettingsMenu, Settings
+from silva.translations import translate as _
+from silva.ui.menu import MenuItem
+from zeam.form import silva as silvaforms
 
 USER_STORE_KEY = 'lookup user'
 
@@ -61,7 +59,9 @@ class ILookupUserSchema(interface.Interface):
 
 
 class LookupUserAction(silvaforms.Action):
-    grok.implements(IRESTCloseOnSuccessAction, IRESTRefreshAction)
+    grok.implements(silvaforms.IRESTCloseOnSuccessAction,
+                    silvaforms.IRESTRefreshAction,
+                    silvaforms.IDefaultAction)
     refresh = 'form.userrole.lookupuserresultform'
 
     title = _(u"Lookup user")
@@ -176,7 +176,7 @@ class GrantAccessAction(silvaforms.Action):
 
 
 class RevokeAccessAction(silvaforms.Action):
-    grok.implements(IRemoverAction)
+    grok.implements(silvaforms.IRemoverAction)
 
     title = _(u"Revoke role")
     description=_(u"Revoke the role of selected user(s)")
@@ -307,7 +307,7 @@ class LookupUserResultForm(UserAccessForm):
         _(u"Clear clipboard"),
         description=_(u"clear the user clipboard"),
         available=lambda form: len(form.lines) != 0,
-        implements=IRemoverAction)
+        implements=silvaforms.IRemoverAction)
     def clear(self):
         self.store.set(USER_STORE_KEY, set())
 
@@ -350,7 +350,7 @@ class AccessPermissionForm(silvaforms.SMISubForm):
         description=_(u"Set the access restriction to acquire its "
                       u"setting from the parent container."),
         available=lambda form: not form.getContent().is_acquired(),
-        implements=IRemoverAction)
+        implements=silvaforms.IRemoverAction)
     def acquire(self):
         access = self.getContentData().getContent()
         if access.is_acquired():
