@@ -12,6 +12,8 @@ from zope.component import getMultiAdapter
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.traversing.browser import absoluteURL
 
+from AccessControl.security import checkPermission
+
 from Products.Silva.Versioning import VersioningError
 from silva.core.interfaces import IVersion, IVersionManager
 from silva.core.interfaces import IVersionedObject
@@ -251,6 +253,9 @@ class DeleteVersionAction(silvaforms.Action):
     grok.implements(IRemoverAction)
     title = _("Delete")
     description = _("There's no undo.")
+
+    def available(self, form):
+        return bool(checkPermission('silva.ApproveSilvaContent', form.context))
 
     def __call__(self, form, selected, deselected):
         if not len(deselected):

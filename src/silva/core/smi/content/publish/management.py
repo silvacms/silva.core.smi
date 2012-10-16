@@ -325,7 +325,7 @@ class WithdrawApprovalRequestForm(PendingApprovalRequestForm):
         except VersioningError as e:
             self.send_message(e.reason, type='error')
             return silvaforms.FAILURE
-        self.send_message('Withdrew request for approval', type='feedback')
+        self.send_message('Withdrew request for approval.', type='feedback')
         return silvaforms.SUCCESS
 
 
@@ -359,7 +359,7 @@ class RejectApprovalRequestForm(PendingApprovalRequestForm):
         except VersioningError as e:
             self.send_message(e.reason, type='error')
             return silvaforms.FAILURE
-        self.send_message('Rejected request for approval', type='feedback')
+        self.send_message('Rejected request for approval.', type='feedback')
         return silvaforms.SUCCESS
 
 
@@ -389,6 +389,7 @@ class ManualCloseForm(silvaforms.SMISubForm):
         except VersioningError as e:
             self.send_message(e.reason, type='error')
             return silvaforms.FAILURE
+        self.send_message('Version closed.', type='feedback')
         return silvaforms.SUCCESS
 
 
