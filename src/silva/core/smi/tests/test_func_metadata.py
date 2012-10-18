@@ -4,7 +4,7 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer
+from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from Products.Silva.ftesting import smi_settings
 
 
@@ -14,19 +14,28 @@ class AuthorMetadataTestCase(unittest.TestCase):
 
     def setUp(self):
         self.root = self.layer.get_application()
-        self.layer.login('manager')
-        factory = self.root.manage_addProduct['SilvaDocument']
-        factory.manage_addDocument('document', 'Document')
+        self.layer.login('editor')
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addMockupVersionedContent('document', 'Document')
 
-    def test_metadata(self):
+    def test_content_metadata(self):
         browser = self.layer.get_web_browser(smi_settings)
-        browser.login(self.username, self.username)
+        browser.login(self.username)
 
-        self.assertEqual(browser.open('/root/document/edit'), 200)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': u'Document',
+              'identifier': 'document',
+              'author': 'editor'}])
+        self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
-        self.assertTrue('properties' in browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['properties'].name.click(), 200)
-        self.assertEqual(browser.url, '/root/document/edit/tab_metadata')
+        # Access publish tab
+        self.assertTrue('Properties' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Properties'].name.click(), 200)
+
+        self.assertEqual(browser.inspect.form, ['Editable item properties'])
+        return
 
         # Metadata main set.
         form = browser.get_form('form')
@@ -101,5 +110,5 @@ class AuthorMetadataTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    return suite
     suite.addTest(unittest.makeSuite(AuthorMetadataTestCase))
+    return suite

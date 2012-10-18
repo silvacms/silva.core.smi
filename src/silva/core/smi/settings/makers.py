@@ -23,7 +23,7 @@ class ManageCustomizeMarker(silvaforms.SMIComposedForm):
     """
     grok.adapts(Settings, ISilvaObject)
     grok.name('customization')
-    grok.require('silva.ManageSilvaContentSettings')
+    grok.require('silva.ManageSilvaContent')
 
     label = _(u"Customization markers")
     description = _(u"This screen lets you tag items with markers "

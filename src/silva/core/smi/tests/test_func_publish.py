@@ -9,7 +9,7 @@ from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from silva.core.interfaces import IPublicationWorkflow
 
 
-class TestDocumentPublish(unittest.TestCase):
+class PublicationTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def setUp(self):
@@ -251,7 +251,7 @@ class TestDocumentPublish(unittest.TestCase):
              u'Manage versions'])
 
 
-class TestDocumentManageVersion(unittest.TestCase):
+class ManageVersionTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def setUp(self):
@@ -412,8 +412,8 @@ class TestDocumentManageVersion(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestDocumentPublish))
-    suite.addTest(unittest.makeSuite(TestDocumentManageVersion))
+    suite.addTest(unittest.makeSuite(PublicationTestCase))
+    suite.addTest(unittest.makeSuite(ManageVersionTestCase))
     return suite
 
 

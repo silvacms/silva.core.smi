@@ -17,7 +17,7 @@ class ReaderFolderTestCase(unittest.TestCase):
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Folder')
 
-    def test_folder_access(self):
+    def test_folder_listing(self):
         """A reader cannot create a folder, however he can look into it.
         """
         browser = self.layer.get_web_browser(smi_settings)
@@ -64,7 +64,7 @@ class AuthorFolderTestCase(unittest.TestCase):
         self.root = self.layer.get_application()
         self.layer.login('editor')
 
-    def test_folder_roundtrip(self):
+    def test_folder_add_and_listing(self):
         """Create a folder check its tabs and actions and delete it.
         """
         browser = self.layer.get_web_browser(smi_settings)
@@ -292,8 +292,33 @@ class EditorFolderTestCase(AuthorFolderTestCase):
         self.assertEqual(convert.form.inspect.fields, [])
         self.assertNotIn('Convert to publication', convert.actions)
 
-    def test_folder_customization(self):
-        """Test folder customization.
+    def test_folder_access(self):
+        """Test folder access tab.
+
+        Editors don't have access to the access tab.
+        """
+        self.assertEqual(self.access, False)
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Data')
+
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': 'Data', 'identifier': 'folder', 'author': 'editor'}])
+        self.assertEqual(
+            browser.inspect.listing[0].goto.click(),
+            200)
+
+        self.assertIn('Settings', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Settings'].open.click(), 200)
+        self.assertNotIn('Access', browser.inspect.tabs['Settings'].entries)
+
+    def test_folder_addables(self):
+        """Test folder addable tab.
+
+        Editors don't have access to the addable tab.
         """
         with CatalogTransaction():
             factory = self.root.manage_addProduct['Silva']
@@ -308,10 +333,152 @@ class EditorFolderTestCase(AuthorFolderTestCase):
             browser.inspect.listing[0].goto.click(),
             200)
 
+        self.assertIn('Settings', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Settings'].open.click(), 200)
+        self.assertNotIn('Addables', browser.inspect.tabs['Settings'].entries)
+
+    def test_folder_customization(self):
+        """Test folder customization.
+        """
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Data')
+
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': 'Data', 'identifier': 'folder', 'author': 'editor'}])
+        self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
+
+        self.assertIn('Settings', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Settings'].open.click(), 200)
+        self.assertIn('Customization', browser.inspect.tabs['Settings'].entries)
+        self.assertEqual(
+            browser.inspect.tabs['Settings'].entries['Customization'].click(),
+            200)
+
+        self.assertEqual(
+            browser.inspect.form,
+            [u'Interfaces in use which affect the behavior of the item',
+             u'Add a marker to alter the behavior'])
+
+        form = browser.inspect.form['Add a marker to alter the behavior']
+        self.assertEqual(form.actions, ['Add marker'])
+
 
 class ChiefEditorFolderTestCase(EditorFolderTestCase):
     user = 'chiefeditor'
     access = True
+
+    def test_folder_addables(self):
+        """Test folder addable tab.
+
+        Editors don't have access to the addable tab.
+        """
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Data')
+
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': 'Data', 'identifier': 'folder', 'author': 'editor'}])
+        self.assertEqual(
+            browser.inspect.listing[0].goto.click(),
+            200)
+
+        self.assertIn('Settings', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Settings'].open.click(), 200)
+        self.assertIn('Addables', browser.inspect.tabs['Settings'].entries)
+        self.assertEqual(
+            browser.inspect.tabs['Settings'].entries['Addables'].click(),
+            200)
+
+        self.assertEqual(browser.inspect.form, ['Addable settings'])
+        form = browser.inspect.form['Addable settings']
+        self.assertIn('Acquire', form.fields)
+        self.assertEqual(form.fields['Acquire'].checked, True)
+        self.assertEqual(form.actions, ['Cancel', 'Save addables settings'])
+
+        # Restrict the settings
+        form.fields['Acquire'].checked = False
+        form.fields['form.field.addables'].value = ['Silva Link']
+        self.assertEqual(form.actions['Save addables settings'].click(), 200)
+        browser.macros.assertFeedback(
+            u'Changes to addables content types saved.')
+
+        self.assertIn('Add', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
+        self.assertEqual(browser.inspect.tabs['Add'].entries, ['Silva Link'])
+        self.assertNotIn('Silva Folder', browser.inspect.tabs['Add'].entries)
+
+        # Now acquire settings
+        self.assertEqual(browser.inspect.form, ['Addable settings'])
+        form = browser.inspect.form['Addable settings']
+        form.fields['Acquire'].checked = True
+        self.assertEqual(form.actions['Save addables settings'].click(), 200)
+        browser.macros.assertFeedback(
+            u'Addable settings are now aquired.')
+        self.assertIn('Add', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
+        self.assertIn('Silva Folder', browser.inspect.tabs['Add'].entries)
+
+    def test_folder_access(self):
+        """Test folder access tab.
+
+        Editors don't have access to the access tab.
+        """
+        self.assertEqual(self.access, True)
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Data')
+
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': 'Data', 'identifier': 'folder', 'author': 'editor'}])
+        self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
+
+        self.assertIn('Settings', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Settings'].open.click(), 200)
+        self.assertIn('Access', browser.inspect.tabs['Settings'].entries)
+        self.assertEqual(
+            browser.inspect.tabs['Settings'].entries['Access'].click(),
+            200)
+
+        # Test restriction form
+        self.assertEqual(
+            browser.inspect.form,
+            ['User clipboard', 'User roles', 'Public view access restriction'])
+        form = browser.inspect.form['Public view access restriction']
+        self.assertIn('Minimum role', form.fields)
+        self.assertEqual(form.fields['Minimum role'].value, u'None')
+        self.assertEqual(
+            form.fields['Minimum role'].options,
+            [u'None', u'Authenticated', u'Viewer', u'Viewer +', u'Viewer ++',
+             u'Reader', u'Author', u'Editor', u'ChiefEditor', u'Manager'])
+        form.fields['Minimum role'].value = 'Editor'
+        self.assertEqual(form.actions, ['Cancel', 'Set restriction'])
+        self.assertEqual(form.actions['Set restriction'].click(), 200)
+        browser.macros.assertFeedback(
+            u'The minimum required role to access this item has been set to "Editor".')
+
+        # Now the restriction is set, and a new action is available
+        self.assertEqual(
+            browser.inspect.form,
+            ['User clipboard', 'User roles', 'Public view access restriction'])
+        form = browser.inspect.form['Public view access restriction']
+        self.assertIn('Minimum role', form.fields)
+        self.assertEqual(form.fields['Minimum role'].value, u'Editor')
+        self.assertEqual(
+            form.actions,
+            ['Cancel', 'Acquire restriction', 'Set restriction'])
+        self.assertEqual(form.actions['Acquire restriction'].click(), 200)
+        browser.macros.assertFeedback(
+            u'Now acquiring the minimum role setting.')
 
 
 class ManagerFolderTestCase(ChiefEditorFolderTestCase):

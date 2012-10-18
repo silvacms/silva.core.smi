@@ -1,9 +1,11 @@
-<form class="form-content" name="#" data-form-novalidation="true"
+<form class="form-content form-fields-container" name="#"
+      data-form-novalidation="true"
       tal:attributes="name view.prefix"
       tal:condition="view.set_names"
       i18n:domain="silva">
   <div class="form-head">
     <h4 tal:content="view.label">
+      Label
     </h4>
   </div>
   <tal:sets tal:repeat="set_name view.set_names">
@@ -89,9 +91,9 @@
       <div class="form-controls" tal:condition="view.actionWidgets">
         <input tal:repeat="widget view.actionWidgets"
                tal:replace="structure widget.render()" />
-        <!-- This empty submit trigger the form submission with enter -->
-        <input type="submit" style="display: none" />
       </div>
     </div>
   </tal:sets>
+  <!-- This empty submit trigger the form submission with enter -->
+  <input type="submit" style="display: none" />
 </form>
