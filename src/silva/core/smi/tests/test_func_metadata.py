@@ -25,7 +25,7 @@ class AuthorMetadataTestCase(unittest.TestCase):
         self.assertEqual(browser.open('/root/document/edit'), 200)
 
         self.assertTrue('properties' in browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['properties'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['properties'].name.click(), 200)
         self.assertEqual(browser.url, '/root/document/edit/tab_metadata')
 
         # Metadata main set.

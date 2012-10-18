@@ -32,8 +32,8 @@ class TestDocumentPublish(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # An author should not see Publish new version form, but he
         # should see Request approval new version.
@@ -58,8 +58,8 @@ class TestDocumentPublish(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # An editor should see Publish new version, Reject approval
         # request, and Manage versions
@@ -90,8 +90,8 @@ class TestDocumentPublish(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # Author should only see those forms
         self.assertEqual(
@@ -111,8 +111,8 @@ class TestDocumentPublish(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # An author should not see Publish new version form, but he
         # should see Request approval new version.
@@ -136,8 +136,8 @@ class TestDocumentPublish(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # An editor should see Publish new version, Reject approval
         # request, and Manage versions
@@ -170,8 +170,8 @@ class TestDocumentPublish(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # An author should not see Publish new version form, but he
         # should see Request approval new version.
@@ -192,7 +192,7 @@ class TestDocumentPublish(unittest.TestCase):
              u'Manage versions'])
         form = browser.inspect.form[u'Withdraw approval request']
         self.assertEqual(
-            form.form.inspect.fields,
+            form.fields,
             ['Add message on withdrawal'])
         self.assertEqual(form.actions, ['Withdraw approval request'])
         self.assertEqual(form.actions['Withdraw approval request'].click(), 200)
@@ -211,8 +211,8 @@ class TestDocumentPublish(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # You can publish or manage versions
         self.assertEqual(
@@ -281,8 +281,8 @@ class TestDocumentManageVersion(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # You can publish or manage versions
         self.assertEqual(
@@ -294,9 +294,12 @@ class TestDocumentManageVersion(unittest.TestCase):
         self.assertEqual(
             form.actions,
             [u'Delete', u'Copy for editing', u'View', u'Compare'])
-        self.assertEqual(len(form.form.inspect.fields), 4)
+        self.assertEqual(len(form.fields), 4)
+        self.assertEqual(form.actions['Copy for editing'].click(), 200)
+        browser.macros.assertError(u"Please select one version to copy.")
 
-        form.form.inspect.fields['1'].checked = True
+        form = browser.inspect.form[u'Manage versions']
+        form.fields['1'].checked = True
         self.assertEqual(form.actions['Copy for editing'].click(), 200)
         browser.macros.assertFeedback(u"Reverted to previous version.")
 
@@ -313,8 +316,8 @@ class TestDocumentManageVersion(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # You can publish or manage versions
         self.assertEqual(
@@ -326,6 +329,12 @@ class TestDocumentManageVersion(unittest.TestCase):
         self.assertEqual(
             form.actions,
             [u'Delete', u'Copy for editing', u'View', u'Compare'])
+        self.assertEqual(len(form.fields), 4)
+        self.assertEqual(form.actions['View'].click(), 200)
+        browser.macros.assertError(u"Please select one version to view it.")
+
+        form = browser.inspect.form[u'Manage versions']
+        form.fields['1'].checked = True
         self.assertEqual(form.actions['View'].click(), 200)
 
     def test_editor_delete_version(self):
@@ -341,8 +350,8 @@ class TestDocumentManageVersion(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # You can publish or manage versions
         self.assertEqual(
@@ -354,13 +363,25 @@ class TestDocumentManageVersion(unittest.TestCase):
         self.assertEqual(
             form.actions,
             [u'Delete', u'Copy for editing', u'View', u'Compare'])
-        self.assertEqual(len(form.form.inspect.fields), 4)
-
-        form.form.inspect.fields['1'].checked = True
+        self.assertEqual(len(form.fields), 4)
         self.assertEqual(form.actions['Delete'].click(), 200)
+        browser.macros.assertError(u"No version selected, nothing deleted.")
 
         form = browser.inspect.form[u'Manage versions']
-        self.assertEqual(len(form.form.inspect.fields), 3)
+        form.fields['1'].checked = True
+        self.assertEqual(form.actions['Delete'].click(), 200)
+        browser.macros.assertFeedback(u"Version(s) deleted.")
+
+        form = browser.inspect.form[u'Manage versions']
+        self.assertEqual(
+            form.actions,
+            [u'Delete', u'Copy for editing', u'View', u'Compare'])
+        self.assertEqual(len(form.fields), 3)
+        self.assertNotIn('1', form.fields)
+        form.fields['0'].checked = True
+        form.fields['2'].checked = True
+        self.assertEqual(form.actions['Delete'].click(), 200)
+        browser.macros.assertError(u"Cannot delete all versions.")
 
     def test_author_do_not_delete_version(self):
         browser = self.layer.get_web_browser(smi_settings)
@@ -375,8 +396,8 @@ class TestDocumentManageVersion(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
 
         # Access publish tab
-        self.assertTrue('publish' in browser.inspect.tabs)
-        self.assertTrue(browser.inspect.tabs['publish'].click(), 200)
+        self.assertTrue('Publish' in browser.inspect.tabs)
+        self.assertTrue(browser.inspect.tabs['Publish'].name.click(), 200)
 
         # You can publish or manage versions
         self.assertEqual(
@@ -387,6 +408,7 @@ class TestDocumentManageVersion(unittest.TestCase):
         self.assertEqual(
             form.actions,
             [u'Copy for editing', u'View', u'Compare'])
+
 
 def test_suite():
     suite = unittest.TestSuite()

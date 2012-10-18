@@ -68,8 +68,10 @@ class AuthorPublicationTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
-        self.assertNotIn('Silva Publication', browser.inspect.subtabs)
+        self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
+        self.assertNotIn(
+            'Silva Publication',
+            browser.inspect.tabs['Add'].entries)
 
         self.assertEqual(
             browser.inspect.listing,
@@ -93,11 +95,11 @@ class AuthorPublicationTestCase(unittest.TestCase):
         # We go through the tabs
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
-        self.assertEqual(browser.inspect.tabs['Properties'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Properties'])
-        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
         # Go up a level.
@@ -162,7 +164,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
             200)
         self.assertEqual(browser.inspect.title, u'Data')
         self.assertIn('Settings', browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertNotIn({'title': u'Container type'}, browser.inspect.form)
 
 
@@ -179,14 +181,18 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
-        self.assertIn('Silva Publication', browser.inspect.subtabs)
-        self.assertEqual(browser.inspect.subtabs['Silva Publication'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
+        self.assertIn(
+            'Silva Publication',
+            browser.inspect.tabs['Add'].entries)
+        self.assertEqual(
+            browser.inspect.tabs['Add'].entries['Silva Publication'].click(),
+            200)
         self.assertEqual(browser.inspect.form, ["Add a Silva Publication"])
 
         add_form = browser.inspect.form['Add a Silva Publication']
-        add_form.form.inspect.fields['id'].value = 'site'
-        add_form.form.inspect.fields['title'].value = 'Site'
+        add_form.fields['id'].value = 'site'
+        add_form.fields['title'].value = 'Site'
         self.assertEqual(add_form.actions, ['Cancel', 'Save'])
         self.assertEqual(add_form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva Publication.")
@@ -209,11 +215,11 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         # We go through the tabs
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
-        self.assertEqual(browser.inspect.tabs['Properties'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Properties'])
-        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
         # Go up a level.
@@ -278,7 +284,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
             200)
         self.assertEqual(browser.inspect.title, u'Data')
         self.assertIn('Settings', browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertIn({'title': u'Container type'}, browser.inspect.form)
 
         convert = browser.inspect.form['Container type']
@@ -311,7 +317,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
             200)
         self.assertEqual(browser.inspect.title, u'Data')
         self.assertIn('Settings', browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertIn({'title': u'Container type'}, browser.inspect.form)
 
         # You can activate the local site.

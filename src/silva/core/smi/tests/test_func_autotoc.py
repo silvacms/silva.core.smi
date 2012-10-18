@@ -45,13 +45,13 @@ class ReaderAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.views, ['Preview', 'View'])
         self.assertEqual(browser.inspect.form, ['Edit a Silva AutoTOC'])
         edit_form = browser.inspect.form['Edit a Silva AutoTOC']
-        self.assertEqual(edit_form.form.inspect.fields, [])
+        self.assertEqual(edit_form.fields, [])
         self.assertEqual(edit_form.actions, ['Back'])
 
         # We go through the tabs.
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Edit'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Edit'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
 
 
@@ -68,14 +68,20 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
-        self.assertIn('Silva AutoTOC', browser.inspect.subtabs)
-        self.assertEqual(browser.inspect.subtabs['Silva AutoTOC'].click(), 200)
+        self.assertEqual(
+            browser.inspect.tabs['Add'].open.click(),
+            200)
+        self.assertIn(
+            'Silva AutoTOC',
+            browser.inspect.tabs['Add'].entries)
+        self.assertEqual(
+            browser.inspect.tabs['Add'].entries['Silva AutoTOC'].click(),
+            200)
         self.assertEqual(browser.inspect.form, ["Add a Silva AutoTOC"])
 
         add_form = browser.inspect.form['Add a Silva AutoTOC']
-        add_form.form.inspect.fields['id'].value = 'contents'
-        add_form.form.inspect.fields['title'].value = u'Table des matières'
+        add_form.fields['id'].value = 'contents'
+        add_form.fields['title'].value = u'Table des matières'
         self.assertEqual(add_form.actions, ['Cancel', 'Save'])
         self.assertEqual(add_form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva AutoTOC.")
@@ -95,21 +101,21 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
 
         self.assertEqual(browser.inspect.form, ['Edit a Silva AutoTOC'])
         edit_form = browser.inspect.form['Edit a Silva AutoTOC']
-        self.assertNotEqual(edit_form.form.inspect.fields, [])
+        self.assertNotEqual(edit_form.fields, [])
         self.assertEqual(edit_form.actions, ['Back', 'Save changes'])
-        self.assertIn('Depth', edit_form.form.inspect.fields)
-        edit_form.form.inspect.fields['Depth'].value = '10'
+        self.assertIn('Depth', edit_form.fields)
+        edit_form.fields['Depth'].value = '10'
         self.assertEqual(edit_form.actions['Save changes'].click(), 200)
         browser.macros.assertFeedback('Changes saved.')
 
         # We go through the tabs.
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
-        self.assertEqual(browser.inspect.tabs['Properties'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Properties'])
-        self.assertEqual(browser.inspect.tabs['Edit'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Edit'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
 
         # Go up a level.

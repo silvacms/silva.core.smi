@@ -50,7 +50,7 @@ class ReaderFolderTestCase(unittest.TestCase):
         # We go through the tabs.
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
 
@@ -74,14 +74,20 @@ class AuthorFolderTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
-        self.assertIn('Silva Folder', browser.inspect.subtabs)
-        self.assertEqual(browser.inspect.subtabs['silva Folder'].click(), 200)
+        self.assertEqual(
+            browser.inspect.tabs['Add'].name.click(),
+            200)
+        self.assertIn(
+            'Silva Folder',
+            browser.inspect.tabs['Add'].entries)
+        self.assertEqual(
+            browser.inspect.tabs['Add'].entries['Silva Folder'].click(),
+            200)
         self.assertEqual(browser.inspect.form, ["Add a Silva Folder"])
 
         add_form = browser.inspect.form['Add a Silva Folder']
-        add_form.form.inspect.fields['id'].value = 'folder'
-        add_form.form.inspect.fields['title'].value = 'Test'
+        add_form.fields['id'].value = 'folder'
+        add_form.fields['title'].value = 'Test'
         self.assertEqual(add_form.actions, ['Cancel', 'Save'])
         self.assertEqual(add_form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva Folder.")
@@ -104,11 +110,11 @@ class AuthorFolderTestCase(unittest.TestCase):
         # We go through the tabs
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
-        self.assertEqual(browser.inspect.tabs['Properties'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Properties'])
-        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
         # Go up a level.
@@ -173,7 +179,7 @@ class AuthorFolderTestCase(unittest.TestCase):
             200)
         self.assertEqual(browser.inspect.title, u'Feeds')
         self.assertIn('Settings', browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertNotIn({'title': u'Atom/rss feeds'}, browser.inspect.form)
 
         # By default feeds are off
@@ -198,7 +204,7 @@ class AuthorFolderTestCase(unittest.TestCase):
             200)
         self.assertEqual(browser.inspect.title, u'Data')
         self.assertIn('Settings', browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertNotIn({'title': u'Container type'}, browser.inspect.form)
 
 
@@ -223,7 +229,7 @@ class EditorFolderTestCase(AuthorFolderTestCase):
             200)
         self.assertEqual(browser.inspect.title, u'Feeds')
         self.assertIn('Settings', browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
 
         self.assertIn({'title': u'Atom/rss feeds'}, browser.inspect.form)
         settings = browser.inspect.form['feeds']
@@ -270,7 +276,7 @@ class EditorFolderTestCase(AuthorFolderTestCase):
             200)
         self.assertEqual(browser.inspect.title, u'Data')
         self.assertIn('Settings', browser.inspect.tabs)
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertIn({'title': u'Container type'}, browser.inspect.form)
 
         convert = browser.inspect.form['Container type']
@@ -285,6 +291,22 @@ class EditorFolderTestCase(AuthorFolderTestCase):
         self.assertEqual(convert.title, 'Container type')
         self.assertEqual(convert.form.inspect.fields, [])
         self.assertNotIn('Convert to publication', convert.actions)
+
+    def test_folder_customization(self):
+        """Test folder customization.
+        """
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Data')
+
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': 'Data', 'identifier': 'folder', 'author': 'editor'}])
+        self.assertEqual(
+            browser.inspect.listing[0].goto.click(),
+            200)
 
 
 class ChiefEditorFolderTestCase(EditorFolderTestCase):

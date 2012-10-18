@@ -45,13 +45,13 @@ class ReaderIndexerTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.views, ['Preview', 'View'])
         self.assertEqual(browser.inspect.form, ['Update Silva Indexer'])
         edit_form = browser.inspect.form['Update Silva Indexer']
-        self.assertEqual(edit_form.form.inspect.fields, [])
+        self.assertEqual(edit_form.fields, [])
         self.assertEqual(edit_form.actions, ['Back'])
 
         # We go through the tabs.
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Edit'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Edit'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
 
 
@@ -75,8 +75,12 @@ class AuthorIndexerTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
-        self.assertNotIn('Silva Indexer', browser.inspect.subtabs)
+        self.assertEqual(
+            browser.inspect.tabs['Add'].name.click(),
+            200)
+        self.assertNotIn(
+            'Silva Indexer',
+            browser.inspect.tabs['Add'].entries)
 
         # We should see our indexer
         self.assertEqual(
@@ -117,15 +121,19 @@ class EditorIndexerTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.tabs['Add'].click(), 200)
-        self.assertIn('Silva Indexer', browser.inspect.subtabs)
-        self.assertEqual(browser.inspect.subtabs['Silva Indexer'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
+        self.assertIn(
+            'Silva Indexer',
+            browser.inspect.tabs['Add'].entries)
+        self.assertEqual(
+            browser.inspect.tabs['Add'].entries['Silva Indexer'].click(),
+            200)
         self.assertEqual(browser.inspect.form, ["Add a Silva Indexer"])
 
         # Add an indexer
         add_form = browser.inspect.form['Add a Silva Indexer']
-        add_form.form.inspect.fields['id'].value = 'indexer'
-        add_form.form.inspect.fields['title'].value = u'Indexer'
+        add_form.fields['id'].value = 'indexer'
+        add_form.fields['title'].value = u'Indexer'
         self.assertEqual(add_form.actions, ['Cancel', 'Save'])
         self.assertEqual(add_form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva Indexer.")
@@ -146,7 +154,7 @@ class EditorIndexerTestCase(unittest.TestCase):
         # Check the edit form. There is only an update button.
         self.assertEqual(browser.inspect.form, ['Update Silva Indexer'])
         edit_form = browser.inspect.form['Update Silva Indexer']
-        self.assertEqual(edit_form.form.inspect.fields, [])
+        self.assertEqual(edit_form.fields, [])
         self.assertEqual(edit_form.actions, ['Back', 'Update index'])
         self.assertEqual(edit_form.actions['Update index'].click(), 200)
         browser.macros.assertFeedback(
@@ -155,11 +163,11 @@ class EditorIndexerTestCase(unittest.TestCase):
         # We go through the tabs.
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
-        self.assertEqual(browser.inspect.tabs['Properties'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Properties'])
-        self.assertEqual(browser.inspect.tabs['Edit'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Edit'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
 
         # Go up a level.

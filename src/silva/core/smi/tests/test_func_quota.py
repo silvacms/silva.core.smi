@@ -111,7 +111,7 @@ class QuotaFunctionalTestCase(unittest.TestCase):
             ['(The quota for this area is set to 1 MB.)'])
 
         # Add a file and check the used space changed
-        self.assertEqual(browser.inspect.tabs['contents'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['contents'].name.click(), 200)
 
         form = browser.get_form('md.container')
         form.controls['md.container.field.content'].value = 'Silva File'
@@ -155,7 +155,7 @@ class QuotaFunctionalTestCase(unittest.TestCase):
             ['(The quota for this area is set to 10 MB.)'])
 
         # Add a file and check the used space changed
-        self.assertEqual(browser.inspect.tabs['contents'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['contents'].name.click(), 200)
         browser.macros.create(
             'Silva File', id='odt', title='ODT Document',
             file=test_filename('docs_export_2008-06-11.odt'))

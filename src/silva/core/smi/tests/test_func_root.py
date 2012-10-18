@@ -28,7 +28,7 @@ class ReaderRootTestCase(unittest.TestCase):
         # We go through the tabs
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
 
@@ -56,11 +56,11 @@ class AuthorRootTestCase(unittest.TestCase):
         # We go through the tabs
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
         self.assertEqual(browser.inspect.activeviews, ['Preview'])
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
-        self.assertEqual(browser.inspect.tabs['Properties'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Properties'])
-        self.assertEqual(browser.inspect.tabs['Content'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
     def test_root_settings(self):
@@ -68,7 +68,7 @@ class AuthorRootTestCase(unittest.TestCase):
         browser.login('author')
 
         self.assertEqual(browser.inspect.title, u"root")
-        self.assertEqual(browser.inspect.tabs['Settings'].click(), 200)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
         self.assertNotIn({'title': u'Container type'}, browser.inspect.form)
 
