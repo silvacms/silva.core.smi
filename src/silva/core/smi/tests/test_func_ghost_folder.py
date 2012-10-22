@@ -4,163 +4,179 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer
+from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from Products.Silva.ftesting import smi_settings
 from silva.core.references.reference import get_content_id
 
 
-class BaseTest(unittest.TestCase):
-
+class EditorGhostFolderTestCase(unittest.TestCase):
     layer = FunctionalLayer
+    user = 'editor'
+    goto = []
 
     def setUp(self):
-        """
-            Set up objects for test :
+        """Set up objects for test :
 
-            + root (Silva root)
-                |
-                + folder (Silva Folder)
-                    |
-                    +- folderdoc (Silva Document)
-                    |
-                    +- pub (Silva Publication)
-                        |
-                        +- pubdoc (Silva Document)
+           + root (Silva root)
+               |
+               + folder (Silva Folder)
+                   |
+                   +- document (Silva Mockup)
+                   |
+                   +- publication (Silva Publication)
+                       |
+                       +- document (Silva Mockup)
         """
         self.root = self.layer.get_application()
         self.layer.login('editor')
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Folder')
+            folder = self.root._getOb('folder')
 
-        factory = self.root.manage_addProduct['Silva']
-        factory.manage_addFolder('folder', 'Folder')
-        self.folder = getattr(self.root, 'folder')
+            factory = folder.manage_addProduct['Silva']
+            factory.manage_addMockupVersionedContent('document', 'Document')
+            factory.manage_addPublication('publication', 'Publication')
+            publication = folder._getOb('publication')
 
-        factory = self.folder.manage_addProduct['Silva']
-        factory.manage_addPublication('pub', 'Publication')
-        self.publication = getattr(self.folder, 'pub')
+            factory = publication.manage_addProduct['Silva']
+            factory.manage_addMockupVersionedContent('document', 'Document')
 
-        factory = self.folder.manage_addProduct['SilvaDocument']
-        factory.manage_addDocument('folderdoc', 'Document inside `folder`')
-        self.folderdoc = getattr(self.folder, 'folderdoc')
+    def test_ghost_folder_add_and_listing(self):
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
 
-        factory = self.publication.manage_addProduct['SilvaDocument']
-        factory.manage_addDocument('pubdoc', 'Document inside `pub`')
-        self.pubdoc = getattr(self.publication, 'pubdoc')
-
-        self.layer.logout()
-        self.browser = self.layer.get_web_browser(smi_settings)
-        self.browser.login('manager', 'manager')
-
-
-class TestAddGhostFolder(BaseTest):
-    """ Test add form for ghost folder
-    """
-
-    def goto_add_form(self):
-        self.assertEqual(self.browser.open('/root/edit'), 200)
-
-        form = self.browser.get_form('md.container')
-        form.get_control('md.container.field.content').value = 'Silva Ghost Folder'
-        self.assertEqual(form.submit('md.container.action.new'), 200)
-        self.assertEqual(self.browser.url, '/root/edit/+/Silva Ghost Folder')
-
-        return self.browser.get_form('addform')
-
-    def test_add_form_save(self):
-        form = self.goto_add_form()
-
-        publication_id = get_content_id(self.publication)
-        form.get_control('addform.field.id').value = 'ghostfolder'
-        form.get_control('addform.field.haunted').value = publication_id
-        self.assertEqual(form.submit(name="addform.action.save"), 200)
-
-        self.assertTrue('ghostfolder' in self.root.objectIds())
+        self.assertEqual(browser.inspect.title, u"root")
         self.assertEqual(
-            self.browser.inspect.feedback, ['Added Silva Ghost Folder.'])
-        self.assertEqual(self.browser.url, '/root/edit')
-
-    def test_add_form_save_and_edit(self):
-        form = self.goto_add_form()
-
-        publication_id = get_content_id(self.publication)
-        form.get_control('addform.field.id').value = 'ghostfolder'
-        form.get_control('addform.field.haunted').value = publication_id
-        self.assertEqual(form.submit(name="addform.action.save_edit"), 200)
-
-        self.assertTrue('ghostfolder' in self.root.objectIds())
+            browser.inspect.tabs,
+            ['Content', 'Add', 'Properties', 'Settings'])
+        self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
+        self.assertIn('Silva Ghost Folder', browser.inspect.tabs['Add'].entries)
         self.assertEqual(
-            self.browser.inspect.feedback, ['Added Silva Ghost Folder.'])
-        self.assertEqual(self.browser.url, '/root/ghostfolder/edit')
+            browser.inspect.tabs['Add'].entries['Silva Ghost Folder'].click(),
+            200)
+        self.assertEqual(browser.inspect.form, ["Add a Silva Ghost Folder"])
+        self.assertEqual(browser.inspect.toolbar, [])
 
-    def test_cancel(self):
-        form = self.goto_add_form()
+        form = browser.inspect.form['Add a Silva Ghost Folder']
+        self.assertIn('Id', form.fields)
+        form.fields['Id'].value = 'ghost_folder'
+        # Lookup an element to ghost
+        self.assertEqual(browser.inspect.reference[0].click(), 200)
+        self.assertEqual(browser.inspect.dialog, ['Lookup an item'])
+        dialog = browser.inspect.dialog['Lookup an item']
+        self.assertEqual(dialog.buttons, ['Cancel'])
+        self.assertEqual(dialog.listing, ['current container', 'folder'])
+        self.assertEqual(dialog.listing['folder'].title, 'Folder')
+        self.assertEqual(dialog.listing['folder'].select.click(), 200)
+        # This should have closed the dialog and selected the document
+        # in the hidden field
+        self.assertEqual(browser.inspect.dialog, [])
 
-        publication_id = get_content_id(self.publication)
-        form.get_control('addform.field.id').value = 'ghostfolder'
-        form.get_control('addform.field.haunted').value = publication_id
-        self.assertEqual(form.submit(name="addform.action.cancel"), 200)
+        self.assertEqual(form.actions, ['Cancel', 'Save'])
+        self.assertEqual(form.actions['Save'].click(), 200)
+        browser.macros.assertFeedback(u"Added Silva Ghost Folder.")
+        # Inspect newly created content
 
-        self.assertTrue('ghostfolder' not in self.root.objectIds())
-        self.assertEqual(self.browser.inspect.feedback, [])
-        self.assertEqual(self.browser.url, '/root/edit')
-
-
-class TestEditGhostFolder(BaseTest):
-    """ test ghost folder edit form
-    """
-    def setUp(self):
-        super(TestEditGhostFolder, self).setUp()
-
-        self.layer.login('editor')
-        factory = self.root.manage_addProduct['Silva']
-        factory.manage_addGhostFolder(
-            'ghost_folder', "Ghost folder on root/folder",
-            haunted=self.folder)
-        self.ghost_folder = getattr(self.root, 'ghost_folder')
-        self.layer.logout()
-
-    def goto_form(self):
-        path = "/".join(self.ghost_folder.getPhysicalPath())
-        self.assertEqual(self.browser.open(path + '/edit'), 200)
-        return self.browser.get_form("editform")
-
-    def test_edit_form_reference_field(self):
-        form = self.goto_form()
-        reference_field = form.get_control("editform.field.haunted")
+        self.assertEqual(browser.inspect.title, u'Folder')
         self.assertEqual(
-            reference_field.value,
-            str(get_content_id(self.folder)),
-            "reference field value should be the intid of the folder")
-
-    def test_edit_form_set_new_haunted(self):
-        form = self.goto_form()
-
-        publication_id = get_content_id(self.publication)
-        form.get_control("editform.field.haunted").value = publication_id
-        self.assertEqual(form.submit(name="editform.action.save-changes"), 200)
-
-        self.assertEqual(self.browser.inspect.feedback, ['Changes saved.'])
-        self.assertEqual(self.publication, self.ghost_folder.get_haunted())
-
-    def test_sync(self):
-        form = self.goto_form()
-        self.assertEqual(form.submit(name="editform.action.synchronize"), 200)
+            browser.inspect.tabs,
+            ['Content', 'Edit', 'Properties', 'Settings'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        # We are on contents
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
         self.assertEqual(
-            self.browser.inspect.feedback, ['Ghost Folder synchronized'])
+            browser.inspect.listing,
+            [{'title': u'Document',
+              'identifier': 'document',
+              'author': self.user},
+             {'title': u'Publication',
+              'identifier': 'publication',
+              'author': self.user}])
 
-        self.assertEqual(['folderdoc', 'pub'], self.ghost_folder.objectIds())
+        # Go though the tabs
+        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
+        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Settings'])
+        self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Properties'])
+        self.assertEqual(browser.inspect.tabs['Edit'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Edit'])
 
+        # Check edit form
+        self.assertEqual(browser.inspect.form, ['Edit a Silva Ghost Folder'])
+        form = browser.inspect.form['Edit a Silva Ghost Folder']
+        self.assertEqual(form.actions, ['Back', 'Save changes', 'Synchronize'])
+        self.assertEqual(form.actions['Synchronize'].click(), 200)
+        browser.macros.assertFeedback(u"Ghost Folder synchronized.")
+
+        self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
+
+        # Go up a level.
+        self.assertEqual(browser.inspect.parent.click(), 200)
+        self.assertEqual(browser.inspect.title, u"root")
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
+
+        # We should see our ghost and the original document.
         self.assertEqual(
-            "Silva Ghost Folder", self.ghost_folder['pub'].meta_type)
+            browser.inspect.listing,
+            [{'title': u'Folder',
+              'identifier': 'folder',
+              'author': u'editor'},
+             {'title': u'Folder',
+              'identifier': 'ghost_folder',
+              'author': self.user}])
+        # Select it
+        self.assertEqual(browser.inspect.listing[1].identifier.click(), 200)
         self.assertEqual(
-            "Silva Ghost", self.ghost_folder['folderdoc'].meta_type)
+            browser.inspect.toolbar,
+            ['Cut', 'Copy', 'Delete', 'Rename', 'Publish'])
+        self.assertEqual(
+            browser.inspect.listing[1].goto_dropdown.click(),
+            200)
+        self.assertEqual(
+            browser.inspect.listing[1].goto_actions,
+            ['Preview', 'Properties'] + self.goto)
 
-        pubghost = self.ghost_folder['pub']
-        self.assertEquals(['pubdoc'], pubghost.objectIds())
-        self.assertEquals('Silva Ghost', pubghost['pubdoc'].meta_type)
+        self.assertEqual(browser.inspect.toolbar['Delete'].click(), 200)
+        # Content is not deleted, you have to confirm the deletion first.
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': u'Folder',
+              'identifier': 'folder',
+              'author': u'editor'},
+             {'title': u'Folder',
+              'identifier': 'ghost_folder',
+              'author': self.user}])
+        self.assertEqual(browser.inspect.dialog, ['Confirm deletion'])
+        self.assertEqual(
+            browser.inspect.dialog[0].buttons,
+            ['Cancel', 'Continue'])
+        self.assertEqual(
+            browser.inspect.dialog[0].buttons['Continue'].click(),
+            200)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': u'Folder',
+              'identifier': 'folder',
+              'author': u'editor'}])
+        browser.macros.assertFeedback(u'Deleted "Folder".')
+
+
+class ChiefEditorGhostFolderTestCase(EditorGhostFolderTestCase):
+    user = 'chiefeditor'
+    goto = ['Access']
+
+
+class ManagerGhostFolderTestCase(ChiefEditorGhostFolderTestCase):
+    user = 'manager'
 
 
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(EditorGhostFolderTestCase))
+    suite.addTest(unittest.makeSuite(ChiefEditorGhostFolderTestCase))
+    suite.addTest(unittest.makeSuite(ManagerGhostFolderTestCase))
     return suite
-    suite.addTest(unittest.makeSuite(TestAddGhostFolder))
-    suite.addTest(unittest.makeSuite(TestEditGhostFolder))

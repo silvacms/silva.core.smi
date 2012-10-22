@@ -32,14 +32,14 @@ class ReaderAutoTOCTestCase(unittest.TestCase):
               'author': 'editor'}])
         # Select it.
         self.assertEqual(browser.inspect.listing[0].identifier.click(), 200)
-        self.assertEqual(browser.inspect.actions, ['Copy'])
+        self.assertEqual(browser.inspect.toolbar, ['Copy'])
         self.assertEqual(browser.inspect.listing[0].goto_dropdown.click(), 200)
         self.assertEqual(browser.inspect.listing[0].goto_actions, ['Preview'])
 
         # Go on it. We arrive on the edit tab, where we cannot do a thing.
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
         self.assertEqual(browser.inspect.title, u'Table of Content')
-        self.assertEqual(browser.inspect.actions, [])
+        self.assertEqual(browser.inspect.toolbar, [])
         self.assertEqual(browser.inspect.tabs, ['Edit'])
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
         self.assertEqual(browser.inspect.views, ['Preview', 'View'])
@@ -60,7 +60,7 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
     user = 'author'
     access = False
 
-    def test_autotoc_roundtrip(self):
+    def test_autotoc_add_and_listing(self):
         browser = self.layer.get_web_browser(smi_settings)
         browser.login(self.user)
 
@@ -68,16 +68,13 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(
-            browser.inspect.tabs['Add'].open.click(),
-            200)
-        self.assertIn(
-            'Silva AutoTOC',
-            browser.inspect.tabs['Add'].entries)
+        self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
+        self.assertIn('Silva AutoTOC', browser.inspect.tabs['Add'].entries)
         self.assertEqual(
             browser.inspect.tabs['Add'].entries['Silva AutoTOC'].click(),
             200)
         self.assertEqual(browser.inspect.form, ["Add a Silva AutoTOC"])
+        self.assertEqual(browser.inspect.toolbar, [])
 
         add_form = browser.inspect.form['Add a Silva AutoTOC']
         add_form.fields['id'].value = 'contents'
@@ -86,7 +83,7 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(add_form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva AutoTOC.")
 
-        # Inspect new created content.
+        # Inspect newly created content.
         self.assertEqual(browser.inspect.title, u'Table des matières')
         self.assertEqual(
             browser.inspect.tabs,
@@ -107,6 +104,9 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         edit_form.fields['Depth'].value = '10'
         self.assertEqual(edit_form.actions['Save changes'].click(), 200)
         browser.macros.assertFeedback('Changes saved.')
+
+        # No special actions in toolbar
+        self.assertEqual(browser.inspect.toolbar, [])
 
         # We go through the tabs.
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
@@ -130,11 +130,9 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
               'identifier': 'contents',
               'author': self.user}])
         # Select it
+        self.assertEqual(browser.inspect.listing[0].identifier.click(), 200)
         self.assertEqual(
-            browser.inspect.listing[0].identifier.click(),
-            200)
-        self.assertEqual(
-            browser.inspect.actions,
+            browser.inspect.toolbar,
             ['Cut', 'Copy', 'Delete', 'Rename'])
         self.assertEqual(
             browser.inspect.listing[0].goto_dropdown.click(),
@@ -144,9 +142,7 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
             ['Preview', 'Properties'])
 
         # Delete the autotoc
-        self.assertEqual(
-            browser.inspect.actions['Delete'].click(),
-            200)
+        self.assertEqual(browser.inspect.toolbar['Delete'].click(), 200)
         # Content is not deleted, you have to confirm the deletion first.
         self.assertEqual(
             browser.inspect.listing,
@@ -160,9 +156,7 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.dialog[0].buttons['Continue'].click(),
             200)
-        self.assertEqual(
-            browser.inspect.listing,
-            [])
+        self.assertEqual(browser.inspect.listing, [])
         browser.macros.assertFeedback(u'Deleted "Table des matières".')
 
 

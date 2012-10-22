@@ -32,14 +32,14 @@ class ReaderIndexerTestCase(unittest.TestCase):
               'author': 'editor'}])
         # Select it.
         self.assertEqual(browser.inspect.listing[0].identifier.click(), 200)
-        self.assertEqual(browser.inspect.actions, ['Copy'])
+        self.assertEqual(browser.inspect.toolbar, ['Copy'])
         self.assertEqual(browser.inspect.listing[0].goto_dropdown.click(), 200)
         self.assertEqual(browser.inspect.listing[0].goto_actions, ['Preview'])
 
         # Go on it. We arrive on the edit tab, where we cannot do a thing.
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
         self.assertEqual(browser.inspect.title, u'Indexer')
-        self.assertEqual(browser.inspect.actions, [])
+        self.assertEqual(browser.inspect.toolbar, [])
         self.assertEqual(browser.inspect.tabs, ['Edit'])
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
         self.assertEqual(browser.inspect.views, ['Preview', 'View'])
@@ -75,12 +75,8 @@ class AuthorIndexerTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(
-            browser.inspect.tabs['Add'].name.click(),
-            200)
-        self.assertNotIn(
-            'Silva Indexer',
-            browser.inspect.tabs['Add'].entries)
+        self.assertEqual(browser.inspect.tabs['Add'].name.click(), 200)
+        self.assertNotIn('Silva Indexer', browser.inspect.tabs['Add'].entries)
 
         # We should see our indexer
         self.assertEqual(
@@ -95,13 +91,10 @@ class AuthorIndexerTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Edit', 'Properties', 'Settings'])
-        self.assertEqual(
-            browser.inspect.views,
-            ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
         # We are on contents
-        self.assertEqual(
-            browser.inspect.activetabs,
-            ['Edit'])
+        self.assertEqual(browser.inspect.activetabs, ['Edit'])
+        self.assertEqual(browser.inspect.toolbar, [])
 
 
 class EditorIndexerTestCase(unittest.TestCase):
@@ -122,13 +115,12 @@ class EditorIndexerTestCase(unittest.TestCase):
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
         self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
-        self.assertIn(
-            'Silva Indexer',
-            browser.inspect.tabs['Add'].entries)
+        self.assertIn('Silva Indexer', browser.inspect.tabs['Add'].entries)
         self.assertEqual(
             browser.inspect.tabs['Add'].entries['Silva Indexer'].click(),
             200)
         self.assertEqual(browser.inspect.form, ["Add a Silva Indexer"])
+        self.assertEqual(browser.inspect.toolbar, [])
 
         # Add an indexer
         add_form = browser.inspect.form['Add a Silva Indexer']
@@ -143,13 +135,10 @@ class EditorIndexerTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Edit', 'Properties', 'Settings'])
-        self.assertEqual(
-            browser.inspect.views,
-            ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
         # We are on contents
-        self.assertEqual(
-            browser.inspect.activetabs,
-            ['Edit'])
+        self.assertEqual(browser.inspect.activetabs, ['Edit'])
+        self.assertEqual(browser.inspect.toolbar, [])
 
         # Check the edit form. There is only an update button.
         self.assertEqual(browser.inspect.form, ['Update Silva Indexer'])
@@ -182,23 +171,17 @@ class EditorIndexerTestCase(unittest.TestCase):
               'identifier': 'indexer',
               'author': self.user}])
         # Select it
+        self.assertEqual(browser.inspect.listing[0].identifier.click(), 200)
         self.assertEqual(
-            browser.inspect.listing[0].identifier.click(),
-            200)
-        self.assertEqual(
-            browser.inspect.actions,
+            browser.inspect.toolbar,
             ['Cut', 'Copy', 'Delete', 'Rename'])
-        self.assertEqual(
-            browser.inspect.listing[0].goto_dropdown.click(),
-            200)
+        self.assertEqual(browser.inspect.listing[0].goto_dropdown.click(), 200)
         self.assertEqual(
             browser.inspect.listing[0].goto_actions,
             ['Preview', 'Properties'])
 
         # Delete the indexer
-        self.assertEqual(
-            browser.inspect.actions['Delete'].click(),
-            200)
+        self.assertEqual(browser.inspect.toolbar['Delete'].click(), 200)
         # Content is not deleted, you have to confirm the deletion first.
         self.assertEqual(
             browser.inspect.listing,
@@ -212,9 +195,7 @@ class EditorIndexerTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.dialog[0].buttons['Continue'].click(),
             200)
-        self.assertEqual(
-            browser.inspect.listing,
-            [])
+        self.assertEqual(browser.inspect.listing, [])
         browser.macros.assertFeedback(u'Deleted "Indexer".')
 
 

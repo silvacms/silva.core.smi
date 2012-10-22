@@ -26,7 +26,7 @@ class ReaderPublicationTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.tabs, ['Content'])
         self.assertEqual(browser.inspect.activetabs, ['Content'])
         self.assertEqual(browser.inspect.views, ['Preview', 'View'])
-        self.assertEqual(browser.inspect.actions, [])
+        self.assertEqual(browser.inspect.toolbar, [])
 
         # We should see our folder.
         self.assertEqual(
@@ -34,7 +34,7 @@ class ReaderPublicationTestCase(unittest.TestCase):
             [{'title': u'Site', 'identifier': 'site', 'author': 'editor'}])
         # Select the folder.
         self.assertEqual(browser.inspect.listing[0].identifier.click(), 200)
-        self.assertEqual(browser.inspect.actions, ['Copy'])
+        self.assertEqual(browser.inspect.toolbar, ['Copy'])
         self.assertEqual(browser.inspect.listing[0].goto_dropdown.click(), 200)
         self.assertEqual(browser.inspect.listing[0].goto_actions, ['Preview'])
 
@@ -116,7 +116,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
             browser.inspect.listing[0].identifier.click(),
             200)
         self.assertEqual(
-            browser.inspect.actions,
+            browser.inspect.toolbar,
             ['Cut', 'Copy', 'Delete', 'Rename'])
         self.assertEqual(
             browser.inspect.listing[0].goto_dropdown.click(),
@@ -127,7 +127,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
 
         # Delete the publication
         self.assertEqual(
-            browser.inspect.actions['Delete'].click(),
+            browser.inspect.toolbar['Delete'].click(),
             200)
         # Publication is not deleted, you have to confirm the deletion first.
         self.assertEqual(
@@ -236,7 +236,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
             browser.inspect.listing[0].identifier.click(),
             200)
         self.assertEqual(
-            browser.inspect.actions,
+            browser.inspect.toolbar,
             ['Cut', 'Copy', 'Delete', 'Rename', 'Publish'])
         self.assertEqual(
             browser.inspect.listing[0].goto_dropdown.click(),
@@ -247,7 +247,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
 
         # Delete the folder
         self.assertEqual(
-            browser.inspect.actions['Delete'].click(),
+            browser.inspect.toolbar['Delete'].click(),
             200)
         # Folder is yet deleted, you have to confirm the deletion first.
         self.assertEqual(

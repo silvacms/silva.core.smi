@@ -26,7 +26,7 @@ class ReaderFolderTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.tabs, ['Content'])
         self.assertEqual(browser.inspect.activetabs, ['Content'])
         self.assertEqual(browser.inspect.views, ['Preview', 'View'])
-        self.assertEqual(browser.inspect.actions, [])
+        self.assertEqual(browser.inspect.toolbar, [])
 
         # We should see our folder.
         self.assertEqual(
@@ -34,7 +34,7 @@ class ReaderFolderTestCase(unittest.TestCase):
             [{'title': u'Folder', 'identifier': 'folder', 'author': 'editor'}])
         # Select the folder.
         self.assertEqual(browser.inspect.listing[0].identifier.click(), 200)
-        self.assertEqual(browser.inspect.actions, ['Copy'])
+        self.assertEqual(browser.inspect.toolbar, ['Copy'])
         self.assertEqual(browser.inspect.listing[0].goto_dropdown.click(), 200)
         self.assertEqual(browser.inspect.listing[0].goto_actions, ['Preview'])
 
@@ -45,7 +45,7 @@ class ReaderFolderTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.activetabs, ['Content'])
         self.assertEqual(browser.inspect.views, ['Preview', 'View'])
         self.assertEqual(browser.inspect.listing, [])
-        self.assertEqual(browser.inspect.actions, [])
+        self.assertEqual(browser.inspect.toolbar, [])
 
         # We go through the tabs.
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
@@ -57,7 +57,7 @@ class ReaderFolderTestCase(unittest.TestCase):
 class AuthorFolderTestCase(unittest.TestCase):
     layer = FunctionalLayer
     user = 'author'
-    publish = False
+    toolbar = []
     access = False
 
     def setUp(self):
@@ -131,8 +131,8 @@ class AuthorFolderTestCase(unittest.TestCase):
             browser.inspect.listing[0].identifier.click(),
             200)
         self.assertEqual(
-            browser.inspect.actions,
-            ['Cut', 'Copy', 'Delete', 'Rename'] + (['Publish'] if self.publish else []))
+            browser.inspect.toolbar,
+            ['Cut', 'Copy', 'Delete', 'Rename'] + self.toolbar)
         self.assertEqual(
             browser.inspect.listing[0].goto_dropdown.click(),
             200)
@@ -142,7 +142,7 @@ class AuthorFolderTestCase(unittest.TestCase):
 
         # Delete the folder
         self.assertEqual(
-            browser.inspect.actions['Delete'].click(),
+            browser.inspect.toolbar['Delete'].click(),
             200)
         # Folder is not deleted, you have to confirm the deletion first.
         self.assertEqual(
@@ -210,7 +210,7 @@ class AuthorFolderTestCase(unittest.TestCase):
 
 class EditorFolderTestCase(AuthorFolderTestCase):
     user = 'editor'
-    publish = True
+    toolbar = ['Publish']
 
     def test_folder_feeds(self):
         """Test feeds settings. An editor and above can change them

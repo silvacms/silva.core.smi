@@ -117,68 +117,6 @@ class AuthorContentTestCase(unittest.TestCase):
         browser.inspect.breadcrumbs['root'].click()
         browser.macros.delete('file')
 
-    def test_ghost(self):
-        """Test create / remove a ghost.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-
-        browser.login(self.username, self.username)
-        self.assertEqual(browser.open('/root/edit'), 200)
-        browser.macros.create(
-            'Silva Ghost',
-            id='ghost', haunted=get_content_id(self.root.index))
-        self.assertEqual(
-            browser.inspect.folder_listing, ['index', 'ghost'])
-
-        # The user should by the last author on the content and container.
-        self.assertEqual(
-            self.root.sec_get_last_author_info().userid(),
-            self.username)
-        self.assertEqual(
-            self.root.ghost.sec_get_last_author_info().userid(),
-            self.username)
-
-        # Visit the edit page
-        self.assertEqual(
-            browser.inspect.folder_listing['ghost'].click(),
-            200)
-        self.assertEqual(browser.url, '/root/ghost/edit/tab_edit')
-        self.assertEqual(browser.inspect.breadcrumbs, ['root', 'ghost'])
-        form = browser.get_form('editform')
-        self.assertEqual(
-            form.get_control('editform.action.cancel').click(), 200)
-        browser.macros.delete('ghost')
-
-    def test_link(self):
-        """Test / create remove a link.
-        """
-        browser = self.layer.get_web_browser(smi_settings)
-
-        browser.login(self.username, self.username)
-        self.assertEqual(browser.open('/root/edit'), 200)
-        browser.macros.create(
-            'Silva Link',
-            id='infrae', title='Infrae', url='http://infrae.com')
-        self.assertEqual(
-            browser.inspect.folder_listing, ['index', 'infrae'])
-
-        # The user should by the last author on the content and container.
-        self.assertEqual(
-            self.root.sec_get_last_author_info().userid(),
-            self.username)
-        self.assertEqual(
-            self.root.infrae.sec_get_last_author_info().userid(),
-            self.username)
-
-        # Visit the edit form
-        self.assertEqual(
-            browser.inspect.folder_listing['infrae'].click(), 200)
-        self.assertEqual(browser.url, '/root/infrae/edit/tab_edit')
-        self.assertEqual(browser.inspect.breadcrumbs, ['root', 'infrae'])
-        form = browser.get_form('editform')
-        self.assertEqual(
-            form.get_control('editform.action.cancel').click(), 200)
-        browser.macros.delete('infrae')
 
 
 def test_suite():
