@@ -372,7 +372,6 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertTrue(ISiteManager(self.root.publication).is_site())
 
 
-
 class ChiefEditorPublicationTestCase(EditorPublicationTestCase):
     user = 'chiefeditor'
     access = True
