@@ -3,6 +3,10 @@
 # See also LICENSE.txt
 
 import unittest
+
+from silva.core.interfaces import IAutoTOC
+from zope.interface.verify import verifyObject
+
 from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from Products.Silva.ftesting import smi_settings
 
@@ -60,6 +64,9 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
     user = 'author'
     access = False
 
+    def setUp(self):
+        self.root = self.layer.get_application()
+
     def test_autotoc_add_and_listing(self):
         browser = self.layer.get_web_browser(smi_settings)
         browser.login(self.user)
@@ -82,6 +89,8 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(add_form.actions, ['Cancel', 'Save'])
         self.assertEqual(add_form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva AutoTOC.")
+        # We should have now an AutoTOC with the id 'contents'
+        self.assertTrue(verifyObject(IAutoTOC, self.root._getOb('contents', None)))
 
         # Inspect newly created content.
         self.assertEqual(browser.inspect.title, u'Table des matières')
@@ -158,6 +167,7 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
             200)
         self.assertEqual(browser.inspect.listing, [])
         browser.macros.assertFeedback(u'Deleted "Table des matières".')
+        self.assertIs(self.root._getOb('contents', None), None)
 
 
 class EditorAutoTOCTestCase(AuthorAutoTOCTestCase):

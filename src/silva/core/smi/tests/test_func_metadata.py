@@ -4,13 +4,16 @@
 
 import unittest
 
+from zope.component import getUtility
+from silva.core.services.interfaces import IMetadataService
+
 from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from Products.Silva.ftesting import smi_settings
 
 
 class AuthorMetadataTestCase(unittest.TestCase):
     layer = FunctionalLayer
-    username = 'author'
+    user = 'author'
 
     def setUp(self):
         self.root = self.layer.get_application()
@@ -21,7 +24,7 @@ class AuthorMetadataTestCase(unittest.TestCase):
 
     def test_content_metadata(self):
         browser = self.layer.get_web_browser(smi_settings)
-        browser.login(self.username)
+        browser.login(self.user)
 
         self.assertEqual(
             browser.inspect.listing,
@@ -33,82 +36,74 @@ class AuthorMetadataTestCase(unittest.TestCase):
         # Access publish tab
         self.assertTrue('Properties' in browser.inspect.tabs)
         self.assertTrue(browser.inspect.tabs['Properties'].name.click(), 200)
-
         self.assertEqual(browser.inspect.form, ['Editable item properties'])
-        return
 
-        # Metadata main set.
-        form = browser.get_form('form')
-        form.get_control('silva-content.maintitle:record').value = \
-            u'content €€€€ title'
-        form.get_control('silva-content.shorttitle:record').value = \
-            u'content €€€€ shorttitle'
+        # You can edit editable metadata
+        # There two times the controls to save the metadata
+        form = browser.inspect.form['Editable item properties']
         self.assertEqual(
-            form.get_control('save_metadata:method').click(),
+            form.fields,
+            [u'keywords', u'short title', u'contact name', u'title',
+             u'contact email', u'subject', u'comment', u'language',
+             u'description'])
+        self.assertEqual(form.fields['title'].value, 'Document')
+        self.assertEqual(form.fields['short title'].value, '')
+        self.assertEqual(form.fields['comment'].value, '')
+        form.fields['title'].value = 'New document'
+        form.fields['short title'].value = 'Document'
+        form.fields['comment'].value = u'Ce document a été récement créé.'
+        self.assertEqual(
+            form.actions,
+            ['Cancel', 'Save changes', 'Cancel', 'Save changes'])
+        self.assertEqual(
+            form.actions.get('Save changes', multiple=True)[0].click(),
             200)
-        self.assertEqual(
-            browser.inspect.feedback,
-            ['Metadata saved.'])
+        browser.macros.assertFeedback('Metadata saved.')
 
-        form = browser.get_form('form')
-        self.assertEqual(
-            form.get_control('silva-content.maintitle:record').value,
-            u'content €€€€ title')
-        self.assertEqual(
-            form.get_control('silva-content.shorttitle:record').value,
-            u'content €€€€ shorttitle')
+        # Metadata changes. So the title
+        self.assertEqual(browser.inspect.title, 'New document')
+        self.assertEqual(browser.inspect.form, ['Editable item properties'])
 
-        # Metadata extra set.
-        form = browser.get_form('form')
-        form.get_control('silva-extra.subject:record').value = \
-            u'content €€€€ subject'
-        form.get_control('silva-extra.keywords:record').value = \
-            u'keyword ¥¥¥¥ value'
-        form.get_control('silva-extra.content_description:record').value = \
-            u'description in $$$ and €€€€ and ££££ and ¥¥¥¥'
-        form.get_control('silva-extra.comment:record').value = \
-            u'comment value in ££££'
-        form.get_control('silva-extra.contactname:record').value = \
-            u'wim $$$$'
-        form.get_control('silva-extra.contactemail:record').value = \
-            u'wim@example.com'
+        form = browser.inspect.form['Editable item properties']
         self.assertEqual(
-            form.get_control('silva-extra.hide_from_tocs:record').options,
-            ['do not hide', 'hide'])
-        form.get_control('silva-extra.hide_from_tocs:record').value = 'hide'
+            form.fields,
+            [u'keywords', u'short title', u'contact name', u'title',
+             u'contact email', u'subject', u'comment', u'language',
+             u'description'])
+        self.assertEqual(form.fields['title'].value, 'New document')
+        self.assertEqual(form.fields['short title'].value, 'Document')
         self.assertEqual(
-            form.get_control('save_metadata:method').click(),
-            200)
+            form.fields['comment'].value,
+            u'Ce document a été récement créé.')
+
+        metadata = getUtility(IMetadataService).getMetadata(self.root.document)
         self.assertEqual(
-            browser.inspect.feedback,
-            ['Metadata saved.'])
+            metadata.get('silva-content', 'maintitle'),
+            'New document')
+        self.assertEqual(
+            metadata.get('silva-content', 'shorttitle'),
+            'Document')
+        self.assertEqual(
+            metadata.get('silva-extra', 'comment'),
+            u'Ce document a été récement créé.')
 
 
-        form = browser.get_form('form')
-        self.assertEqual(
-            form.get_control('silva-extra.subject:record').value,
-            u'content €€€€ subject')
-        self.assertEqual(
-            form.get_control('silva-extra.keywords:record').value,
-            u'keyword ¥¥¥¥ value')
-        self.assertEqual(
-            form.get_control('silva-extra.content_description:record').value,
-            u'description in $$$ and €€€€ and ££££ and ¥¥¥¥')
-        self.assertEqual(
-            form.get_control('silva-extra.comment:record').value,
-            u'comment value in ££££')
-        self.assertEqual(
-            form.get_control('silva-extra.contactname:record').value,
-            u'wim $$$$')
-        self.assertEqual(
-            form.get_control('silva-extra.contactemail:record').value,
-            u'wim@example.com')
-        self.assertEqual(
-            form.get_control('silva-extra.hide_from_tocs:record').value,
-            'hide')
+class EditorMetadataTestCase(AuthorMetadataTestCase):
+    user = 'editor'
+
+
+class ChiefEditorMetadataTestCase(EditorMetadataTestCase):
+    user = 'chiefeditor'
+
+
+class ManagerMetadataTestCase(ChiefEditorMetadataTestCase):
+    user = 'manager'
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthorMetadataTestCase))
+    suite.addTest(unittest.makeSuite(EditorMetadataTestCase))
+    suite.addTest(unittest.makeSuite(ChiefEditorMetadataTestCase))
+    suite.addTest(unittest.makeSuite(ManagerMetadataTestCase))
     return suite

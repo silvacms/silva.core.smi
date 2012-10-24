@@ -3,6 +3,10 @@
 # See also LICENSE.txt
 
 import unittest
+
+from silva.core.interfaces import IIndexer
+from zope.interface.verify import verifyObject
+
 from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from Products.Silva.ftesting import smi_settings
 
@@ -129,6 +133,8 @@ class EditorIndexerTestCase(unittest.TestCase):
         self.assertEqual(add_form.actions, ['Cancel', 'Save'])
         self.assertEqual(add_form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva Indexer.")
+        # We should now have an indexer with the id 'indexer'
+        self.assertTrue(verifyObject(IIndexer, self.root._getOb('indexer', None)))
 
         # Inspect new created content
         self.assertEqual(browser.inspect.title, u'Indexer')
@@ -197,6 +203,7 @@ class EditorIndexerTestCase(unittest.TestCase):
             200)
         self.assertEqual(browser.inspect.listing, [])
         browser.macros.assertFeedback(u'Deleted "Indexer".')
+        self.assertIs(self.root._getOb('indexer', None), None)
 
 
 class ChiefEditorIndexerTestCase(EditorIndexerTestCase):

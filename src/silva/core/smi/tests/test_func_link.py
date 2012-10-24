@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2012  Infrae. All rights reserved.
+# See also LICENSE.txt
 
 
 import unittest
 
+from silva.core.interfaces import ILink
+from zope.interface.verify import verifyObject
 
 from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from Products.Silva.ftesting import smi_settings
@@ -59,6 +64,13 @@ class AuthorLinkTestCase(unittest.TestCase):
         self.assertEqual(form.actions, ['Cancel', 'Save'])
         self.assertEqual(form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva Link.")
+        # We should have a link with the id 'silvacms'
+        self.assertTrue(verifyObject(ILink, self.root._getOb('silvacms', None)))
+        version = self.root.silvacms.get_editable()
+        self.assertIsNot(version, None)
+        self.assertEqual(version.get_relative(), True)
+        self.assertEqual(version.get_target(), self.root.document)
+        self.assertEqual(version.get_url(), '')
 
         # Inspect newly created content
         self.assertEqual(browser.inspect.title, u'silvacms.org site')
@@ -93,6 +105,12 @@ class AuthorLinkTestCase(unittest.TestCase):
         self.assertEqual(form.actions, ['Cancel', 'Save'])
         self.assertEqual(form.actions['Save'].click(), 200)
         browser.macros.assertFeedback(u"Added Silva Link.")
+        self.assertTrue(verifyObject(ILink, self.root._getOb('silvacms', None)))
+        version = self.root.silvacms.get_editable()
+        self.assertIsNot(version, None)
+        self.assertEqual(version.get_relative(), False)
+        self.assertEqual(version.get_target(), None)
+        self.assertEqual(version.get_url(), 'http://silvacms.org')
 
         # Inspect newly created content
         self.assertEqual(browser.inspect.title, u'silvacms.org site')
@@ -164,6 +182,7 @@ class AuthorLinkTestCase(unittest.TestCase):
             200)
         self.assertEqual(browser.inspect.listing, [])
         browser.macros.assertFeedback(u'Deleted "silvacms.org site".')
+        self.assertIs(self.root._getOb('silvacms', None), None)
 
 
 class EditorLinkTestCase(AuthorLinkTestCase):
