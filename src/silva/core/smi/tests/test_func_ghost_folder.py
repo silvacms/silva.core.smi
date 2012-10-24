@@ -107,6 +107,11 @@ class EditorGhostFolderTestCase(unittest.TestCase):
         # Check edit form
         self.assertEqual(browser.inspect.form, ['Edit a Silva Ghost Folder'])
         form = browser.inspect.form['Edit a Silva Ghost Folder']
+        self.assertNotEqual(form.fields, [])
+        self.assertIn('Haunted', form.fields)
+        self.assertEqual(
+            form.fields['Haunted'].value,
+            str(get_content_id(self.root.folder)))
         self.assertEqual(form.actions, ['Back', 'Save changes', 'Synchronize'])
         self.assertEqual(form.actions['Synchronize'].click(), 200)
         browser.macros.assertFeedback(u"Ghost Folder synchronized.")

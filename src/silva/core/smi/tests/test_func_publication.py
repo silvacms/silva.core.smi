@@ -3,6 +3,8 @@
 # See also LICENSE.txt
 
 import unittest
+
+from silva.core.interfaces import ISiteManager
 from Products.Silva.testing import FunctionalLayer, CatalogTransaction
 from Products.Silva.ftesting import smi_settings
 
@@ -54,7 +56,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
         self.root = self.layer.get_application()
         self.layer.login('editor')
 
-    def test_publication_roundtrip(self):
+    def test_publication_add_and_listing(self):
         """Create a Publication check its tabs and actions and delete it.
         """
         with CatalogTransaction():
@@ -81,16 +83,10 @@ class AuthorPublicationTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(
-            browser.inspect.views,
-            ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
         # We are on contents
-        self.assertEqual(
-            browser.inspect.activetabs,
-            ['Content'])
-        self.assertEqual(
-            browser.inspect.listing,
-            [])
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
+        self.assertEqual(browser.inspect.listing, [])
 
         # We go through the tabs
         self.assertEqual(browser.inspect.views['Preview'].click(), 200)
@@ -159,9 +155,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.listing,
             [{'title': 'Data', 'identifier': 'publication'}])
-        self.assertEqual(
-            browser.inspect.listing[0].goto.click(),
-            200)
+        self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
         self.assertEqual(browser.inspect.title, u'Data')
         self.assertIn('Settings', browser.inspect.tabs)
         self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
@@ -171,7 +165,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
 class EditorPublicationTestCase(AuthorPublicationTestCase):
     user = 'editor'
 
-    def test_publication_roundtrip(self):
+    def test_publication_add_and_listing(self):
         """Create a folder check its tabs and actions and delete it.
         """
         browser = self.layer.get_web_browser(smi_settings)
@@ -201,13 +195,9 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(
-            browser.inspect.views,
-            ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
         # We are on contents
-        self.assertEqual(
-            browser.inspect.activetabs,
-            ['Content'])
+        self.assertEqual(browser.inspect.activetabs, ['Content'])
         self.assertEqual(
             browser.inspect.listing,
             [{'title': 'Site', 'identifier': 'index', 'author': self.user}])
@@ -232,9 +222,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
             browser.inspect.listing,
             [{'title': 'Site', 'identifier': 'site', 'author': self.user}])
         # Select the folder
-        self.assertEqual(
-            browser.inspect.listing[0].identifier.click(),
-            200)
+        self.assertEqual(browser.inspect.listing[0].identifier.click(), 200)
         self.assertEqual(
             browser.inspect.toolbar,
             ['Cut', 'Copy', 'Delete', 'Rename', 'Publish'])
@@ -279,9 +267,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(
             browser.inspect.listing,
             [{'title': 'Data', 'identifier': 'publication'}])
-        self.assertEqual(
-            browser.inspect.listing[0].goto.click(),
-            200)
+        self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
         self.assertEqual(browser.inspect.title, u'Data')
         self.assertIn('Settings', browser.inspect.tabs)
         self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
@@ -300,7 +286,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(convert.form.inspect.fields, [])
         self.assertNotIn('Convert to folder', convert.actions)
 
-    def test_publication_local_site(self):
+    def test_publication_localsite(self):
         """Test activating a local site on a publication.
         """
         with CatalogTransaction():
@@ -319,6 +305,8 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertIn('Settings', browser.inspect.tabs)
         self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertIn({'title': u'Container type'}, browser.inspect.form)
+        # The publication is not a local site by default.
+        self.assertFalse(ISiteManager(self.root.publication).is_site())
 
         # You can activate the local site.
         convert = browser.inspect.form['Container type']
@@ -327,6 +315,8 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(convert.actions, ['Convert to folder', 'Make local site'])
         self.assertEqual(convert.actions['Make local site'].click(), 200)
         browser.macros.assertFeedback("Local site activated.")
+        # And the publication is now a local site.
+        self.assertTrue(ISiteManager(self.root.publication).is_site())
 
         # After you activated the site, you can only deactivate it.
         self.assertIn({'title': u'Container type'}, browser.inspect.form)
@@ -336,6 +326,8 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(convert.actions, ['Remove local site'])
         self.assertEqual(convert.actions['Remove local site'].click(), 200)
         browser.macros.assertFeedback("Local site deactivated.")
+        # And the publication is no longer a local site.
+        self.assertFalse(ISiteManager(self.root.publication).is_site())
 
         # Once deactivated, you can reactivate it.
         self.assertIn({'title': u'Container type'}, browser.inspect.form)
@@ -343,6 +335,41 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(convert.title, 'Container type')
         self.assertEqual(convert.form.inspect.fields, [])
         self.assertEqual(convert.actions, ['Convert to folder', 'Make local site'])
+
+    def test_publication_localsite_active(self):
+        """You cannot unactivate a local site if there are services
+        registered in it.
+        """
+        with CatalogTransaction():
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addPublication('publication', 'Data')
+            ISiteManager(self.root.publication).make_site()
+            factory = self.root.publication.manage_addProduct['silva.core.layout']
+            factory.manage_addCustomizationService('service_customization')
+
+        browser = self.layer.get_web_browser(smi_settings)
+        browser.login(self.user)
+        self.assertEqual(
+            browser.inspect.listing,
+            [{'title': 'Data', 'identifier': 'publication'}])
+        self.assertEqual(
+            browser.inspect.listing[0].goto.click(),
+            200)
+        self.assertEqual(browser.inspect.title, u'Data')
+        self.assertIn('Settings', browser.inspect.tabs)
+        self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
+        self.assertIn({'title': u'Container type'}, browser.inspect.form)
+
+        # You should have the local site form, and the site should be active.
+        convert = browser.inspect.form['Container type']
+        self.assertEqual(convert.title, 'Container type')
+        self.assertEqual(convert.form.inspect.fields, [])
+        self.assertEqual(convert.actions, ['Remove local site'])
+        self.assertEqual(convert.actions['Remove local site'].click(), 200)
+        browser.macros.assertError("Still have registered services.")
+
+        # The site was not removed.
+        self.assertTrue(ISiteManager(self.root.publication).is_site())
 
 
 

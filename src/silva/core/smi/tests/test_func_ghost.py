@@ -71,11 +71,11 @@ class AuthorGhostTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.form, ['Edit a Silva Ghost'])
         form = browser.inspect.form['Edit a Silva Ghost']
         self.assertNotEqual(form.fields, [])
-        self.assertEqual(form.actions, ['Back', 'Save changes'])
         self.assertIn('Haunted', form.fields)
         self.assertEqual(
             form.fields['Haunted'].value,
             str(get_content_id(self.root.document)))
+        self.assertEqual(form.actions, ['Back', 'Save changes'])
 
         # An action let you directly request approval
         self.assertEqual(browser.inspect.toolbar, self.toolbar)
