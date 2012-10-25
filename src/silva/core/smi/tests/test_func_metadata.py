@@ -22,7 +22,7 @@ class AuthorMetadataTestCase(unittest.TestCase):
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addMockupVersionedContent('document', 'Document')
 
-    def test_content_metadata(self):
+    def test_content_draft_metadata(self):
         browser = self.layer.get_web_browser(smi_settings)
         browser.login(self.user)
 
