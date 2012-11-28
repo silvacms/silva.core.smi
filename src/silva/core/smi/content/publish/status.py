@@ -29,7 +29,7 @@ from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
 from zeam.form.base.widgets import FieldWidget
 from zeam.form.ztk.widgets.textline import TextLineField
-from zope.cachedescriptors.property import CachedProperty
+from zope.cachedescriptors.property import Lazy
 
 
 version_status_vocabulary = SimpleVocabulary([
@@ -180,6 +180,9 @@ class CompareVersionAction(silvaforms.Action):
     title = _('Compare')
     descripton = _('Select and compare two different versions.')
 
+    def available(self, form):
+        return len(form.lines) > 1
+
     def __call__(self, form, selected, deselected):
         if len(selected) != 2:
             form.send_message(
@@ -253,9 +256,13 @@ class DeleteVersionAction(silvaforms.Action):
     grok.implements(IRemoverAction)
     title = _("Delete")
     description = _("There's no undo.")
+    htmlAttributes = {
+        'data-confirmation': _(
+            u'Deletion is premanent. Are you sure ?')}
 
     def available(self, form):
-        return bool(checkPermission('silva.ApproveSilvaContent', form.context))
+        return (len(form.lines) > 1 and
+                bool(checkPermission('silva.ApproveSilvaContent', form.context)))
 
     def __call__(self, form, selected, deselected):
         if not len(deselected):
@@ -283,13 +290,13 @@ class VersioningStateWidget(FieldWidget):
     grok.adapts(TextLineField, Interface, Interface)
     grok.name(MODE)
 
-    @CachedProperty
+    @Lazy
     def versioning_state(self):
         version = self.form.getContent().context
         manager = IVersionManager(version)
         return str(manager.get_status())
 
-    @CachedProperty
+    @Lazy
     def link_attributes(self):
         version = self.form.getContent().context
         content = version.get_silva_object()
