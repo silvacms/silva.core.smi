@@ -16,7 +16,7 @@ class DisplayMenu(LinkMenuItem):
     grok.adapts(ViewMenu, IViewableObject)
     grok.order(20)
     name = _('View')
-    description = _(u'view content in a new window')
+    description = _(u'View the published item in a new tab or window.')
     accesskey = u';'
 
     def get_url(self, context, request):
