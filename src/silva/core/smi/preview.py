@@ -77,6 +77,7 @@ class PreviewMenu(MenuItem):
     grok.adapts(ViewMenu, IViewableObject)
     grok.order(10)
     name = _('Preview')
-    description = _(u'Preview this item within the management interface.')
+    description = _(u'Preview this item inside the management interface.')
     screen = 'preview'
     interface = IPreviewScreen
+    accesskey = u';'
