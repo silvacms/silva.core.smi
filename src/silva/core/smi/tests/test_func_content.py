@@ -6,7 +6,6 @@ import unittest
 
 from Products.Silva.testing import FunctionalLayer
 from Products.Silva.ftesting import smi_settings
-from Products.Silva.tests.helpers import test_filename
 from silva.core.references.reference import get_content_id
 
 
@@ -25,7 +24,7 @@ class AuthorContentTestCase(unittest.TestCase):
         """
         browser = self.layer.get_web_browser(smi_settings)
 
-        image = test_filename('torvald.jpg')
+        image = self.layer.get_fixture('torvald.jpg')
         browser.login(self.username, self.username)
         self.assertEqual(browser.open('/root/edit'), 200)
         browser.macros.create(
