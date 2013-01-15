@@ -74,7 +74,7 @@ def make_import_log(context, importer, identifier='import_log'):
                      content.get_title_or_id(), '</a>: ',
                      reason, '</li>'])
     html.append('</ul>')
-    version.body.save_raw_text(''.join(html) + str(version.body))
+    version.body.save_raw_text(''.join(html) + unicode(version.body))
     notify(ObjectModifiedEvent(version))
 
 
