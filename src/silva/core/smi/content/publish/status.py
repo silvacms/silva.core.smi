@@ -257,6 +257,8 @@ class DeleteVersionAction(silvaforms.Action):
     title = _("Delete")
     description = _("There's no undo.")
     htmlAttributes = {
+        'data-confirmation-title': _(
+            u'Delete a version'),
         'data-confirmation': _(
             u'Deletion is premanent. Are you sure ?')}
 

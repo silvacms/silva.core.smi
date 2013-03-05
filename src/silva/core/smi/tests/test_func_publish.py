@@ -365,11 +365,23 @@ class ManageVersionTestCase(unittest.TestCase):
             [u'Delete', u'Copy for editing', u'View', u'Compare'])
         self.assertEqual(len(form.fields), 4)
         self.assertEqual(form.actions['Delete'].click(), 200)
+        self.assertEqual(browser.inspect.dialog, ['Delete a version'])
+
+        dialog = browser.inspect.dialog['Delete a version']
+        self.assertEqual(dialog.buttons, ['Cancel', 'Continue'])
+        self.assertEqual(dialog.buttons['Continue'].click(), 200)
+
         browser.macros.assertError(u"No version selected, nothing deleted.")
 
         form = browser.inspect.form[u'Manage versions']
         form.fields['1'].checked = True
         self.assertEqual(form.actions['Delete'].click(), 200)
+        self.assertEqual(browser.inspect.dialog, ['Delete a version'])
+
+        dialog = browser.inspect.dialog['Delete a version']
+        self.assertEqual(dialog.buttons, ['Cancel', 'Continue'])
+        self.assertEqual(dialog.buttons['Continue'].click(), 200)
+
         browser.macros.assertFeedback(u"Version(s) deleted.")
 
         form = browser.inspect.form[u'Manage versions']
@@ -381,6 +393,12 @@ class ManageVersionTestCase(unittest.TestCase):
         form.fields['0'].checked = True
         form.fields['2'].checked = True
         self.assertEqual(form.actions['Delete'].click(), 200)
+        self.assertEqual(browser.inspect.dialog, ['Delete a version'])
+
+        dialog = browser.inspect.dialog['Delete a version']
+        self.assertEqual(dialog.buttons, ['Cancel', 'Continue'])
+        self.assertEqual(dialog.buttons['Continue'].click(), 200)
+
         browser.macros.assertError(u"Cannot delete all versions.")
 
     def test_author_do_not_delete_version(self):
