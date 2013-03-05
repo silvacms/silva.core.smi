@@ -46,7 +46,7 @@ class ReaderIndexerTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.toolbar, [])
         self.assertEqual(browser.inspect.tabs, ['Edit'])
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         self.assertEqual(browser.inspect.form, ['Update Silva Indexer'])
         edit_form = browser.inspect.form['Update Silva Indexer']
         self.assertEqual(edit_form.fields, [])
@@ -95,7 +95,7 @@ class AuthorIndexerTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Edit', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
         self.assertEqual(browser.inspect.toolbar, [])
@@ -141,7 +141,7 @@ class EditorIndexerTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Edit', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
         self.assertEqual(browser.inspect.toolbar, [])

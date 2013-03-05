@@ -46,7 +46,7 @@ class ReaderAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.toolbar, [])
         self.assertEqual(browser.inspect.tabs, ['Edit'])
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         self.assertEqual(browser.inspect.form, ['Edit a Silva AutoTOC'])
         edit_form = browser.inspect.form['Edit a Silva AutoTOC']
         self.assertEqual(edit_form.fields, [])
@@ -99,7 +99,7 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
             ['Edit', 'Properties', 'Settings'])
         self.assertEqual(
             browser.inspect.views,
-            ['Preview', 'View'])
+            ['Preview', 'View...'])
         # We are on contents
         self.assertEqual(
             browser.inspect.activetabs,

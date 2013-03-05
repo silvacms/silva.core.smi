@@ -25,7 +25,7 @@ class ReaderFolderTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.title, u'root')
         self.assertEqual(browser.inspect.tabs, ['Content'])
         self.assertEqual(browser.inspect.activetabs, ['Content'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         self.assertEqual(browser.inspect.toolbar, [])
 
         # We should see our folder.
@@ -43,7 +43,7 @@ class ReaderFolderTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.title, u'Folder')
         self.assertEqual(browser.inspect.tabs, ['Content'])
         self.assertEqual(browser.inspect.activetabs, ['Content'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         self.assertEqual(browser.inspect.listing, [])
         self.assertEqual(browser.inspect.toolbar, [])
 
@@ -99,7 +99,7 @@ class AuthorFolderTestCase(unittest.TestCase):
             ['Content', 'Add', 'Properties', 'Settings'])
         self.assertEqual(
             browser.inspect.views,
-            ['Preview', 'View'])
+            ['Preview', 'View...'])
         self.assertEqual(
             browser.inspect.activetabs,
             ['Content'])

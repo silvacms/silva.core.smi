@@ -82,7 +82,7 @@ class EditorGhostFolderTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Edit', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Content'])
         self.assertEqual(

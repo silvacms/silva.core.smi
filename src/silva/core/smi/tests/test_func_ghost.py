@@ -64,7 +64,7 @@ class AuthorGhostTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Edit', 'Properties', 'Publish', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
 

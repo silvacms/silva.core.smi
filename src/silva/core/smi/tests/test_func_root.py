@@ -20,7 +20,7 @@ class ReaderRootTestCase(unittest.TestCase):
         browser.open('/root/edit')
         self.assertEqual(browser.inspect.title, u"root")
         self.assertEqual(browser.inspect.tabs, ['Content'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
 
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Content'])
@@ -48,7 +48,7 @@ class AuthorRootTestCase(unittest.TestCase):
             ['Content', 'Add', 'Properties', 'Settings'])
         self.assertEqual(
             browser.inspect.views,
-            ['Preview', 'View'])
+            ['Preview', 'View...'])
 
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Content'])

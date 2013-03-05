@@ -27,7 +27,7 @@ class ReaderPublicationTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.title, u'root')
         self.assertEqual(browser.inspect.tabs, ['Content'])
         self.assertEqual(browser.inspect.activetabs, ['Content'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         self.assertEqual(browser.inspect.toolbar, [])
 
         # We should see our folder.
@@ -83,7 +83,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Content'])
         self.assertEqual(browser.inspect.listing, [])
@@ -195,7 +195,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         self.assertEqual(
             browser.inspect.tabs,
             ['Content', 'Add', 'Properties', 'Settings'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View'])
+        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Content'])
         self.assertEqual(
