@@ -17,4 +17,4 @@ Code repository
 This code can be found in Mercurial at:
 https://hg.infrae.com/silva.core.smi/.
 
-.. _Silva developer documentation: http://docs.infrae.com/silva/
+.. _Silva developer documentation: http://docs.silvacms.org/latest/
