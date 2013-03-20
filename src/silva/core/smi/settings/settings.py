@@ -232,8 +232,8 @@ class IHTTPHeadersSettingsFields(Interface):
         default=False)
     http_max_age = schema.Int(
         title=_(u'Maximum caching time'),
-        description=_(u'Maximum time in seconds the item can be cached '
-                      u'in an HTTP proxy'),
+        description=_(u'If the item is cached, this is the maximum time '
+                      'in seconds it can be cached by an HTTP proxy.'),
         default=84600,
         min=30,
         required=True)
