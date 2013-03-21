@@ -16,7 +16,6 @@ from silva.core.interfaces.adapters import ISiteManager
 from silva.core.smi.content.metadata import MetadataFormGroup
 from silva.core.smi.settings import Settings
 from silva.core.views import views as silvaviews
-from silva.core.interfaces import IHTTPHeadersSettings
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 from zeam.form.silva.interfaces import IRemoverAction
@@ -224,52 +223,3 @@ class SettingsMetadataForm(MetadataFormGroup):
     label = _('Generic Settings')
 
 
-class IHTTPHeadersSettingsFields(Interface):
-
-    http_disable_cache = schema.Bool(
-        title=_(u'Prevent item to be ever cached'),
-        required=False,
-        default=False)
-    http_max_age = schema.Int(
-        title=_(u'Maximum caching time'),
-        description=_(u'If the item is cached, this is the maximum time '
-                      'in seconds it can be cached by an HTTP proxy.'),
-        default=84600,
-        min=30,
-        required=True)
-    http_last_modified = schema.Bool(
-        title=_(u'Include a last-modified header in the response'),
-        description=_(
-            u'This information is used to control the caching '
-            u'of an item. If not specified, an HTTP proxy will fetch '
-            u'the item as often as possible.'),
-        required=False,
-        default=True)
-
-
-class HTTPHeadersSettingsForm(silvaforms.SMISubForm):
-    grok.context(ISilvaObject)
-    grok.order(200)
-    grok.view(Settings)
-    grok.viewletmanager(silvaforms.SMIFormPortlets)
-    grok.require('silva.ManageSilvaContentSettings')
-
-    label = _('HTTP Caching settings')
-    fields = silvaforms.Fields(IHTTPHeadersSettingsFields)
-    actions = silvaforms.Actions(
-        silvaforms.CancelAction(),
-        silvaforms.EditAction())
-    ignoreRequest = False
-    ignoreContent = False
-
-    def available(self):
-        if not checkPermission('silva.ManageSilvaContentSettings', self.context):
-            return False
-        return self.settings is not None
-
-    def update(self):
-        self.setContentData(self.settings)
-
-    @Lazy
-    def settings(self):
-        return IHTTPHeadersSettings(self.context, None)
