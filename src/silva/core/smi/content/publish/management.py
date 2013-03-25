@@ -408,4 +408,5 @@ class PublishLastClosedForm(silvaforms.SMISubForm):
     def available(self):
         return checkPermission('silva.ApproveSilvaContent', self.context) and \
             self.context.get_last_closed_version() is not None and \
-            self.context.get_public_version() is None
+            self.context.get_public_version() is None and \
+            self.context.get_unapproved_version() is None
