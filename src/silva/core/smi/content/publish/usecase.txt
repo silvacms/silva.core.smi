@@ -1,0 +1,93 @@
+
+Information that should be displayed in the publish tab portlet
+===============================================================
+
+When content is a draft and never published:
+ I should see a title "Item is a draft and never published" in "Information".
+ If I'm an editor:
+   I should have a "Publish now" content action.
+   I should have a "Publish new version" form with two submits, "Approve for
+   future" and "Publish now".
+ If I'm an an author:
+   I should have a "Request approval" content action.
+
+When content is a draft and a published version exists:
+ I should see a heading "Published version exists" in "Information".
+ I should see a heading "Publication date" in "Information", followed by the
+ current publication date.
+ If an expiration date is set:
+   I should see a heading "Expiration date" followed by the current expiration
+   date.
+ If I'm an editor:
+   I should have a "Publish now" content action.
+   I should have a "Manual close" form with a "Close published version" submit.
+ If I'm an an author:
+   I should have a "Request approval" content action.
+
+When on a published content item:
+ I should see a heading "Item is published" in "Information".
+ I should see a heading "Publication date" in "Information".
+ If an expiration date is set:
+   I should see a heading "Expiration date" in "Information" followed by the
+   expiration date.
+ I should have a "New version" content action.
+ If I'm an editor:
+   I should have a "Close published version" submit.
+
+When on an approved content item:
+ I should see a heading "Item is approved, not published" in "Information".
+ I should see a heading "Publication date" in "Information", followed by the
+ future publication date.
+ If an expiration date is set:
+   I should see a heading "Expiration date" in "Information" followed by the
+   expiration date.
+ If I'm an editor:
+   I should have a "Revoke approval" content action.
+   (Silva 2.x had a "Current timings" form in this screen where you could
+   change the pub/exp times.)
+ If I'm an an author:
+   I should have a "Revoke approval" content action.
+
+When on an approved content item that also has a published version:
+ I should see a heading "New version is approved" in "Information".
+ I should see a heading "Publication date" in "Information", followed by the
+ future publication date for this version.
+ If an expiration date is set:
+   I should see a heading "Expiration date" in "Information" followed by the
+   expiration date for this version.
+ I should see a heading "Published version exists" in "Information".
+ I should see a heading "Publication date" in "Information", followed by the
+ current publication date.
+ If an expiration date is set:
+   I should see a heading "Expiration date" in "Information" followed by the
+   current expiration date.
+ If I'm an editor:
+   I should have a "Revoke approval" content action.
+   I should have a "Manual close" form with a "Close published version" submit.
+ If I'm an an author:
+   I should have a "Revoke approval" content action.
+
+When on a pending content item:
+ I should see a heading "Item is pending" in "Information".
+ I should see a heading "Published version exists" in "Information".
+ I should see a heading "Publication date" in "Information", followed by the
+ current publication date.
+ If an expiration date is set:
+   I should see a heading "Expiration date" in "Information" followed by the
+   current expiration date.
+ I should have a "Publish now" content action.
+ I should have a "Reject request" content action.
+ I should have a "Publish new version" form with two submits, "Approve for
+ future" and "Publish now".
+ If I'm an editor:
+   I should have a "Reject request" form with a "Reject approval request"
+   submit.
+   I should have a "Manual close" form with a "Close published version" submit.
+ If I'm an an author:
+   I should have a "Withdraw request" content action.
+
+When on a closed content item:
+ I should see a heading "Item is closed" in "Information".
+ I should have a "New version" content action.
+ If I'm an editor:
+   I should have a "Publish closed version" form with a "Publish now" submit.

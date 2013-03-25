@@ -23,6 +23,8 @@ class PublicationInfo(silvaviews.Viewlet):
     def update(self):
         format = self.request.locale.dates.getFormatter('dateTime', 'short').format
         convert = lambda d: d is not None and format(d.asdatetime()) or None
+        self.first_publication_date = convert(
+            self.context.get_first_publication_date())
         self.publication_date = convert(
             self.context.get_public_version_publication_datetime())
         self.expiration_date = convert(

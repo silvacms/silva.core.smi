@@ -72,6 +72,13 @@
 
   </tal:change>
 
+  <tal:publication tal:condition="viewlet.first_publication_date">
+    <h4 title="First publication date of the item"
+        i18n:attributes="title"
+        i18n:translate="">First publication date</h4>
+    <p tal:content="viewlet.first_publication_date">date</p>
+  </tal:publication>
+
   <tal:publication tal:condition="viewlet.publication_date">
     <h4 title="Publication date of the public version"
         i18n:attributes="title"
