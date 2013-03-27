@@ -6,7 +6,7 @@ import bisect
 
 from five import grok
 from zope.component import getUtility, getMultiAdapter
-from zope.cachedescriptors.property import CachedProperty
+from zope.cachedescriptors.property import Lazy
 
 from silva.core.interfaces import IIconResolver, IAuthorizationManager
 from silva.core.interfaces import ISilvaObject, IVersion, IVersionedObject
@@ -77,7 +77,7 @@ class MetadataForm(silvaforms.SMISubForm):
 
     label = _('Editable item properties')
 
-    @CachedProperty
+    @Lazy
     def binding(self):
         service = getUtility(IMetadataService)
         return service.getMetadata(self.getContent())
@@ -97,8 +97,15 @@ class MetadataForm(silvaforms.SMISubForm):
         self.errors = False
         self.set_names = self.binding.getSetNames(category=self.category)
 
+    def should_display_label(self):
+        # Display the title only if there is more than one subform.
+        return len(self.parent.subforms) > 1
+
     def get_set_title(self, set_name):
         return self.binding.getSet(set_name).getTitle() or set_name
+
+    def get_set_description(self, set_name):
+        return self.binding.getSet(set_name).getDescription()
 
     def get_element_names(self, set_name):
         return self.binding.getElementNames(set_name, mode='view')

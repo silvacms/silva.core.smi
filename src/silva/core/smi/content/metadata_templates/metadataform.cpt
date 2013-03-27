@@ -4,15 +4,20 @@
       tal:condition="view.set_names"
       i18n:domain="silva">
   <div class="form-head">
-    <h4 tal:content="view.label">
+    <h4 tal:content="view.label" tal:condition="view.should_display_label()">
       Label
     </h4>
   </div>
   <tal:sets tal:repeat="set_name view.set_names">
     <div class="form-head">
-      <h5 tal:define="title view.get_set_title(set_name)">
-        <tal:i18n i18n:translate="">metadata set</tal:i18n> &#xab;<tal:block tal:replace="title" />&#xbb;
+      <h5 tal:content="view.get_set_title(set_name)">
+        Metadata set title
       </h5>
+      <p tal:define="description view.get_set_description(set_name)"
+         tal:condition="description"
+         tal:content="structure description">
+        Description
+      </p>
     </div>
     <div class="form-body">
       <tal:section tal:repeat="element_name view.get_element_names(set_name)">
