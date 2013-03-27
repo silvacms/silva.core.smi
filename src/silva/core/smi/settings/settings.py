@@ -10,8 +10,9 @@ from zope import schema
 from zope.traversing.browser import absoluteURL
 from zope.cachedescriptors.property import Lazy
 
-from silva.core.interfaces import IContainer, IPublication, IRoot
+from silva.core.interfaces import IContainer, IPublication, IFolder, IRoot
 from silva.core.interfaces import ISilvaObject, IGhostFolder
+from silva.core.interfaces import IOrderableContainer, IOrderManager
 from silva.core.interfaces.adapters import ISiteManager
 from silva.core.smi.content.metadata import MetadataFormGroup
 from silva.core.smi.settings import Settings
@@ -90,8 +91,8 @@ class RemoveLocalSiteAction(silvaforms.Action):
             return silvaforms.SUCCESS
 
 
-class ConvertToForm(silvaforms.SMISubForm):
-    grok.context(IContainer)
+class ContainerTypeForm(silvaforms.SMISubForm):
+    grok.context(IFolder)
     grok.require('silva.ManageSilvaContent')
     grok.view(Settings)
     grok.order(10)
@@ -107,7 +108,7 @@ class ConvertToForm(silvaforms.SMISubForm):
             return False
         if not checkPermission('silva.ManageSilvaContent', self.context):
             return False
-        return super(ConvertToForm, self).available()
+        return super(ContainerTypeForm, self).available()
 
     @Lazy
     def manager(self):
@@ -128,6 +129,35 @@ class ConvertToForm(silvaforms.SMISubForm):
                      u'to a Silva Folder, or can become a local site.')
         return _(u'This Silva Folder can be converted '
                  u'to a Publication.')
+
+
+class RepairContainerOrderAction(silvaforms.Action):
+    title = _('Repair order')
+
+    def __call__(self, form):
+        manager = IOrderManager(form.context, None)
+        if manager is not None:
+            if manager.repair(form.context.objectValues()):
+                form.send_message(_("Container order was repaired."),
+                                  type=u"feedback")
+                return silvaforms.SUCCESS
+        form.send_message(_("Container order is consistent."), type=u"feedback")
+        return silvaforms.SUCCESS
+
+
+class ContainerManagementForm(silvaforms.SMISubForm):
+    grok.context(IOrderableContainer)
+    grok.view(Settings)
+    grok.order(15)
+
+    label = _('Container management')
+    actions = silvaforms.Actions(
+        RepairContainerOrderAction())
+
+    def available(self):
+        if not checkPermission('zope2.ViewManagementScreens', self.context):
+            return False
+        return True
 
 
 class IActivateFeedsSchema(Interface):
