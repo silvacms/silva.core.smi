@@ -147,6 +147,7 @@ class RepairContainerOrderAction(silvaforms.Action):
 
 class ContainerManagementForm(silvaforms.SMISubForm):
     grok.context(IOrderableContainer)
+    grok.require('zope2.ViewManagementScreens')
     grok.view(Settings)
     grok.order(15)
 
