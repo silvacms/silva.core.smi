@@ -42,6 +42,12 @@ class IImportFields(Interface):
                       u"with assets by adding folders."),
         default=False,
         required=False)
+    ignore_top_level = schema.Bool(
+        title=_(u"Ignore top level container"),
+        description=_(u"Do not recreate the top level container while "
+                      u"importing a file. This let you import items that "
+                      u"where exported from a container directly in the "
+                      u"current one."))
     replace = schema.Bool(
         title=_(u"Replace items"),
         description=_(u"Replace items with the ones from the import file "
@@ -107,7 +113,8 @@ class ImportForm(silvaforms.SMIForm):
                 importer = importer.importFromZip(
                     data['archive'],
                     self.request,
-                    data.getDefault('replace'))
+                    {'replace_content': data.getDefault('replace'),
+                     'ignore_top_level_content': data.getDefault('ignore_top_level')})
                 make_import_log(self.context, importer)
                 problems = importer.getProblems()
                 if len(problems):
