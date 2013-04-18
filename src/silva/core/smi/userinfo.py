@@ -7,14 +7,19 @@ from AccessControl import getSecurityManager
 from five import grok
 from silva.core.interfaces import ISilvaObject, IEditableMember
 from silva.core.interfaces.adapters import ILanguageProvider
+from silva.core.interfaces.auth import IAuthorizationManager
 from silva.core.services.interfaces import IMemberService
 from silva.translations import translate as _
 from z3c.schema.email import RFC822MailAddress
 from zeam.form import silva as silvaforms
-from zope import schema, interface
+from zope import schema
+from zope.interface import Interface
 from zope.component import getUtility
+from zope.component.hooks import getSite
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+from zope.traversing.browser import absoluteURL
+from silva.ui.menu import UserMenu, LinkMenuItem, ExpendableMenuItem
 
 
 @grok.provider(IContextSourceBinder)
@@ -34,11 +39,11 @@ def language_source(context):
     codes.sort()
     for lang in codes:
         langs.append(SimpleTerm(
-                value=lang, token=lang, title=languages.getLanguageName(lang)))
+            value=lang, token=lang, title=languages.getLanguageName(lang)))
     return SimpleVocabulary(langs)
 
 
-class IUserInfo(interface.Interface):
+class IUserInfo(Interface):
     userid = schema.TextLine(
         title=_(u"User identifier"),
         description=_(
@@ -102,3 +107,72 @@ class UserInfo(silvaforms.RESTPopupForm):
 
     def getContentData(self):
         return self.user
+
+
+class UserSettingsMenu(ExpendableMenuItem):
+    grok.adapts(UserMenu, Interface)
+    logo = 'tab-user'
+
+    @property
+    def description(self):
+        authorization = IAuthorizationManager(self.content).get_authorization()
+        return '{0} ({1})'.format(
+            authorization.name, authorization.acquired_role)
+
+
+class PreferencesMenu(LinkMenuItem):
+    grok.adapts(UserSettingsMenu, Interface)
+    grok.order(5)
+    name = _('Preferences')
+    icon = 'preferences'
+    popup = True
+
+    def get_url(self, context, request):
+        return '{0}/++rest++silva.core.smi.userpreferences'.format(
+            absoluteURL(context, request))
+
+
+class AboutMenu(LinkMenuItem):
+    grok.adapts(UserSettingsMenu, Interface)
+    grok.order(10)
+    name = _('About')
+    icon = 'about'
+    popup = True
+
+    def get_url(self, context, request):
+        return '{0}/++rest++silva.core.smi.userpreferences'.format(
+            absoluteURL(context, request))
+
+
+class ManageMenu(LinkMenuItem):
+    grok.adapts(UserSettingsMenu, Interface)
+    grok.order(20)
+    grok.require('zope2.ViewManagementScreens')
+    name = _('Manage...')
+    icon = 'manage'
+
+    def get_url(self, context, request):
+        return '{0}/manage_main'.format(absoluteURL(context, request))
+
+
+class ServicesMenu(LinkMenuItem):
+    grok.adapts(UserSettingsMenu, Interface)
+    grok.order(25)
+    grok.require('zope2.ViewManagementScreens')
+    name = _('Services...')
+    icon = 'services'
+
+    def get_url(self, context, request):
+        return '{0}/manage_services'.format(absoluteURL(getSite(), request))
+
+
+class LogoutMenu(LinkMenuItem):
+    grok.adapts(UserSettingsMenu, Interface)
+    grok.order(50)
+    name = _('Logout')
+    icon = 'logout'
+    target = '_self'
+
+    def get_url(self, context, request):
+        return '{0}/service_members/logout'.format(
+            absoluteURL(context.get_root(), request))
