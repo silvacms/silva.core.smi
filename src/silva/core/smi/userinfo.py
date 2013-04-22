@@ -5,11 +5,6 @@
 from AccessControl import getSecurityManager
 
 from five import grok
-from silva.core.interfaces import ISilvaObject, IEditableMember
-from silva.core.interfaces.adapters import ILanguageProvider
-from silva.core.interfaces.auth import IAuthorizationManager
-from silva.core.services.interfaces import IMemberService
-from silva.translations import translate as _
 from z3c.schema.email import RFC822MailAddress
 from zeam.form import silva as silvaforms
 from zope import schema
@@ -19,6 +14,12 @@ from zope.component.hooks import getSite
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.traversing.browser import absoluteURL
+
+from silva.core.interfaces import ISilvaObject, IEditableMember
+from silva.core.interfaces.adapters import ILanguageProvider
+from silva.core.interfaces.auth import IAuthorizationManager
+from silva.core.services.interfaces import IMemberService
+from silva.translations import translate as _
 from silva.ui.menu import UserMenu, LinkMenuItem, ExpendableMenuItem
 
 
@@ -125,19 +126,7 @@ class PreferencesMenu(LinkMenuItem):
     grok.order(5)
     name = _('Preferences')
     icon = 'preferences'
-    popup = True
-
-    def get_url(self, context, request):
-        return '{0}/++rest++silva.core.smi.userpreferences'.format(
-            absoluteURL(context, request))
-
-
-class AboutMenu(LinkMenuItem):
-    grok.adapts(UserSettingsMenu, Interface)
-    grok.order(10)
-    name = _('About')
-    icon = 'about'
-    popup = True
+    trigger = 'form-popup'
 
     def get_url(self, context, request):
         return '{0}/++rest++silva.core.smi.userpreferences'.format(
