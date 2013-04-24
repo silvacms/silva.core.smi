@@ -25,7 +25,7 @@ class AuthorMetadataTestCase(unittest.TestCase):
             IPublicationWorkflow(self.root.document).publish()
             IPublicationWorkflow(self.root.document).new_version()
 
-    def test_content_draft_metadata(self):
+    def test_content_draft_and_published_metadata(self):
         browser = self.layer.get_web_browser(smi_settings)
         browser.login(self.user)
 
