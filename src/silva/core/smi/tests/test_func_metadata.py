@@ -5,9 +5,10 @@
 import unittest
 
 from zope.component import getUtility
+from silva.core.interfaces import IPublicationWorkflow
 from silva.core.services.interfaces import IMetadataService
 
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from Products.Silva.ftesting import smi_settings
 
 
@@ -18,9 +19,11 @@ class AuthorMetadataTestCase(unittest.TestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addMockupVersionedContent('document', 'Document')
+            IPublicationWorkflow(self.root.document).publish()
+            IPublicationWorkflow(self.root.document).new_version()
 
     def test_content_draft_metadata(self):
         browser = self.layer.get_web_browser(smi_settings)
@@ -36,7 +39,9 @@ class AuthorMetadataTestCase(unittest.TestCase):
         # Access publish tab
         self.assertTrue('Properties' in browser.inspect.tabs)
         self.assertTrue(browser.inspect.tabs['Properties'].name.click(), 200)
-        self.assertEqual(browser.inspect.form, ['Editable item properties'])
+        self.assertEqual(
+            browser.inspect.form,
+            ['Editable item properties', 'Public version item properties'])
 
         # You can edit editable metadata
         # There two times the controls to save the metadata
@@ -62,7 +67,9 @@ class AuthorMetadataTestCase(unittest.TestCase):
 
         # Metadata changes. So the title
         self.assertEqual(browser.inspect.title, 'New document')
-        self.assertEqual(browser.inspect.form, ['Editable item properties'])
+        self.assertEqual(
+            browser.inspect.form,
+            ['Editable item properties', 'Public version item properties'])
 
         form = browser.inspect.form['Editable item properties']
         self.assertEqual(
@@ -76,7 +83,8 @@ class AuthorMetadataTestCase(unittest.TestCase):
             form.fields['comment'].value,
             u'Ce document a été récement créé.')
 
-        metadata = getUtility(IMetadataService).getMetadata(self.root.document)
+        editable = self.root.document.get_editable()
+        metadata = getUtility(IMetadataService).getMetadata(editable)
         self.assertEqual(
             metadata.get('silva-content', 'maintitle'),
             'New document')
