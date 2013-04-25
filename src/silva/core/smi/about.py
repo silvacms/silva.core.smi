@@ -15,9 +15,13 @@ class About(RESTWithTemplate):
     grok.name('silva.core.smi.about')
 
     def GET(self):
-        return self.json_response({'content': {
-                    'ifaces': ['text-overlay'],
-                    'html': self.template.render(self)}})
+        self.silva_version = (self.context.get_root()
+                              .get_silva_software_version())
+        return self.json_response({
+            'content': {
+                'ifaces': ['text-overlay'],
+                'html': self.template.render(self)
+            }})
 
 
 class AboutMenu(LinkMenuItem):
