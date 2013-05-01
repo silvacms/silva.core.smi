@@ -14,7 +14,7 @@
         Silva is created by many people, both developers and end users, comprising a community of contributors. Some of them are listed <a target="_blank" href="http://www.ohloh.net/p/3426/contributors">here</a>. If your name is not listed we'll be happy to add it.
     </p>
     <p>
-        Would you like to <a target="_blank" href="http://silvacms.org/">contribute</a>? That would be welcome!
+        Would you like to <a target="_blank" href="http://silvacms.org/community">contribute</a>? That would be welcome!
     </p>
     <p>
         Silva development is steered by <a target="_blank" href="http://infrae.com">Infrae</a>, a software development company based in Rotterdam, the Netherlands.
@@ -22,8 +22,8 @@
 </div>
 <div id="about-overlay-footer">
     <a target="_blank" href="http://infrae.com/copyright">Copyright</a>
-    <span> - Silva is released under the <acronym title="Berkeley Software Distribution">BSD</acronym> license.
-    </span>
+    <span> - Silva is released under the <acronym title="Berkeley Software Distribution">BSD</acronym></span>
+    <a target="_blank" href="http://silvacms.org/about/license">license</a>
 </div>
 
 
