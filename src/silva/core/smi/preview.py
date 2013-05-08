@@ -11,7 +11,7 @@ from silva.core.views.interfaces import ISilvaURL
 from silva.translations import translate as _
 from silva.ui.interfaces import IJSView, IUIService
 from silva.ui.interfaces import IUIScreen
-from silva.ui.menu import ViewMenu, MenuItem
+from silva.ui.menu import ContentMenu, MenuItem
 from silva.ui.rest import PageREST, Screen
 
 
@@ -74,8 +74,8 @@ class Preview(PageREST):
 
 
 class PreviewMenu(MenuItem):
-    grok.adapts(ViewMenu, IViewableObject)
-    grok.order(10)
+    grok.adapts(ContentMenu, IViewableObject)
+    grok.order(11)
     name = _('Preview')
     description = _(u'Preview this item inside the management interface.')
     screen = 'preview'
