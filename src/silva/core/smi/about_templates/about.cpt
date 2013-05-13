@@ -8,7 +8,7 @@
     <h2>
         Silva CMS
     </h2>
-    <p class="silva-version" tal:content="rest.silva_version">
+    <p class="silva-version" tal:content="rest.version">
     </p>
     <p>
         Silva is created by many people, both developers and end users, comprising a community of contributors. Some of them are listed <a target="_blank" href="http://www.ohloh.net/p/3426/contributors">here</a>. If your name is not listed we'll be happy to add it.

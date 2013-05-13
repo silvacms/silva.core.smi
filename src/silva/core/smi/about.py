@@ -2,12 +2,20 @@
 from five import grok
 from zope.interface import Interface
 from zope.traversing.browser import absoluteURL
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from infrae.rest import RESTWithTemplate
+from silva.core import conf as silvaconf
 from silva.core.interfaces import ISilvaObject
-from silva.ui.menu import LinkMenuItem
-from silva.translations import translate as _
 from silva.core.smi.userinfo import UserSettingsMenu
+from silva.fanstatic import need
+from silva.translations import translate as _
+from silva.ui.menu import LinkMenuItem
+from silva.ui.rest.helper import ResourcesProvider
+
+
+class IAboutResources(IDefaultBrowserLayer):
+    silvaconf.resource('about.css')
 
 
 class About(RESTWithTemplate):
@@ -15,13 +23,16 @@ class About(RESTWithTemplate):
     grok.name('silva.core.smi.about')
 
     def GET(self):
-        self.silva_version = (self.context.get_root()
-                              .get_silva_software_version())
-        return self.json_response({
+        root = self.context.get_root()
+        self.version = root.get_silva_software_version()
+        need(IAboutResources)
+        data = {
             'content': {
                 'ifaces': ['text-overlay'],
                 'html': self.template.render(self)
-            }})
+            }}
+        ResourcesProvider(self, self.request)(self, data)
+        return self.json_response(data)
 
 
 class AboutMenu(LinkMenuItem):
