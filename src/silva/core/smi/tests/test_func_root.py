@@ -19,15 +19,15 @@ class ReaderRootTestCase(unittest.TestCase):
 
         browser.open('/root/edit')
         self.assertEqual(browser.inspect.title, u"root")
-        self.assertEqual(browser.inspect.tabs, ['Content'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
+        self.assertEqual(browser.inspect.tabs, ['Content', 'Preview'])
+        self.assertEqual(browser.inspect.views, ['View...'])
 
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
         # We go through the tabs
-        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
-        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Preview'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Preview'])
         self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
@@ -45,17 +45,17 @@ class AuthorRootTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.title, u"root")
         self.assertEqual(
             browser.inspect.tabs,
-            ['Content', 'Add', 'Properties', 'Settings'])
+            ['Content', 'Preview', 'Add', 'Properties', 'Settings'])
         self.assertEqual(
             browser.inspect.views,
-            ['Preview', 'View...'])
+            ['View...'])
 
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
         # We go through the tabs
-        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
-        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Preview'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Preview'])
         self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
         self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)

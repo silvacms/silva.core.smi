@@ -44,17 +44,17 @@ class ReaderAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
         self.assertEqual(browser.inspect.title, u'Table of Content')
         self.assertEqual(browser.inspect.toolbar, [])
-        self.assertEqual(browser.inspect.tabs, ['Edit'])
+        self.assertEqual(browser.inspect.tabs, ['Edit', 'Preview'])
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
+        self.assertEqual(browser.inspect.views, ['View...'])
         self.assertEqual(browser.inspect.form, ['Edit a Silva AutoTOC'])
         edit_form = browser.inspect.form['Edit a Silva AutoTOC']
         self.assertEqual(edit_form.fields, [])
         self.assertEqual(edit_form.actions, ['Back'])
 
         # We go through the tabs.
-        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
-        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Preview'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Preview'])
         self.assertEqual(browser.inspect.tabs['Edit'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
 
@@ -74,7 +74,7 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.title, u"root")
         self.assertEqual(
             browser.inspect.tabs,
-            ['Content', 'Add', 'Properties', 'Settings'])
+            ['Content', 'Preview', 'Add', 'Properties', 'Settings'])
         self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
         self.assertIn('Silva AutoTOC', browser.inspect.tabs['Add'].entries)
         self.assertEqual(
@@ -96,10 +96,10 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.title, u'Table des matières')
         self.assertEqual(
             browser.inspect.tabs,
-            ['Edit', 'Properties', 'Settings'])
+            ['Edit', 'Preview', 'Properties', 'Settings'])
         self.assertEqual(
             browser.inspect.views,
-            ['Preview', 'View...'])
+            ['View...'])
         # We are on contents
         self.assertEqual(
             browser.inspect.activetabs,
@@ -118,8 +118,8 @@ class AuthorAutoTOCTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.toolbar, [])
 
         # We go through the tabs.
-        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
-        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Preview'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Preview'])
         self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
         self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)

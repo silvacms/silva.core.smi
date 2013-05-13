@@ -23,9 +23,9 @@ class ReaderFolderTestCase(unittest.TestCase):
         browser = self.layer.get_web_browser(smi_settings)
         browser.login('reader')
         self.assertEqual(browser.inspect.title, u'root')
-        self.assertEqual(browser.inspect.tabs, ['Content'])
+        self.assertEqual(browser.inspect.tabs, ['Content', 'Preview'])
         self.assertEqual(browser.inspect.activetabs, ['Content'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
+        self.assertEqual(browser.inspect.views, ['View...'])
         self.assertEqual(browser.inspect.toolbar, [])
 
         # We should see our folder.
@@ -41,15 +41,15 @@ class ReaderFolderTestCase(unittest.TestCase):
         # Go inside the folder.
         self.assertEqual(browser.inspect.listing[0].goto.click(), 200)
         self.assertEqual(browser.inspect.title, u'Folder')
-        self.assertEqual(browser.inspect.tabs, ['Content'])
+        self.assertEqual(browser.inspect.tabs, ['Content', 'Preview'])
         self.assertEqual(browser.inspect.activetabs, ['Content'])
-        self.assertEqual(browser.inspect.views, ['Preview', 'View...'])
+        self.assertEqual(browser.inspect.views, ['View...'])
         self.assertEqual(browser.inspect.listing, [])
         self.assertEqual(browser.inspect.toolbar, [])
 
         # We go through the tabs.
-        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
-        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Preview'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Preview'])
         self.assertEqual(browser.inspect.tabs['Content'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Content'])
 
@@ -73,7 +73,7 @@ class AuthorFolderTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.title, u"root")
         self.assertEqual(
             browser.inspect.tabs,
-            ['Content', 'Add', 'Properties', 'Settings'])
+            ['Content', 'Preview', 'Add', 'Properties', 'Settings'])
         self.assertEqual(
             browser.inspect.tabs['Add'].name.click(),
             200)
@@ -96,10 +96,10 @@ class AuthorFolderTestCase(unittest.TestCase):
         self.assertEqual(browser.inspect.title, u"Test")
         self.assertEqual(
             browser.inspect.tabs,
-            ['Content', 'Add', 'Properties', 'Settings'])
+            ['Content', 'Preview', 'Add', 'Properties', 'Settings'])
         self.assertEqual(
             browser.inspect.views,
-            ['Preview', 'View...'])
+            ['View...'])
         self.assertEqual(
             browser.inspect.activetabs,
             ['Content'])
@@ -108,8 +108,8 @@ class AuthorFolderTestCase(unittest.TestCase):
             [{'title': 'Test', 'identifier': 'index', 'author': self.user}])
 
         # We go through the tabs
-        self.assertEqual(browser.inspect.views['Preview'].click(), 200)
-        self.assertEqual(browser.inspect.activeviews, ['Preview'])
+        self.assertEqual(browser.inspect.tabs['Preview'].name.click(), 200)
+        self.assertEqual(browser.inspect.activetabs, ['Preview'])
         self.assertEqual(browser.inspect.tabs['Settings'].name.click(), 200)
         self.assertEqual(browser.inspect.activetabs, ['Settings'])
         self.assertEqual(browser.inspect.tabs['Properties'].name.click(), 200)
