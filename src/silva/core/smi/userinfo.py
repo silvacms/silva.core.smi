@@ -116,9 +116,11 @@ class UserSettingsMenu(ExpendableMenuItem):
 
     @property
     def description(self):
-        authorization = IAuthorizationManager(self.content).get_authorization()
-        return '{0} ({1})'.format(
-            authorization.name, authorization.acquired_role)
+        authorization = IAuthorizationManager(self.content, None)
+        if authorization is None:
+            return None
+        information = authorization.get_authorization()
+        return '{0} ({1})'.format(information.name, information.acquired_role)
 
 
 class PreferencesMenu(LinkMenuItem):
