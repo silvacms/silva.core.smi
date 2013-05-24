@@ -1,10 +1,21 @@
 Changelog
 =========
 
-3.0.1 (unreleased)
+3.0.1 (2013/05/24)
 ------------------
 
-* ...
+* Add a user menu, move some actions there.
+
+* Add an about overlay.
+
+* Add a screen under Settings to configure HTTP headers and HTTP
+  caching settings.
+
+* Add new XML import and export options in the corresponding screens.
+
+* Improve metadata and publish screens.
+
+* Change the location of the preview button.
 
 3.0 (2013/03/06)
 ----------------
