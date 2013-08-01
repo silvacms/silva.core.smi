@@ -94,7 +94,6 @@ class AuthorFolderActionsTestCase(unittest.TestCase):
                                     u'position': -1,
                                     u'target': u'nav%s' % root_id}}]},
                  u'notifications': [{
-                            u'autoclose': 4000,
                             u'category': u'feedback',
                             u'message': u'Deleted "Folder".'}]})
 
@@ -155,7 +154,6 @@ class AuthorFolderActionsTestCase(unittest.TestCase):
                                     u'position': -1,
                                     u'target': u'nav%s' % root_id}}]},
                  u'notifications': [{
-                            u'autoclose': 4000,
                             u'category': u'feedback',
                             u'message': u'Pasted as a copy "Information".'}]})
 
@@ -211,7 +209,6 @@ class AuthorFolderActionsTestCase(unittest.TestCase):
                                     u'position': -1,
                                     u'target': u'nav%s' % root_id}}]},
                  u'notifications': [{
-                            u'autoclose': 4000,
                             u'category': u'feedback',
                             u'message': u'Pasted as a copy "Document".'}]})
 
@@ -284,7 +281,6 @@ class AuthorFolderActionsTestCase(unittest.TestCase):
                                     u'position': -1,
                                     u'target': u'nav%s' % root_id}}]},
                  u'notifications': [{
-                            u'autoclose': 4000,
                             u'category': u'feedback',
                             u'message': u'Moved "Document".'}]})
 
@@ -343,7 +339,6 @@ class EditorFolderActionsTestCase(AuthorFolderActionsTestCase):
                                     u'title': u'Document'}]},
                         u'ifaces': [u'listing-changes']},
                  u'notifications': [{
-                            u'autoclose': 4000,
                             u'category': u'feedback',
                             u'message': u'Published "Document".'}]})
 
