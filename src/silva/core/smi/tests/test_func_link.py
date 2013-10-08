@@ -8,7 +8,7 @@ import unittest
 from silva.core.interfaces import ILink
 from zope.interface.verify import verifyObject
 
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from Products.Silva.ftesting import smi_settings
 
 
@@ -22,7 +22,7 @@ class AuthorLinkTestCase(unittest.TestCase):
         self.layer.login('editor')
 
     def test_link_add_internal_and_listing(self):
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addMockupVersionedContent('document', 'Document')
 

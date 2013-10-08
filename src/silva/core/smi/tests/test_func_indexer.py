@@ -7,7 +7,7 @@ import unittest
 from silva.core.interfaces import IIndexer
 from zope.interface.verify import verifyObject
 
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from Products.Silva.ftesting import smi_settings
 
 
@@ -17,7 +17,7 @@ class ReaderIndexerTestCase(unittest.TestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addIndexer('indexer', 'Indexer')
 
@@ -65,7 +65,7 @@ class AuthorIndexerTestCase(unittest.TestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addIndexer('indexer', 'Indexer')
 

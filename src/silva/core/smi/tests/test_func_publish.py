@@ -5,7 +5,7 @@
 import unittest
 
 from Products.Silva.ftesting import smi_settings
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from silva.core.interfaces import IPublicationWorkflow
 
 
@@ -15,7 +15,7 @@ class PublicationTestCase(unittest.TestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addMockupVersionedContent('document', 'Document')
 
@@ -257,7 +257,7 @@ class ManageVersionTestCase(unittest.TestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addMockupVersionedContent('document', 'Document')
 

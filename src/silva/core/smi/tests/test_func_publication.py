@@ -5,7 +5,7 @@
 import unittest
 
 from silva.core.interfaces import ISiteManager
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from Products.Silva.ftesting import smi_settings
 
 
@@ -15,7 +15,7 @@ class ReaderPublicationTestCase(unittest.TestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addPublication('site', 'Site')
 
@@ -59,7 +59,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
     def test_publication_add_and_listing(self):
         """Create a Publication check its tabs and actions and delete it.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addPublication('site', 'Site')
 
@@ -146,7 +146,7 @@ class AuthorPublicationTestCase(unittest.TestCase):
     def test_publication_convert(self):
         """Test folder to publication conversion.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addPublication('publication', 'Data')
 
@@ -258,7 +258,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
     def test_publication_convert(self):
         """Test folder to publication conversion.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addPublication('publication', 'Data')
 
@@ -289,7 +289,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
     def test_publication_localsite(self):
         """Test activating a local site on a publication.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addPublication('publication', 'Data')
 
@@ -340,7 +340,7 @@ class EditorPublicationTestCase(AuthorPublicationTestCase):
         """You cannot unactivate a local site if there are services
         registered in it.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addPublication('publication', 'Data')
             ISiteManager(self.root.publication).make_site()

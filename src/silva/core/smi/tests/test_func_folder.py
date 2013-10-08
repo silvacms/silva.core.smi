@@ -3,7 +3,7 @@
 # See also LICENSE.txt
 
 import unittest
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from Products.Silva.ftesting import smi_settings
 
 
@@ -13,7 +13,7 @@ class ReaderFolderTestCase(unittest.TestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Folder')
 
@@ -165,7 +165,7 @@ class AuthorFolderTestCase(unittest.TestCase):
     def test_folder_feeds(self):
         """Test feeds settings. An author doesn't have the right to change them.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Feeds')
 
@@ -190,7 +190,7 @@ class AuthorFolderTestCase(unittest.TestCase):
     def test_folder_convert(self):
         """Test folder to publication conversion.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Data')
 
@@ -215,7 +215,7 @@ class EditorFolderTestCase(AuthorFolderTestCase):
     def test_folder_feeds(self):
         """Test feeds settings. An editor and above can change them
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Feeds')
 
@@ -262,7 +262,7 @@ class EditorFolderTestCase(AuthorFolderTestCase):
     def test_folder_convert(self):
         """Test folder to publication conversion.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Data')
 
@@ -298,7 +298,7 @@ class EditorFolderTestCase(AuthorFolderTestCase):
         Editors don't have access to the access tab.
         """
         self.assertEqual(self.access, False)
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Data')
 
@@ -320,7 +320,7 @@ class EditorFolderTestCase(AuthorFolderTestCase):
 
         Editors don't have access to the addable tab.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Data')
 
@@ -340,7 +340,7 @@ class EditorFolderTestCase(AuthorFolderTestCase):
     def test_folder_customization(self):
         """Test folder customization.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Data')
 
@@ -376,7 +376,7 @@ class ChiefEditorFolderTestCase(EditorFolderTestCase):
 
         Editors don't have access to the addable tab.
         """
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Data')
 
@@ -431,7 +431,7 @@ class ChiefEditorFolderTestCase(EditorFolderTestCase):
         Editors don't have access to the access tab.
         """
         self.assertEqual(self.access, True)
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Data')
 

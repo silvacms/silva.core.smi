@@ -5,7 +5,7 @@
 import unittest
 
 from Products.Silva.ftesting import rest_settings
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from silva.core.cache.memcacheutils import Reset
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
@@ -25,7 +25,7 @@ class AuthorFolderActionsTestCase(unittest.TestCase):
         self.layer.login(self.user)
         self.get_id = getUtility(IIntIds).getId
         with Reset():
-            with CatalogTransaction():
+            with Transaction():
                 factory = self.root.manage_addProduct['Silva']
                 factory.manage_addFolder('folder', 'Folder')
                 factory = self.root.folder.manage_addProduct['Silva']

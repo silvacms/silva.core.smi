@@ -5,7 +5,7 @@
 import unittest
 from zope.component import getUtility
 from Products.Silva.ftesting import rest_settings
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from silva.core.references.interfaces import IReferenceService
 from silva.core.references.reference import BrokenReferenceError
 from silva.core.references.reference import get_content_id
@@ -17,7 +17,7 @@ class BreakReferenceTestCase(unittest.TestCase):
 
     def setUp(self):
         self.root = self.layer.get_application()
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFile('file', 'File')
             factory.manage_addLink('data', 'Link to File', target=self.root.file)

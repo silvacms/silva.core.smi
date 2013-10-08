@@ -4,7 +4,7 @@
 
 import unittest
 
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 from Products.Silva.ftesting import smi_settings
 from silva.core.references.reference import get_content_id
 
@@ -29,7 +29,7 @@ class EditorGhostFolderTestCase(unittest.TestCase):
         """
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Folder')
             folder = self.root._getOb('folder')

@@ -5,7 +5,7 @@
 import unittest
 
 from Products.Silva.ftesting import smi_settings
-from Products.Silva.testing import FunctionalLayer, CatalogTransaction
+from Products.Silva.testing import FunctionalLayer, Transaction
 
 
 class AuthorFolderTestCase(unittest.TestCase):
@@ -18,7 +18,7 @@ class AuthorFolderTestCase(unittest.TestCase):
         self.layer.login('editor')
 
     def test_content_cut(self):
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addFolder('folder', 'Folder')
             factory.manage_addMockupVersionedContent('document', 'Document')
@@ -70,7 +70,7 @@ class AuthorFolderTestCase(unittest.TestCase):
               'author': self.user}])
 
     def test_content_copy(self):
-        with CatalogTransaction():
+        with Transaction():
             factory = self.root.manage_addProduct['Silva']
             factory.manage_addMockupVersionedContent('document', 'Document')
 
