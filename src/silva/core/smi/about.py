@@ -40,7 +40,7 @@ class About(RESTWithTemplate):
 
 class AboutMenu(LinkMenuItem):
     grok.adapts(UserSettingsMenu, Interface)
-    grok.order(10)
+    grok.order(0)
     name = _('About')
     icon = 'about'
     trigger = 'text-overlay'
