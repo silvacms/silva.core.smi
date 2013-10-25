@@ -4,7 +4,7 @@ from Acquisition import aq_parent
 from five import grok
 from silva.core.interfaces import IContainer, IRoot
 from silva.core.interfaces import IIconResolver, ISiteManager
-from silva.core.interfaces import ISilvaService, ISilvaInvisibleService
+from silva.core.interfaces import ISilvaConfigurableService
 from silva.translations import translate as _
 from silva.ui import rest
 from silva.ui.menu import MenuItem
@@ -23,13 +23,12 @@ class ConfigurationScreen(rest.PageWithTemplateREST):
     def get_services(self, container):
         services = []
         for candidate in container.objectValues():
-            if ISilvaService.providedBy(candidate):
-                if not ISilvaInvisibleService.providedBy(candidate):
-                    # We assume service icons are URLs
-                    services.append({
-                            'name': candidate.meta_type,
-                            'icon': self.get_icon(candidate),
-                            'path': self.get_content_path(candidate)})
+            if ISilvaConfigurableService.providedBy(candidate):
+                # We assume service icons are URLs
+                services.append({
+                        'name': candidate.meta_type,
+                        'icon': self.get_icon(candidate),
+                        'path': self.get_content_path(candidate)})
         return sorted(services, key=lambda i: i['name'].lower())
 
     def update(self):
