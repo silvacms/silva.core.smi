@@ -32,7 +32,7 @@ class ConfigurationScreen(rest.PageWithTemplateREST):
         return sorted(services, key=lambda i: i['name'].lower())
 
     def update(self):
-        self.get_icon = IIconResolver(self.request).get_content_url
+        self.get_icon = IIconResolver(self.request).get_tag
         self.main_services = self.get_services(self.context.get_root())
         self.local_services = None
         container = self.context.get_publication()

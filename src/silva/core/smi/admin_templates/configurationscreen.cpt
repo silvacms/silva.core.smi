@@ -20,9 +20,8 @@
           <col />
         </colgroup>
         <tr class="item" tal:repeat="service rest.main_services">
-          <td>
-            <ins class="icon"
-                 style="background:url(${service.icon}) no-repeat center center;" />
+          <td tal:content="structure service.icon">
+            Icon
           </td>
           <td>
             <a class="open-screen" rel="admin" href="${service.path}"
