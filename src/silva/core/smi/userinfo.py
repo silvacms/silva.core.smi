@@ -9,7 +9,7 @@ from z3c.schema.email import RFC822MailAddress
 from zeam.form import silva as silvaforms
 from zope import schema
 from zope.interface import Interface
-from zope.component import getUtility
+from zope.component import getUtility, queryUtility
 from zope.component.hooks import getSite
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
@@ -20,6 +20,7 @@ from silva.core.interfaces.adapters import ILanguageProvider
 from silva.core.interfaces.auth import IAuthorizationManager
 from silva.core.services.interfaces import IMemberService
 from silva.translations import translate as _
+from silva.ui.interfaces import IUIService 
 from silva.ui.menu import UserMenu, LinkMenuItem, ExpendableMenuItem
 
 
@@ -142,6 +143,10 @@ class ManageMenu(LinkMenuItem):
     name = _('Manage...')
     icon = 'manage'
 
+    def available(self):
+        service = queryUtility(IUIService)
+        return service is not None and service.smi_link_zmi
+
     def get_url(self, context, request):
         return '{0}/manage_main'.format(absoluteURL(context, request))
 
@@ -152,6 +157,10 @@ class ServicesMenu(LinkMenuItem):
     grok.require('zope2.ViewManagementScreens')
     name = _('Services...')
     icon = 'services'
+
+    def available(self):
+        service = queryUtility(IUIService)
+        return service is not None and service.smi_link_zmi
 
     def get_url(self, context, request):
         return '{0}/manage_services'.format(absoluteURL(getSite(), request))
