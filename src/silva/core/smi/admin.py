@@ -48,5 +48,5 @@ class ConfiguationMenu(MenuItem):
     grok.order(10)
     grok.require('zope2.ViewManagementScreens')
     name = _('Site Preferences')
-    icon = 'preferences'
+    icon = 'configuration'
     screen = ConfigurationScreen

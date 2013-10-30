@@ -125,7 +125,7 @@ class UserSettingsMenu(ExpendableMenuItem):
 
 
 class PreferencesMenu(LinkMenuItem):
-    grok.adapts(UserSettingsMenu, Interface)
+    grok.adapts(UserSettingsMenu, ISilvaObject)
     grok.order(5)
     name = _('User Preferences')
     icon = 'preferences'
