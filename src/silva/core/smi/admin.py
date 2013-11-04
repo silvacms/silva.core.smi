@@ -16,6 +16,7 @@ class ConfigurationScreen(rest.PageWithTemplateREST):
     grok.adapts(rest.Screen, IContainer)
     grok.name('admin')
     grok.require('zope2.ViewManagementScreens')
+    form = False
 
     def get_menu_title(self):
         return _("Site Configuration")
