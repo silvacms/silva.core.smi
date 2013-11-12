@@ -21,6 +21,11 @@ class Publish(silvaforms.SMIComposedForm):
 
     label = _('Publication')
 
+    def get_menu_parent(self):
+        parent = super(Publish, self).get_menu_parent()
+        parent['screen'] = 'content' # Containers have no publish screen
+        return parent
+
 
 class PublishMenu(ExpendableMenuItem):
     grok.adapts(ContentMenu, IVersionedObject)
