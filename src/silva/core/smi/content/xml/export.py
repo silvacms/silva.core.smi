@@ -11,7 +11,7 @@ from zope.component import getAdapter, getAdapters
 from zope.interface import Interface
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
-from silva.core.interfaces import IContainer
+from silva.core.interfaces import IContainer, IGhostAware
 from silva.core.interfaces import IContentExporter, IDefaultContentExporter
 from silva.core.smi.content.container import ContainerMenu, Container
 from silva.translations import translate as _
@@ -126,4 +126,6 @@ class ExportMenu(MenuItem):
     name = _(u'Export')
     screen = ExportForm
 
+    def available(self):
+        return not IGhostAware.providedBy(self.content)
 

@@ -14,7 +14,7 @@ from zope.lifecycleevent import ObjectModifiedEvent
 
 from silva.core.references.interfaces import IReferenceService
 from silva.core.conf import schema as silvaschema
-from silva.core.interfaces import IContainer, IVersion
+from silva.core.interfaces import IContainer, IVersion, IGhostAware
 from silva.core.interfaces import IZipFileImporter, IArchiveFileImporter
 from silva.core.smi.content.container import Container, ContainerMenu
 from silva.translations import translate as _
@@ -158,3 +158,6 @@ class ImportMenu(MenuItem):
     name = _(u'Import')
 
     screen = ImportForm
+
+    def available(self):
+        return not IGhostAware.providedBy(self.content)
