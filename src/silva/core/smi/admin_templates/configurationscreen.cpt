@@ -33,15 +33,14 @@
     <tal:local tal:condition="rest.local_services">
       <dt i18n:translate="">Local Configuration</dt>
       <dd>
-        <table>
+        <table class="static">
           <colgroup>
             <col width="26" />
             <col />
           </colgroup>
           <tr class="item" tal:repeat="service rest.local_services">
-            <td>
-              <ins class="icon"
-                   style="background:url(${service.icon}) no-repeat center center;" />
+            <td tal:content="structure service.icon">
+              Icon
             </td>
             <td>
               <a class="open-screen" rel="admin" href="${service.path}"
