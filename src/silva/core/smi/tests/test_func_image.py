@@ -8,7 +8,7 @@ from Products.Silva.testing import FunctionalLayer, Transaction
 from Products.Silva.ftesting import smi_settings
 
 
-class AuthorFileTestCase(unittest.TestCase):
+class AuthorImageTestCase(unittest.TestCase):
     layer = FunctionalLayer
     user = 'author'
 
@@ -18,10 +18,10 @@ class AuthorFileTestCase(unittest.TestCase):
         with Transaction():
             factory = self.root.manage_addProduct['Silva']
             with self.layer.open_fixture('silva.png') as stream:
-                factory.manage_addFile('logo', 'Silva Logo', stream)
+                factory.manage_addImage('logo', 'Silva Logo', stream)
 
-    def test_file_listing(self):
-        """You can add a file with Selenium (since the upload button
+    def test_image_listing(self):
+        """You can add an image with Selenium (since the upload button
         doesn't work), however we can check the listing and edit view.
         """
         browser = self.layer.get_web_browser(smi_settings)
@@ -32,14 +32,14 @@ class AuthorFileTestCase(unittest.TestCase):
             browser.inspect.tabs,
             ['Content', 'Preview', 'Add', 'Properties', 'Settings'])
         self.assertEqual(browser.inspect.tabs['Add'].open.click(), 200)
-        self.assertIn('Silva File', browser.inspect.tabs['Add'].entries)
+        self.assertIn('Silva Image', browser.inspect.tabs['Add'].entries)
         self.assertEqual(
-            browser.inspect.tabs['Add'].entries['Silva File'].click(),
+            browser.inspect.tabs['Add'].entries['Silva Image'].click(),
             200)
-        self.assertEqual(browser.inspect.form, ["Add a Silva File"])
+        self.assertEqual(browser.inspect.form, ["Add a Silva Image"])
         self.assertEqual(browser.inspect.toolbar, [])
 
-        form = browser.inspect.form['Add a Silva File']
+        form = browser.inspect.form['Add a Silva Image']
         self.assertIn('Id', form.fields)
         self.assertIn('Title', form.fields)
         self.assertEqual(form.actions, ['Cancel', 'Save'])
@@ -70,11 +70,18 @@ class AuthorFileTestCase(unittest.TestCase):
         # We are on contents
         self.assertEqual(browser.inspect.activetabs, ['Edit'])
 
-        self.assertEqual(browser.inspect.form, ['Edit file content'])
-        form = browser.inspect.form['Edit file content']
+        self.assertEqual(
+            browser.inspect.form,
+            ['Edit', 'Format and scaling'])
+        form = browser.inspect.form['Edit']
         self.assertIn('Title', form.fields)
-        self.assertIn('File', form.fields)
+        self.assertIn('Image', form.fields)
         self.assertEqual(form.actions, ['Back', 'Save changes'])
+
+        form = browser.inspect.form['Format and scaling']
+        self.assertIn('Scaling', form.fields)
+        self.assertIn('Cropping', form.fields)
+        self.assertEqual(form.actions, ['Back', 'Change'])
 
         # An action let you directly request approval
         self.assertEqual(browser.inspect.toolbar, [])
@@ -125,23 +132,23 @@ class AuthorFileTestCase(unittest.TestCase):
         browser.macros.assertFeedback(u'Deleted "Silva Logo".')
 
 
-class EditorFileTestCase(AuthorFileTestCase):
+class EditorImageTestCase(AuthorImageTestCase):
     user = 'editor'
 
 
-class ChiefEditorFileTestCase(EditorFileTestCase):
+class ChiefEditorImageTestCase(EditorImageTestCase):
     user = 'chiefeditor'
 
 
-class ManagerFileTestCase(ChiefEditorFileTestCase):
+class ManagerImageTestCase(ChiefEditorImageTestCase):
     user = 'manager'
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AuthorFileTestCase))
-    suite.addTest(unittest.makeSuite(EditorFileTestCase))
-    suite.addTest(unittest.makeSuite(ChiefEditorFileTestCase))
-    suite.addTest(unittest.makeSuite(ManagerFileTestCase))
+    suite.addTest(unittest.makeSuite(AuthorImageTestCase))
+    suite.addTest(unittest.makeSuite(EditorImageTestCase))
+    suite.addTest(unittest.makeSuite(ChiefEditorImageTestCase))
+    suite.addTest(unittest.makeSuite(ManagerImageTestCase))
     return suite
 
