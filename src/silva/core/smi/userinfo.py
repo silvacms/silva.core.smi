@@ -148,7 +148,7 @@ class ManageMenu(LinkMenuItem):
         return service is not None and service.smi_link_zmi
 
     def get_url(self, context, request):
-        return '{0}/manage_main'.format(absoluteURL(context, request))
+        return '{0}/manage_workspace'.format(absoluteURL(context, request))
 
 
 class ServicesMenu(LinkMenuItem):
