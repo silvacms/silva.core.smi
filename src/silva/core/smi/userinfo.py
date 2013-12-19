@@ -15,7 +15,7 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.traversing.browser import absoluteURL
 
-from silva.core.interfaces import IContainer, IEditableMember
+from silva.core.interfaces import ISilvaObject, IEditableMember
 from silva.core.interfaces.adapters import ILanguageProvider
 from silva.core.interfaces.auth import IAuthorizationManager
 from silva.core.services.interfaces import IMemberService
@@ -88,7 +88,7 @@ class UserDataManager(silvaforms.ObjectDataManager):
 
 
 class UserPreferences(silvaforms.RESTPopupForm):
-    grok.context(IContainer)
+    grok.context(ISilvaObject)
     grok.name('silva.core.smi.userpreferences')
 
     label = _(u"User preferences")
@@ -117,7 +117,8 @@ class UserSettingsMenu(ExpendableMenuItem):
 
     @property
     def description(self):
-        authorization = IAuthorizationManager(self.content, None)
+        content = self.content.get_silva_object()
+        authorization = IAuthorizationManager(content, None)
         if authorization is None:
             return None
         information = authorization.get_authorization()
@@ -132,7 +133,7 @@ class PreferencesMenu(LinkMenuItem):
     trigger = 'form-popup'
 
     def get_url(self, context, request):
-        content = context.get_container()
+        content = context.get_silva_object()
         return '{0}/++rest++silva.core.smi.userpreferences'.format(
             absoluteURL(content, request))
 
