@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2013  Infrae. All rights reserved.
+# See also LICENSE.txt
 
 from Acquisition import aq_parent
 
 from five import grok
-from silva.core.interfaces import IContainer, IRoot
+from silva.core.interfaces import ISilvaObject, IRoot
 from silva.core.interfaces import IIconResolver, ISiteManager
 from silva.core.interfaces import ISilvaConfigurableService
 from silva.translations import translate as _
@@ -13,7 +16,7 @@ from .userinfo import UserSettingsMenu
 
 
 class ConfigurationScreen(rest.PageWithTemplateREST):
-    grok.adapts(rest.Screen, IContainer)
+    grok.adapts(rest.Screen, ISilvaObject)
     grok.name('admin')
     grok.require('zope2.ViewManagementScreens')
     form = False
@@ -45,7 +48,7 @@ class ConfigurationScreen(rest.PageWithTemplateREST):
 
 
 class ConfiguationMenu(MenuItem):
-    grok.adapts(UserSettingsMenu, IContainer)
+    grok.adapts(UserSettingsMenu, ISilvaObject)
     grok.order(10)
     grok.require('zope2.ViewManagementScreens')
     name = _('Site Preferences')
