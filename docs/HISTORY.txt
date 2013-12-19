@@ -1,10 +1,20 @@
 Changelog
 =========
 
-3.0.3 (unreleased)
+3.0.3 (2013/12/19)
 ------------------
 
-* ...
+* Add a new screen site preferences in the user menu that gives the
+  user access to a list of services that can be configured through the
+  SMI if he has enough permissions.
+
+* XML import and export is no longer available on ghost folders (since
+  it makes no sense).
+
+* Do not display links to the ZMI unless the proper option is
+  activated in ``service_ui``.
+
+* Improve functional tests.
 
 3.0.2 (2013/10/09)
 ------------------
